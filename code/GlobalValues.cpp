@@ -10,6 +10,15 @@ namespace GlobalValue
     { 0xd7, 0x26, 0x2b, 0xef, 0xa0, 0x61, 0xc0, 0xee }
     };
 
+
+    //{BA6312FA-263B-4406-BF02-BEDBFE5FC2F8}
+    static CLSID InputProfile_GUID = {
+        0xBA6312FA,
+        0x263B,
+        0x4406,
+        {0xBF,0x02,0xBE,0xDB,0xFE,0x5F,0xC2,0xF8}
+    };
+
     const static wchar_t g_dllName[] = L"BaiLuIME.dll";
     static const WCHAR TEXTSERVICE_DESC[] = L"BaiLuIME";
 #define CLSID_STRLEN    (38)  // strlen("{xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx}")
@@ -17,6 +26,17 @@ namespace GlobalValue
     CLSID GetInputMethod_CLSID()
     {
         return InputMethod_CLSID;
+    }
+
+    CLSID GetInputMethod_ProfileGuid()
+    {
+        return InputProfile_GUID;
+    }
+
+    LANGID GetLanguageId()
+    {
+        LANGID result = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
+        return result;
     }
     bool SetInstanceHandle(HINSTANCE hInstance)
     {
@@ -81,8 +101,59 @@ namespace GlobalValue
         }
 
         pTemp[j++] = L'}';
-        pTemp[j] = L'\0';
-
         return TRUE;
     }
+}
+
+
+CIMECommonValues::CIMECommonValues()
+{
+    m_ptr = nullptr;
+}
+
+CIMECommonValues* CIMECommonValues::GetInstance() 
+{
+    static CIMECommonValues constValue;
+    return &constValue;
+}
+bool CIMECommonValues::SetInstanceHandle(HINSTANCE hInstance)
+{
+    return false;
+}
+HINSTANCE CIMECommonValues::GetInstanceHandle()
+{
+    return 0;
+}
+CLSID CIMECommonValues::GetInputMethod_CLSID()
+{
+    CLSID gid;
+    return gid;
+}
+const wchar_t* CIMECommonValues::GetInputMethodLayoutString()
+{
+    return nullptr;
+}
+const wchar_t* CIMECommonValues::GetInputMethodLayoutFileName()
+{
+    return nullptr;
+}
+const wchar_t* CIMECommonValues::GetInputMethodLayoutText()
+{
+    return nullptr;
+}
+const wchar_t* CIMECommonValues::GetInputMethodTipPath()
+{
+    return nullptr;
+}
+const wchar_t* CIMECommonValues::Get_TEXTSERVICE_DESC()
+{
+    return nullptr;
+}
+const unsigned int CIMECommonValues::Get_TEXTSERVICE_DESC_LENGTH()
+{
+    return 0;
+}
+BOOL CIMECommonValues::CLSIDToString(REFGUID refGUID, _Out_writes_(39) WCHAR* pCLSIDString)
+{
+    return FALSE;
 }

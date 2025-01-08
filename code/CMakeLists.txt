@@ -5,5 +5,9 @@ SET(BAILU_IME_SOURCE_FILE
 ./DllServerFunction.cpp 
 ./GlobalValues.cpp
 ./Log.cpp
-./RegKeyFunction.cpp)
+./RegKeyFunction.cpp
+./RegProfileFunction.cpp)
+
+SET(TEST_FILES ./test_main.cpp ./GlobalValues.cpp ./RegKeyFunction.cpp ./Log.cpp)
 add_library(BaiLuIME SHARED ${BAILU_IME_SOURCE_FILE})
+add_executable(testIME ${TEST_FILES})

@@ -20,15 +20,15 @@ bool CRegKeyFunction::InstallRegKeyValues()
     const std::size_t KeyLength = 128;
     WCHAR* achIMEKey = new WCHAR[KeyLength];
     memset(achIMEKey, 0, sizeof(WCHAR) * KeyLength);
-    WCHAR achFileName[MAX_PATH] = { '\0' };
-    if (!GlobalValue::CLSIDToString(GlobalValue::GetInputMethod_CLSID(), achIMEKey + m_RegInfo_Prefix_CLSID.length() - 1))
+    auto typeValue = m_RegInfo_Prefix_CLSID.c_str();
+    std::size_t copyLength = m_RegInfo_Prefix_CLSID.length() * 2;
+    memcpy(achIMEKey, m_RegInfo_Prefix_CLSID.data(), copyLength);
+    if (!GlobalValue::CLSIDToString(GlobalValue::GetInputMethod_CLSID(), achIMEKey + m_RegInfo_Prefix_CLSID.length()))
     {
         LogUtil::LogInfo("GlobalValue::CLSIDToString Failed");
         LogUtil::LogTrace(__FILE__, __LINE__);
         return FALSE;
     }
-
-    memcpy(achIMEKey, m_RegInfo_Prefix_CLSID.data(), m_RegInfo_Prefix_CLSID.length() - sizeof(WCHAR));
     if (RegCreateKeyExW(HKEY_CLASSES_ROOT, achIMEKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &regKeyHandle, &copiedStringLen) == ERROR_SUCCESS)
     {
         LogUtil::LogTrace(__FILE__, __LINE__);
@@ -41,9 +41,10 @@ bool CRegKeyFunction::InstallRegKeyValues()
         if (RegCreateKeyExW(regKeyHandle, m_RegInfo_Key_InProSvr32.data(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &regSubkeyHandle, &copiedStringLen) == ERROR_SUCCESS)
         {
             LogUtil::LogTrace(__FILE__, __LINE__);
-            copiedStringLen = GetModuleFileNameW(GlobalValue::GetInstanceHandle(), achFileName, ARRAYSIZE(achFileName));
+            char achFileName[MAX_PATH] = { '\0' };
+            copiedStringLen = GetModuleFileNameA(GlobalValue::GetInstanceHandle(), achFileName, ARRAYSIZE(achFileName));
             copiedStringLen = (copiedStringLen >= (MAX_PATH - 1)) ? MAX_PATH : (++copiedStringLen);
-            if (RegSetValueEx(regSubkeyHandle, NULL, 0, REG_SZ, (const BYTE*)achFileName, (copiedStringLen) * sizeof(WCHAR)) != ERROR_SUCCESS)
+            if (RegSetValueEx(regSubkeyHandle, NULL, 0, REG_SZ,(const BYTE*)(achFileName), (copiedStringLen)) != ERROR_SUCCESS)
             {
                 LogUtil::LogTrace(__FILE__, __LINE__);
                 goto Exit;
@@ -123,5 +124,6 @@ bool CRegKeyFunction::UnInstallRegKeyValues()
     memcpy(achIMEKey, m_RegInfo_Prefix_CLSID.data(), m_RegInfo_Prefix_CLSID.length() - sizeof(WCHAR));
 
     RecurseDeleteKey(HKEY_CLASSES_ROOT, achIMEKey);
+    delete[] achIMEKey;
     return false;
 }
