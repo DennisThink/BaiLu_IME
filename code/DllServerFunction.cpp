@@ -2,6 +2,7 @@
 #include "Log.hpp"
 #include "RegKeyFunction.hpp"
 #include "RegProfileFunction.hpp"
+#include "RegCategoryFunction.hpp"
 extern "C"
 {
     DLL_EXPORT HRESULT DllRegisterServer(void)
@@ -9,6 +10,7 @@ extern "C"
         LogUtil::LogInfo("DllRegisterServer");
         CRegKeyFunction::InstallRegKeyValues();
         CRegProfileFunction::InstallProfile();
+        CRegCategoryFunction::InstallRegCategory();
         return S_OK;
     }
 
@@ -18,6 +20,7 @@ extern "C"
         LogUtil::LogInfo("DllUnregisterServer");
         CRegKeyFunction::UnInstallRegKeyValues();
         CRegProfileFunction::UninstallProfile();
+        CRegCategoryFunction::UninstallRegCategory();
         return S_OK;
     }
 

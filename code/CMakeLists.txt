@@ -6,7 +6,8 @@ SET(BAILU_IME_SOURCE_FILE
 ./GlobalValues.cpp
 ./Log.cpp
 ./RegKeyFunction.cpp
-./RegProfileFunction.cpp)
+./RegProfileFunction.cpp
+./RegCategoryFunction.cpp)
 
 SET(TEST_FILES ./test_main.cpp ./GlobalValues.cpp ./RegKeyFunction.cpp ./Log.cpp)
 add_library(BaiLuIME SHARED ${BAILU_IME_SOURCE_FILE})
