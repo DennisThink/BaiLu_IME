@@ -16,6 +16,7 @@ namespace GlobalValue
 	const wchar_t* Get_TEXTSERVICE_DESC();
 	const unsigned int Get_TEXTSERVICE_DESC_LENGTH();
 	BOOL CLSIDToString(REFGUID refGUID, _Out_writes_(39) WCHAR* pCLSIDString);
+	static CRITICAL_SECTION g_cs;
 };
 
 class CIMECommonValues

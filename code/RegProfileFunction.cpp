@@ -2,6 +2,7 @@
 #include "Log.hpp"
 #include "private.hpp"
 #include "GlobalValues.hpp"
+#include "BaiLuIME_resource.hpp"
 bool CRegProfileFunction::InstallProfile()
 {
 
@@ -33,10 +34,11 @@ bool CRegProfileFunction::InstallProfile()
         static_cast<ULONG>(GlobalValue::Get_TEXTSERVICE_DESC_LENGTH()),
         achIconFile,
         cchA,
-        (UINT)TEXTSERVICE_ICON_INDEX, NULL, 0, TRUE, 0);
+        (UINT)IDIS_BAILUIME, NULL, 0, TRUE, 0);
 
     if (FAILED(hr))
     {
+        LogUtil::LogTrace(__FILE__,__LINE__);
         goto Exit;
     }
 

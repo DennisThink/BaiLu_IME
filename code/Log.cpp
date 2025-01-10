@@ -1,6 +1,8 @@
 #include "Log.hpp"
 #include <iostream>
 #include <fstream>
+#include <stdarg.h>
+#include <windows.h>
 namespace LogUtil
 {
     static std::ofstream g_logFile;
@@ -10,17 +12,26 @@ namespace LogUtil
         std::cout<<"Open Log File"<<std::endl;
         g_logFile.open("./Demo3_log.txt",std::ios_base::out|std::ios_base::app);
     }
-    void LogInfo(const std::string& strMsg)
+    void LogInfo(const char * formatStr, ...)
     {
-        std::cout<<"LOG_INFO STRING "<<strMsg<<std::endl;
-        g_logFile.write(strMsg.c_str(), strMsg.length());
-        g_logFile.write("\r\n", 2);
-    }
-    void LogInfo(const char * pStrMsg)
-    {
-        std::cout<<"LOG_INFO CHAR * "<< pStrMsg <<std::endl;
-        g_logFile.write(pStrMsg,std::strlen(pStrMsg));
-        g_logFile.write("\r\n", 2);
+        va_list arglist;
+        char* pBuff = new char[1024];
+        {
+            memset(pBuff, 0, 1024);
+            va_start(arglist, formatStr);
+            vsprintf(pBuff, formatStr, arglist);
+            va_end(arglist);
+            SYSTEMTIME time;
+            GetLocalTime(&time);
+            char buffer[2048] = { 0 };
+            sprintf(buffer, ("[%04d-%02d-%02d %02d:%02d:%02d] %s\r\n"),
+                time.wYear, time.wMonth, time.wDay,
+                time.wHour, time.wMinute, time.wSecond,
+                pBuff);
+            g_logFile.write(buffer, strlen(buffer));
+        }
+
+        delete[] pBuff;
     }
 
     void LogTrace(const char* pFileName, const int line)

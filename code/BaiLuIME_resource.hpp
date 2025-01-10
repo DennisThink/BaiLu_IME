@@ -1,0 +1,6 @@
+#ifndef _BAILU_IME_RESOURCE_H_
+#define _BAILU_IME_RESOURCE_H_
+#define IDIS_BAILUIME 1025
+
+#endif
+

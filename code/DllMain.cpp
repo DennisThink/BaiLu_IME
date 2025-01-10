@@ -8,12 +8,14 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID pvReserved)
     case DLL_PROCESS_ATTACH: {
         LogUtil::OpenLogFile();
         LogUtil::LogInfo("DLL_PROCESS_ATTACH");
+        InitializeCriticalSection(&GlobalValue::g_cs);
         GlobalValue::SetInstanceHandle(hInstance);
     }break;
 
     case DLL_PROCESS_DETACH: {
         LogUtil::LogInfo("DLL_PROCESS_DETACH");
         LogUtil::CloseLogFile();
+        DeleteCriticalSection(&GlobalValue::g_cs);
     }break;
 
     case DLL_THREAD_ATTACH: {

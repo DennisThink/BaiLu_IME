@@ -4,8 +4,7 @@
 namespace LogUtil
 {
     void OpenLogFile();
-    void LogInfo(const std::string& strMsg);
-    void LogInfo(const char * pStrMsg);
+    void LogInfo(const char * formatStr, ...);
     void LogTrace(const char* pFileName, const int line);
     void CloseLogFile();
 };

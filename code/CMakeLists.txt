@@ -7,7 +7,13 @@ SET(BAILU_IME_SOURCE_FILE
 ./Log.cpp
 ./RegKeyFunction.cpp
 ./RegProfileFunction.cpp
-./RegCategoryFunction.cpp)
+./RegCategoryFunction.cpp
+./BaiLuIME_main.cpp
+./BaiLu_ClassFactory.cpp
+./BaiLuInputMethodClass.cpp
+./BaiLuInputMethodInterface.cpp
+./BaiLuIME.rc
+./BaiLuIME.def)
 
 SET(TEST_FILES ./test_main.cpp ./GlobalValues.cpp ./RegKeyFunction.cpp ./Log.cpp)
 add_library(BaiLuIME SHARED ${BAILU_IME_SOURCE_FILE})

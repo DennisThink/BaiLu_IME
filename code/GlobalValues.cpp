@@ -20,7 +20,7 @@ namespace GlobalValue
     };
 
     const static wchar_t g_dllName[] = L"BaiLuIME.dll";
-    static const WCHAR TEXTSERVICE_DESC[] = L"BaiLuIME";
+    static const WCHAR TEXTSERVICE_DESC[] = L"°×Â¶ÊäÈë·¨";
 #define CLSID_STRLEN    (38)  // strlen("{xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx}")
 	
     CLSID GetInputMethod_CLSID()
@@ -36,6 +36,7 @@ namespace GlobalValue
     LANGID GetLanguageId()
     {
         LANGID result = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
+        //LANGID result = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
         return result;
     }
     bool SetInstanceHandle(HINSTANCE hInstance)

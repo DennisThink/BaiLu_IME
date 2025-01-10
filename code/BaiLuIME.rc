@@ -1,0 +1,2 @@
+#include "BaiLuIME_resource.hpp"
+IDIS_BAILUIME          ICON                    "BAILU_INPUT.ico"
