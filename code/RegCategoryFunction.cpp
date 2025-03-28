@@ -59,5 +59,5 @@ bool CRegCategoryFunction::UninstallRegCategory()
     }
 
     pCategoryMgr->Release();
-	return false;
+	return true;
 }

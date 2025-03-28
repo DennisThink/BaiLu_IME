@@ -1,2 +1,12 @@
 #include "BaiLuIME_resource.hpp"
-IDIS_BAILUIME          ICON                    "BAILU_INPUT.ico"
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#pragma code_page(1252)
+IDIS_BAILUIME          ICON                    "image\BaiLuMain.ico"
+IDI_IME_MODE_ON         ICON                    "image\\ImeModeOn.ico"
+IDI_IME_MODE_OFF        ICON                    "image\\ImeModeOff.ico"
+IDI_DOUBLE_SINGLE_BYTE_ON ICON                    "image\\DoubleSingleByteOn.ico"
+IDI_DOUBLE_SINGLE_BYTE_OFF ICON                    "image\\DoubleSingleByteOff.ico"
+IDI_PUNCTUATION_ON      ICON                    "image\\PunctuationOn.ico"
+IDI_PUNCTUATION_OFF     ICON                    "image\\PunctuationOff.ico"
+
+#endif    // English (United States) resources

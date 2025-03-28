@@ -19,8 +19,9 @@ namespace GlobalValue
         {0xBF,0x02,0xBE,0xDB,0xFE,0x5F,0xC2,0xF8}
     };
 
-    const static wchar_t g_dllName[] = L"BaiLuIME.dll";
+    static WCHAR g_dllName[256] = { 0 };
     static const WCHAR TEXTSERVICE_DESC[] = L"°×Â¶ÊäÈë·¨";
+    static bool g_classFactoryInit = false;
 #define CLSID_STRLEN    (38)  // strlen("{xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx}")
 	
     CLSID GetInputMethod_CLSID()
@@ -35,14 +36,28 @@ namespace GlobalValue
 
     LANGID GetLanguageId()
     {
-        LANGID result = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
-        //LANGID result = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+        //LANGID result = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
+        LANGID result = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
         return result;
     }
     bool SetInstanceHandle(HINSTANCE hInstance)
     {
         g_dllInstanceHandle = hInstance;
         return true;
+    }
+    bool SetClassFactoryInitValue()
+    {
+        g_classFactoryInit = true;
+        return true;
+    }
+    bool UnSetClassFactoryInitValue()
+    {
+        g_classFactoryInit = false;
+        return true;
+    }
+    bool IsClassFactoryInit()
+    {
+        return g_classFactoryInit;
     }
 
     HINSTANCE GetInstanceHandle()
@@ -53,6 +68,11 @@ namespace GlobalValue
 
     const wchar_t* GetInputMethodLayoutFileName()
 	{	
+        WCHAR achIconFile[MAX_PATH] = { '\0' };
+        DWORD cchA = 0;
+        cchA = GetModuleFileNameW(GlobalValue::GetInstanceHandle(), g_dllName, MAX_PATH);
+        cchA = cchA >= MAX_PATH ? (MAX_PATH - 1) : cchA;
+        g_dllName[cchA] = '\0';
 		return g_dllName;
 	}
 

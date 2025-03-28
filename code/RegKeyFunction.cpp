@@ -13,6 +13,7 @@ std::wstring CRegKeyFunction::m_TEXTSERVICE_DESC=L"BaiLuIME";
 std::wstring CRegKeyFunction::m_TEXTSERVICE_MODEL=L"Apartment";
 bool CRegKeyFunction::InstallRegKeyValues()
 {
+    LogUtil::LogInfo("CRegKeyFunction::InstallRegKeyValues");
     DWORD copiedStringLen = 0;
     HKEY regKeyHandle = nullptr;
     HKEY regSubkeyHandle = nullptr;
@@ -111,6 +112,7 @@ LONG RecurseDeleteKey(_In_ HKEY hParentKey, _In_ WCHAR* lpszKey)
 
 bool CRegKeyFunction::UnInstallRegKeyValues()
 {
+    LogUtil::LogInfo("CRegKeyFunction::UnInstallRegKeyValues");
     const std::size_t KeyLength = 128;
     WCHAR* achIMEKey = new WCHAR[KeyLength];
     memset(achIMEKey, 0, sizeof(WCHAR) * KeyLength);
@@ -125,5 +127,5 @@ bool CRegKeyFunction::UnInstallRegKeyValues()
 
     RecurseDeleteKey(HKEY_CLASSES_ROOT, achIMEKey);
     delete[] achIMEKey;
-    return false;
+    return true;
 }

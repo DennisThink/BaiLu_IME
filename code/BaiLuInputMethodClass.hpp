@@ -1,6 +1,7 @@
 #ifndef _BAIDLU_INPUT_METHOD_CLASS_H_
 #define _BAIDLU_INPUT_METHOD_CLASS_H_
 #include "private.hpp"
+#include <string>
 class CBaiLuInputMethodClass : public ITfTextInputProcessorEx,
     public ITfThreadMgrEventSink,
     public ITfTextEditSink,
@@ -13,8 +14,6 @@ class CBaiLuInputMethodClass : public ITfTextInputProcessorEx,
     public ITfFnGetPreferredTouchKeyboardLayout
 {
 public:
-
-
     // IUnknown
     STDMETHODIMP QueryInterface(REFIID riid, _Outptr_ void** ppvObj) override;
     STDMETHODIMP_(ULONG) AddRef(void) override;
@@ -74,5 +73,39 @@ private:
     static CBaiLuInputMethodClass* m_pInstance;
     CBaiLuInputMethodClass();
     virtual ~CBaiLuInputMethodClass();
+
+protected:
+    bool InitThreadMgrEventSink();
+    bool InitKeyEventSink();
+    bool InitTextEditSink();
+    bool InitActiveLanguageProfileNotifySink();
+    bool InitThreadFocusSink();
+    bool InitDisplayAttributeGuidAtomSink();
+    bool InitFunctionProviderSink();
+    bool InitTextProcessorEngineSink();
+
+    void UnInitThreadMgrEventSink();
+    void UnInitKeyEventSink();
+    void UnInitActiveLanguageProfileNotifySink();
+    void UnInitThreadFocusSink();
+    void UnInitDisplayAttributeGuidAtomSink();
+    void UnInitFunctionProviderSink();
+    void UnInitTextProcessorEngineSink();
+    void LogKeyDownAndUp(WPARAM wParam, LPARAM lParam,const std::string method);
+private:
+    int m_refCount;
+    ITfThreadMgr* m_pThreadMgr;
+    TfClientId m_tfClientId;
+    DWORD m_dwFlags;
+
+    DWORD m_threadMgrEventSinkCookie;
+    DWORD m_textEditSinkCookie;
+    //
+    ITfDocumentMgr* m_pPrevTfDocumentMgr;
+    ITfDocumentMgr* m_pCurTfDocumentMgr;
+
+    ITfContext* m_pCurTfContext;
+    DWORD m_activeLanguageProfileNotifySinkCookie;
+    DWORD m_dwThreadFocusSinkCookie;
 };
 #endif

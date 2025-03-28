@@ -32,8 +32,8 @@ STDMETHODIMP CBaiLuClassFactory::QueryInterface(REFIID riid, _Outptr_ void** ppv
 
 STDMETHODIMP_(ULONG) CBaiLuClassFactory::AddRef(void)
 {
-    LogUtil::LogInfo("AddRef");
     m_refCount++;
+    LogUtil::LogInfo("CBaiLuClassFactory AddRef %d", m_refCount);
     return m_refCount;
 }
 
@@ -41,6 +41,7 @@ STDMETHODIMP_(ULONG) CBaiLuClassFactory::Release(void)
 {
     LogUtil::LogInfo("Release");
     m_refCount--;
+    LogUtil::LogInfo("CBaiLuClassFactory Release %d", m_refCount);
     return m_refCount;
 }
 
@@ -57,13 +58,33 @@ STDMETHODIMP CBaiLuClassFactory::LockServer(BOOL fLock)
     return 0;
 }
 
-CBaiLuClassFactory::CBaiLuClassFactory(const REFCLSID lValue):m_rclsid(lValue)
+CBaiLuClassFactory::CBaiLuClassFactory(REFCLSID lValue):m_rclsid(lValue)
 {
-    //GUID gid;
-    //_rclsid = gid;
+    LogUtil::LogInfo("CBaiLuClassFactory::CBaiLuClassFactory");
+    this->m_refCount = 0;
 }
 
-bool CBaiLuClassFactory::IsEqualGID(const REFCLSID lValue)
+bool CBaiLuClassFactory::IsEqualGID(REFCLSID lValue)
 {
-    return IsEqualIID(this->m_rclsid, lValue);
+    LogUtil::LogInfo("CBaiLuClassFactory::IsEqualGID");
+    bool bResult = IsEqualIID(this->m_rclsid, lValue);
+    if (!bResult)
+    {
+        LogUtil::LogInfo("lValue Data1:%x  this Data1:%x", lValue.Data1, this->m_rclsid.Data1);
+        LogUtil::LogInfo("lValue Data2:%x  this Data2:%x", lValue.Data2, this->m_rclsid.Data2);
+        LogUtil::LogInfo("lValue Data3:%x  this Data3:%x", lValue.Data3, this->m_rclsid.Data3);
+        LogUtil::LogInfo("lValue Data4:%x  this Data4:%x", lValue.Data4, this->m_rclsid.Data4);
+    }
+    return bResult;
+}
+
+bool CBaiLuClassFactory::DestroySingleInstance()
+{
+    LogUtil::LogInfo("CBaiLuClassFactory::DestroySingleInstance");
+    if (m_pInstance)
+    {
+        delete m_pInstance;
+        m_pInstance = nullptr;
+    }
+    return true;
 }

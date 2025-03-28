@@ -34,12 +34,16 @@ bool CRegProfileFunction::InstallProfile()
         static_cast<ULONG>(GlobalValue::Get_TEXTSERVICE_DESC_LENGTH()),
         achIconFile,
         cchA,
-        (UINT)IDIS_BAILUIME, NULL, 0, TRUE, 0);
+        (UINT)(-IDIS_BAILUIME), NULL, 0, TRUE, 0);
 
     if (FAILED(hr))
     {
         LogUtil::LogTrace(__FILE__,__LINE__);
         goto Exit;
+    }
+    else
+    {
+        LogUtil::LogInfo("RegisterProfile Succeed");
     }
 
 Exit:
@@ -80,5 +84,5 @@ Exit:
     {
         pITfInputProcessorProfileMgr->Release();
     }
-	return false;
+	return true;
 }

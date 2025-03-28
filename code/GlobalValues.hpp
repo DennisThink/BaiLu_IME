@@ -5,6 +5,9 @@
 namespace GlobalValue
 {
 	bool SetInstanceHandle(HINSTANCE hInstance);
+	bool SetClassFactoryInitValue();
+	bool UnSetClassFactoryInitValue();
+	bool IsClassFactoryInit();
 	HINSTANCE GetInstanceHandle();
 	CLSID GetInputMethod_CLSID();
 	CLSID GetInputMethod_ProfileGuid();

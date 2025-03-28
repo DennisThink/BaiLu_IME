@@ -12,17 +12,18 @@ public:
     // IClassFactory methods
     STDMETHODIMP CreateInstance(_In_opt_ IUnknown* pUnkOuter, _In_ REFIID riid, _COM_Outptr_ void** ppvObj) override;
     STDMETHODIMP LockServer(BOOL fLock) override;
-    bool IsEqualGID(const REFCLSID lValue);
+    bool IsEqualGID(REFCLSID lValue);
     static CBaiLuClassFactory* GetSingleInstance();
+    static bool DestroySingleInstance();
 private:
     // Constructor
-    CBaiLuClassFactory(const REFCLSID lValue);
+    CBaiLuClassFactory(REFCLSID lValue);
 private:
 public:
 
 private:
     CBaiLuClassFactory& operator=(const CBaiLuClassFactory& rhn) = delete;
-    REFCLSID m_rclsid;
+    GUID m_rclsid;
     //CRITICAL_SECTION m_cs;
     ATOM m_refCount;
     static CBaiLuClassFactory* m_pInstance;
