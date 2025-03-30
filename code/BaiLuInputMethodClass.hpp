@@ -2,9 +2,9 @@
 #define _BAIDLU_INPUT_METHOD_CLASS_H_
 #include "private.hpp"
 #include "BaiLuKeyEventSink.hpp"
+#include "BaiLuThreadMgrEventSink.hpp"
 #include <string>
 class CBaiLuInputMethodClass : public ITfTextInputProcessorEx,
-    public ITfThreadMgrEventSink,
     public ITfTextEditSink,
     public ITfCompositionSink,
     public ITfDisplayAttributeProvider,
@@ -24,13 +24,6 @@ public:
     // ITfTextInputProcessorEx
     STDMETHODIMP ActivateEx(ITfThreadMgr* pThreadMgr, TfClientId tfClientId, DWORD dwFlags) override;
     STDMETHODIMP Deactivate() override;
-
-    // ITfThreadMgrEventSink
-    STDMETHODIMP OnInitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr) override;
-    STDMETHODIMP OnUninitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr) override;
-    STDMETHODIMP OnSetFocus(_In_ ITfDocumentMgr* pDocMgrFocus, _In_ ITfDocumentMgr* pDocMgrPrevFocus) override;
-    STDMETHODIMP OnPushContext(_In_ ITfContext* pContext) override;
-    STDMETHODIMP OnPopContext(_In_ ITfContext* pContext) override;
 
     // ITfTextEditSink
     STDMETHODIMP OnEndEdit(__RPC__in_opt ITfContext* pContext, TfEditCookie ecReadOnly, __RPC__in_opt ITfEditRecord* pEditRecord) override;
@@ -86,6 +79,7 @@ protected:
     void LogKeyDownAndUp(WPARAM wParam, LPARAM lParam,const std::string method);
 private:
     CBaiLuKeyEventSink* m_pKeyEventSink;
+    CBaiLuThreadMgrEventSink* m_pThreadMgrEventSink;
     int m_refCount;
     ITfThreadMgr* m_pThreadMgr;
     TfClientId m_tfClientId;

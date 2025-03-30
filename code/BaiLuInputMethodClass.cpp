@@ -6,13 +6,25 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
     m_refCount = 0;
     m_pKeyEventSink = nullptr;
 
-    CBaiLuKeyEventSink * pSink = new CBaiLuKeyEventSink();
-    if (nullptr != pSink)
     {
-        m_pKeyEventSink = pSink;
-        pSink = nullptr;
-        m_pKeyEventSink->AddRef();
-    }   
+        CBaiLuKeyEventSink* pSink = new CBaiLuKeyEventSink();
+        if (nullptr != pSink)
+        {
+            m_pKeyEventSink = pSink;
+            pSink = nullptr;
+            m_pKeyEventSink->AddRef();
+        }
+    }
+    {
+        CBaiLuThreadMgrEventSink* pSink = new CBaiLuThreadMgrEventSink();
+        if (nullptr != pSink)
+        {
+            m_pThreadMgrEventSink = pSink;
+            pSink = nullptr;
+            m_pThreadMgrEventSink->AddRef();
+        }
+    }
+    
 }
 
 CBaiLuInputMethodClass::~CBaiLuInputMethodClass()
@@ -43,6 +55,11 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     else if (IsEqualIID(riid, IID_ITfThreadMgrEventSink))
     {
         *ppvObj = (ITfThreadMgrEventSink*)this;
+        if (nullptr != this->m_pThreadMgrEventSink)
+        {
+            this->m_pThreadMgrEventSink->AddRef();
+            *ppvObj = this->m_pThreadMgrEventSink;
+        }
     }
     else if (IsEqualIID(riid, IID_ITfTextEditSink))
     {
@@ -170,41 +187,6 @@ STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
     return 0;
 }
 
-// ITfThreadMgrEventSink
-STDMETHODIMP CBaiLuInputMethodClass::OnInitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnInitDocumentMgr");
-    this->m_pCurTfDocumentMgr = pDocMgr;
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnUninitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnUninitDocumentMgr");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnSetFocus(_In_ ITfDocumentMgr* pDocMgrFocus, _In_ ITfDocumentMgr* pDocMgrPrevFocus)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetFocus");
-    this->m_pPrevTfDocumentMgr = pDocMgrPrevFocus;
-    this->m_pCurTfDocumentMgr = pDocMgrFocus;
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnPushContext(_In_ ITfContext* pContext)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnPushContext");
-    m_pCurTfContext = pContext;
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnPopContext(_In_ ITfContext* pContext)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnPopContext");
-    m_pCurTfContext = pContext;
-    return 0;
-}
 
 // ITfTextEditSink
 STDMETHODIMP CBaiLuInputMethodClass::OnEndEdit(__RPC__in_opt ITfContext* pContext, TfEditCookie ecReadOnly, __RPC__in_opt ITfEditRecord* pEditRecord)
@@ -314,7 +296,7 @@ bool CBaiLuInputMethodClass::InitThreadMgrEventSink()
     }
     DWORD cookie= TF_INVALID_COOKIE;
     qResult = pSource->AdviseSink(IID_ITfThreadMgrEventSink,
-        (ITfThreadMgrEventSink*)(this),
+        (ITfThreadMgrEventSink*)(this->m_pThreadMgrEventSink),
         &cookie);
     if (FAILED(qResult))
     {
