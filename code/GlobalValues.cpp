@@ -18,6 +18,21 @@ namespace GlobalValue
         0x4406,
         {0xBF,0x02,0xBE,0xDB,0xFE,0x5F,0xC2,0xF8}
     };
+    // {4C802E2C-8140-4436-A5E5-F7C544EBC9CD}
+    static GUID SampleIMEGuidDisplayAttributeInput = {
+        0x4c802e2c,
+        0x8140,
+        0x4436,
+        { 0xa5, 0xe5, 0xf7, 0xc5, 0x44, 0xeb, 0xc9, 0xcd }
+    };
+
+    // {9A1CC683-F2A7-4701-9C6E-2DA69A5CD474}
+    static GUID SampleIMEGuidDisplayAttributeConverted = {
+        0x9a1cc683,
+        0xf2a7,
+        0x4701,
+        { 0x9c, 0x6e, 0x2d, 0xa6, 0x9a, 0x5c, 0xd4, 0x74 }
+    };
 
     static WCHAR g_dllName[256] = { 0 };
     static const WCHAR TEXTSERVICE_DESC[] = L"°×Â¶ÊäÈë·¨";
@@ -33,7 +48,15 @@ namespace GlobalValue
     {
         return InputProfile_GUID;
     }
+    GUID GetSampleIMEGuidDisplayAttributeInput()
+    {
+        return SampleIMEGuidDisplayAttributeInput;
+    }
 
+    GUID GetSampleIMEGuidDisplayAttributeConverted()
+    {
+        return SampleIMEGuidDisplayAttributeConverted;
+    }
     LANGID GetLanguageId()
     {
         //LANGID result = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);

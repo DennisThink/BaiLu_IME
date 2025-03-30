@@ -12,6 +12,8 @@ SET(BAILU_IME_SOURCE_FILE
 ./BaiLu_ClassFactory.cpp
 ./BaiLuInputMethodClass.cpp
 ./BaiLuInputMethodInterface.cpp
+./BaiLuKeyEventSink.hpp
+./BaiLuKeyEventSink.cpp
 ./BaiLuIME.rc
 ./BaiLuIME.def)
 

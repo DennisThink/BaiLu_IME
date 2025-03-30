@@ -1,12 +1,23 @@
 #include "BaiLuInputMethodClass.hpp"
+#include "GlobalValues.hpp"
 #include "Log.hpp"
 CBaiLuInputMethodClass::CBaiLuInputMethodClass()
 {
     m_refCount = 0;
+    m_pKeyEventSink = nullptr;
+
+    CBaiLuKeyEventSink * pSink = new CBaiLuKeyEventSink();
+    if (nullptr != pSink)
+    {
+        m_pKeyEventSink = pSink;
+        pSink = nullptr;
+        m_pKeyEventSink->AddRef();
+    }   
 }
 
 CBaiLuInputMethodClass::~CBaiLuInputMethodClass()
 {
+    
 }
 
 // IUnknown
@@ -39,7 +50,12 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfKeyEventSink))
     {
-        *ppvObj = (ITfKeyEventSink*)this;
+        if (nullptr != this->m_pKeyEventSink)
+        {
+            m_pKeyEventSink->AddRef();
+            *ppvObj = (ITfKeyEventSink*)(m_pKeyEventSink);
+        }
+        //*ppvObj = (ITfKeyEventSink*)this;
     }
     else if (IsEqualIID(riid, IID_ITfActiveLanguageProfileNotifySink))
     {
@@ -197,47 +213,6 @@ STDMETHODIMP CBaiLuInputMethodClass::OnEndEdit(__RPC__in_opt ITfContext* pContex
     return 0;
 }
 
-// ITfKeyEventSink
-STDMETHODIMP CBaiLuInputMethodClass::OnSetFocus(BOOL fForeground)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetFocus");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnTestKeyDown(ITfContext* pContext, WPARAM wParam, LPARAM lParam, BOOL* pIsEaten)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnTestKeyDown");
-    LogKeyDownAndUp(wParam, lParam, "OnTestKeyDown");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnKeyDown(ITfContext* pContext, WPARAM wParam, LPARAM lParam, BOOL* pIsEaten)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnKeyDown");
-    LogKeyDownAndUp(wParam, lParam, "OnKeyDown");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnTestKeyUp(ITfContext* pContext, WPARAM wParam, LPARAM lParam, BOOL* pIsEaten)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnTestKeyUp");
-    LogKeyDownAndUp(wParam, lParam, "OnTestKeyUp");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnKeyUp(ITfContext* pContext, WPARAM wParam, LPARAM lParam, BOOL* pIsEaten)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnKeyUp");
-    LogKeyDownAndUp(wParam, lParam, "OnKeyUp");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnPreservedKey(ITfContext* pContext, REFGUID rguid, BOOL* pIsEaten)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnPreservedKey");
-    return 0;
-}
-
 // ITfCompositionSink
 STDMETHODIMP CBaiLuInputMethodClass::OnCompositionTerminated(TfEditCookie ecWrite, _In_ ITfComposition* pComposition)
 {
@@ -366,7 +341,7 @@ bool CBaiLuInputMethodClass::InitKeyEventSink()
     }
     HRESULT hR = S_OK;
     hR = pKeyStrokeMgr->AdviseKeyEventSink(this->m_tfClientId,
-        (ITfKeyEventSink*)(this),
+        (ITfKeyEventSink*)(this->m_pKeyEventSink),
         TRUE);
     pKeyStrokeMgr->Release();
     return (hR == S_OK);
@@ -484,19 +459,120 @@ bool CBaiLuInputMethodClass::InitThreadFocusSink()
 bool CBaiLuInputMethodClass::InitDisplayAttributeGuidAtomSink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::InitDisplayAttributeGuidAtomSink");
-    return false;
+    ITfCategoryMgr* pCategoryMgr = nullptr;
+    HRESULT hr = CoCreateInstance(CLSID_TF_CategoryMgr,
+        nullptr, 
+        CLSCTX_INPROC_SERVER, 
+        IID_ITfCategoryMgr, 
+        (void**)&pCategoryMgr);
+
+    if (FAILED(hr))
+    {
+        return FALSE;
+    }
+
+    // register the display attribute for input text.
+    hr = pCategoryMgr->RegisterGUID(GlobalValue::GetSampleIMEGuidDisplayAttributeInput(), &m_gaDisplayAttributeInput);
+    if (FAILED(hr))
+    {
+        goto Exit;
+    }
+    // register the display attribute for the converted text.
+    hr = pCategoryMgr->RegisterGUID(GlobalValue::GetSampleIMEGuidDisplayAttributeConverted(), &m_gaDisplayAttributeConverted);
+    if (FAILED(hr))
+    {
+        goto Exit;
+    }
+
+Exit:
+    pCategoryMgr->Release();
+
+    return (hr == S_OK);
 }
 
 bool CBaiLuInputMethodClass::InitFunctionProviderSink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::InitFunctionProviderSink");
-    return false;
+    ITfSourceSingle* pSourceSingle = nullptr;
+    BOOL ret = FALSE;
+    if (SUCCEEDED(m_pThreadMgr->QueryInterface(IID_ITfSourceSingle, (void**)&pSourceSingle)))
+    {
+        IUnknown* punk = nullptr;
+        if (SUCCEEDED(QueryInterface(IID_IUnknown, (void**)&punk)))
+        {
+            if (SUCCEEDED(pSourceSingle->AdviseSingleSink(m_tfClientId,
+                IID_ITfFunctionProvider, 
+                punk)))
+            {
+                //if (SUCCEEDED(CSearchCandidateProvider::CreateInstance(&m_pITfFnSearchCandidateProvider, (ITfTextInputProcessorEx*)this)))
+                {
+                    ret = TRUE;
+                }
+            }
+            punk->Release();
+        }
+        pSourceSingle->Release();
+    }
+    return ret;
 }
 
 bool CBaiLuInputMethodClass::InitTextProcessorEngineSink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::InitTextProcessorEngineSink");
-    return false;
+    /*LANGID langid = 0;
+    CLSID clsid = GUID_NULL;
+    GUID guidProfile = GUID_NULL;
+
+    // Get default profile.
+    CTfInputProcessorProfile profile;
+
+    if (FAILED(profile.CreateInstance()))
+    {
+        return FALSE;
+    }
+
+    if (FAILED(profile.GetCurrentLanguage(&langid)))
+    {
+        return FALSE;
+    }
+
+    if (FAILED(profile.GetDefaultLanguageProfile(langid, GUID_TFCAT_TIP_KEYBOARD, &clsid, &guidProfile)))
+    {
+        return FALSE;
+    }
+
+    // Is this already added?
+    if (_pCompositionProcessorEngine != nullptr)
+    {
+        LANGID langidProfile = 0;
+        GUID guidLanguageProfile = GUID_NULL;
+
+        guidLanguageProfile = _pCompositionProcessorEngine->GetLanguageProfile(&langidProfile);
+        if ((langid == langidProfile) && IsEqualGUID(guidProfile, guidLanguageProfile))
+        {
+            return TRUE;
+        }
+    }
+
+    // Create composition processor engine
+    if (_pCompositionProcessorEngine == nullptr)
+    {
+        _pCompositionProcessorEngine = new (std::nothrow) CCompositionProcessorEngine();
+    }
+    if (!_pCompositionProcessorEngine)
+    {
+        return FALSE;
+    }
+
+    // setup composition processor engine
+    if (FALSE == _pCompositionProcessorEngine->SetupLanguageProfile(langid, guidProfile, _GetThreadMgr(), _GetClientId(), _IsSecureMode(), _IsComLess()))
+    {
+        return FALSE;
+    }
+
+    return TRUE;
+    return false;*/
+    return true;
 }
 
 void CBaiLuInputMethodClass::UnInitThreadMgrEventSink()
@@ -508,6 +584,16 @@ void CBaiLuInputMethodClass::UnInitThreadMgrEventSink()
 void CBaiLuInputMethodClass::UnInitKeyEventSink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitKeyEventSink");
+    ITfKeystrokeMgr* pKeyStrokeMgr = nullptr;
+    bool bRet = false;
+    auto qResult = m_pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void**)(&pKeyStrokeMgr));
+    if (FAILED(qResult))
+    {
+        return;
+    }
+    HRESULT hR = S_OK;
+    hR = pKeyStrokeMgr->UnadviseKeyEventSink(this->m_tfClientId);
+    pKeyStrokeMgr->Release();
     return;
 }
 void CBaiLuInputMethodClass::UnInitActiveLanguageProfileNotifySink()

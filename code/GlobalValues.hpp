@@ -11,6 +11,8 @@ namespace GlobalValue
 	HINSTANCE GetInstanceHandle();
 	CLSID GetInputMethod_CLSID();
 	CLSID GetInputMethod_ProfileGuid();
+	GUID GetSampleIMEGuidDisplayAttributeConverted();
+	GUID GetSampleIMEGuidDisplayAttributeInput();
 	LANGID GetLanguageId();
 	const wchar_t* GetInputMethodLayoutString();
 	const wchar_t* GetInputMethodLayoutFileName();

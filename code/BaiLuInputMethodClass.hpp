@@ -1,11 +1,11 @@
 #ifndef _BAIDLU_INPUT_METHOD_CLASS_H_
 #define _BAIDLU_INPUT_METHOD_CLASS_H_
 #include "private.hpp"
+#include "BaiLuKeyEventSink.hpp"
 #include <string>
 class CBaiLuInputMethodClass : public ITfTextInputProcessorEx,
     public ITfThreadMgrEventSink,
     public ITfTextEditSink,
-    public ITfKeyEventSink,
     public ITfCompositionSink,
     public ITfDisplayAttributeProvider,
     public ITfActiveLanguageProfileNotifySink,
@@ -34,14 +34,6 @@ public:
 
     // ITfTextEditSink
     STDMETHODIMP OnEndEdit(__RPC__in_opt ITfContext* pContext, TfEditCookie ecReadOnly, __RPC__in_opt ITfEditRecord* pEditRecord) override;
-
-    // ITfKeyEventSink
-    STDMETHODIMP OnSetFocus(BOOL fForeground) override;
-    STDMETHODIMP OnTestKeyDown(ITfContext* pContext, WPARAM wParam, LPARAM lParam, BOOL* pIsEaten) override;
-    STDMETHODIMP OnKeyDown(ITfContext* pContext, WPARAM wParam, LPARAM lParam, BOOL* pIsEaten) override;
-    STDMETHODIMP OnTestKeyUp(ITfContext* pContext, WPARAM wParam, LPARAM lParam, BOOL* pIsEaten) override;
-    STDMETHODIMP OnKeyUp(ITfContext* pContext, WPARAM wParam, LPARAM lParam, BOOL* pIsEaten) override;
-    STDMETHODIMP OnPreservedKey(ITfContext* pContext, REFGUID rguid, BOOL* pIsEaten) override;
 
     // ITfCompositionSink
     STDMETHODIMP OnCompositionTerminated(TfEditCookie ecWrite, _In_ ITfComposition* pComposition) override;
@@ -93,6 +85,7 @@ protected:
     void UnInitTextProcessorEngineSink();
     void LogKeyDownAndUp(WPARAM wParam, LPARAM lParam,const std::string method);
 private:
+    CBaiLuKeyEventSink* m_pKeyEventSink;
     int m_refCount;
     ITfThreadMgr* m_pThreadMgr;
     TfClientId m_tfClientId;
@@ -107,5 +100,10 @@ private:
     ITfContext* m_pCurTfContext;
     DWORD m_activeLanguageProfileNotifySinkCookie;
     DWORD m_dwThreadFocusSinkCookie;
+
+
+    // guidatom for the display attibute.
+    TfGuidAtom m_gaDisplayAttributeInput;
+    TfGuidAtom m_gaDisplayAttributeConverted;
 };
 #endif
