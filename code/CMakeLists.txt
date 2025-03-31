@@ -16,6 +16,8 @@ SET(BAILU_IME_SOURCE_FILE
 ./BaiLuKeyEventSink.cpp
 ./BaiLuThreadMgrEventSink.hpp
 ./BaiLuThreadMgrEventSink.cpp
+./BaiLuTextEditSink.hpp
+./BaiLuTextEditSink.cpp
 ./BaiLuIME.rc
 ./BaiLuIME.def)
 

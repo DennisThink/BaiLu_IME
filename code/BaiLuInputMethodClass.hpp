@@ -3,9 +3,9 @@
 #include "private.hpp"
 #include "BaiLuKeyEventSink.hpp"
 #include "BaiLuThreadMgrEventSink.hpp"
+#include "BaiLuTextEditSink.hpp"
 #include <string>
 class CBaiLuInputMethodClass : public ITfTextInputProcessorEx,
-    public ITfTextEditSink,
     public ITfCompositionSink,
     public ITfDisplayAttributeProvider,
     public ITfActiveLanguageProfileNotifySink,
@@ -26,7 +26,7 @@ public:
     STDMETHODIMP Deactivate() override;
 
     // ITfTextEditSink
-    STDMETHODIMP OnEndEdit(__RPC__in_opt ITfContext* pContext, TfEditCookie ecReadOnly, __RPC__in_opt ITfEditRecord* pEditRecord) override;
+    //STDMETHODIMP OnEndEdit(__RPC__in_opt ITfContext* pContext, TfEditCookie ecReadOnly, __RPC__in_opt ITfEditRecord* pEditRecord) override;
 
     // ITfCompositionSink
     STDMETHODIMP OnCompositionTerminated(TfEditCookie ecWrite, _In_ ITfComposition* pComposition) override;
@@ -80,6 +80,7 @@ protected:
 private:
     CBaiLuKeyEventSink* m_pKeyEventSink;
     CBaiLuThreadMgrEventSink* m_pThreadMgrEventSink;
+    CBaiLuTextEditSink* m_pTextEditSink;
     int m_refCount;
     ITfThreadMgr* m_pThreadMgr;
     TfClientId m_tfClientId;

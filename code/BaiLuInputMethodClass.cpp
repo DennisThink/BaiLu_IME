@@ -24,7 +24,15 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
             m_pThreadMgrEventSink->AddRef();
         }
     }
-    
+    {
+        CBaiLuTextEditSink* pSink = new CBaiLuTextEditSink();
+        if (nullptr != pSink)
+        {
+            m_pTextEditSink = pSink;
+            pSink = nullptr;
+            m_pTextEditSink->AddRef();
+        }
+    }
 }
 
 CBaiLuInputMethodClass::~CBaiLuInputMethodClass()
@@ -54,7 +62,6 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfThreadMgrEventSink))
     {
-        *ppvObj = (ITfThreadMgrEventSink*)this;
         if (nullptr != this->m_pThreadMgrEventSink)
         {
             this->m_pThreadMgrEventSink->AddRef();
@@ -63,7 +70,13 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfTextEditSink))
     {
-        *ppvObj = (ITfTextEditSink*)this;
+        *ppvObj = nullptr;
+        if (nullptr != this->m_pTextEditSink)
+        {
+            this->m_pTextEditSink->AddRef();
+            *ppvObj = this->m_pTextEditSink;
+        }
+
     }
     else if (IsEqualIID(riid, IID_ITfKeyEventSink))
     {
@@ -187,13 +200,6 @@ STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
     return 0;
 }
 
-
-// ITfTextEditSink
-STDMETHODIMP CBaiLuInputMethodClass::OnEndEdit(__RPC__in_opt ITfContext* pContext, TfEditCookie ecReadOnly, __RPC__in_opt ITfEditRecord* pEditRecord)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnEndEdit");
-    return 0;
-}
 
 // ITfCompositionSink
 STDMETHODIMP CBaiLuInputMethodClass::OnCompositionTerminated(TfEditCookie ecWrite, _In_ ITfComposition* pComposition)
