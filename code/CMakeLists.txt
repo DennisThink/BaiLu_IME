@@ -9,7 +9,9 @@ SET(BAILU_IME_SOURCE_FILE
 ./RegProfileFunction.cpp
 ./RegCategoryFunction.cpp
 ./BaiLuIME_main.cpp
+./BaiLu_ClassFactory.hpp
 ./BaiLu_ClassFactory.cpp
+./BaiLuInputMethodClass.hpp
 ./BaiLuInputMethodClass.cpp
 ./BaiLuInputMethodInterface.cpp
 ./BaiLuKeyEventSink.hpp
@@ -22,6 +24,8 @@ SET(BAILU_IME_SOURCE_FILE
 ./BaiLuCompositionSink.cpp
 ./BaiLuDisplayAttributeProvider.hpp
 ./BaiLuDisplayAttributeProvider.cpp
+./BaiLuActiveLanguageProfileNotifySink.hpp
+./BaiLuActiveLanguageProfileNotifySink.cpp
 ./BaiLuIME.rc
 ./BaiLuIME.def)
 

@@ -233,11 +233,11 @@ STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
 }
 
 // ITfActiveLanguageProfileNotifySink
-STDMETHODIMP CBaiLuInputMethodClass::OnActivated(_In_ REFCLSID clsid, _In_ REFGUID guidProfile, _In_ BOOL isActivated)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnActivated");
-    return 0;
-}
+//STDMETHODIMP CBaiLuInputMethodClass::OnActivated(_In_ REFCLSID clsid, _In_ REFGUID guidProfile, _In_ BOOL isActivated)
+//{
+//    LogUtil::LogInfo("CBaiLuInputMethodClass::OnActivated");
+//    return 0;
+//}
 
 // ITfThreadFocusSink
 STDMETHODIMP CBaiLuInputMethodClass::OnSetThreadFocus()

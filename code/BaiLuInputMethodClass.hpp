@@ -8,7 +8,6 @@
 #include "BaiLuDisplayAttributeProvider.hpp"
 #include <string>
 class CBaiLuInputMethodClass : public ITfTextInputProcessorEx,
-    public ITfActiveLanguageProfileNotifySink,
     public ITfThreadFocusSink,
     public ITfFunctionProvider,
     public ITfFnGetPreferredTouchKeyboardLayout
@@ -36,7 +35,7 @@ public:
     //STDMETHODIMP GetDisplayAttributeInfo(__RPC__in REFGUID guidInfo, __RPC__deref_out_opt ITfDisplayAttributeInfo** ppInfo) override;
 
     // ITfActiveLanguageProfileNotifySink
-    STDMETHODIMP OnActivated(_In_ REFCLSID clsid, _In_ REFGUID guidProfile, _In_ BOOL isActivated) override;
+    //STDMETHODIMP OnActivated(_In_ REFCLSID clsid, _In_ REFGUID guidProfile, _In_ BOOL isActivated) override;
 
     // ITfThreadFocusSink
     STDMETHODIMP OnSetThreadFocus() override;
