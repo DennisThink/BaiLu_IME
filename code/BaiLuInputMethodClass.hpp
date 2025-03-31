@@ -5,9 +5,9 @@
 #include "BaiLuThreadMgrEventSink.hpp"
 #include "BaiLuTextEditSink.hpp"
 #include "BaiLuCompositionSink.hpp"
+#include "BaiLuDisplayAttributeProvider.hpp"
 #include <string>
 class CBaiLuInputMethodClass : public ITfTextInputProcessorEx,
-    public ITfDisplayAttributeProvider,
     public ITfActiveLanguageProfileNotifySink,
     public ITfThreadFocusSink,
     public ITfFunctionProvider,
@@ -32,8 +32,8 @@ public:
     //STDMETHODIMP OnCompositionTerminated(TfEditCookie ecWrite, _In_ ITfComposition* pComposition) override;
 
     // ITfDisplayAttributeProvider
-    STDMETHODIMP EnumDisplayAttributeInfo(__RPC__deref_out_opt IEnumTfDisplayAttributeInfo** ppEnum) override;
-    STDMETHODIMP GetDisplayAttributeInfo(__RPC__in REFGUID guidInfo, __RPC__deref_out_opt ITfDisplayAttributeInfo** ppInfo) override;
+    //STDMETHODIMP EnumDisplayAttributeInfo(__RPC__deref_out_opt IEnumTfDisplayAttributeInfo** ppEnum) override;
+    //STDMETHODIMP GetDisplayAttributeInfo(__RPC__in REFGUID guidInfo, __RPC__deref_out_opt ITfDisplayAttributeInfo** ppInfo) override;
 
     // ITfActiveLanguageProfileNotifySink
     STDMETHODIMP OnActivated(_In_ REFCLSID clsid, _In_ REFGUID guidProfile, _In_ BOOL isActivated) override;
@@ -82,6 +82,7 @@ private:
     CBaiLuThreadMgrEventSink* m_pThreadMgrEventSink;
     CBaiLuTextEditSink* m_pTextEditSink;
     CBaiLuCompositionSink* m_pCompositionSink;
+    CBaiLuDisplayAttributeProvider* m_pDispalyAttributeProvider;
     int m_refCount;
     ITfThreadMgr* m_pThreadMgr;
     TfClientId m_tfClientId;

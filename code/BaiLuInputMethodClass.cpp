@@ -44,6 +44,16 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
             m_pCompositionSink->AddRef();
         }
     }
+
+    {
+        CBaiLuDisplayAttributeProvider* pProvider = new CBaiLuDisplayAttributeProvider();
+        if (nullptr != pProvider)
+        {
+            m_pDispalyAttributeProvider = pProvider;
+            pProvider = nullptr;
+            m_pDispalyAttributeProvider->AddRef();
+        }
+    }
 }
 
 CBaiLuInputMethodClass::~CBaiLuInputMethodClass()
@@ -113,7 +123,13 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfDisplayAttributeProvider))
     {
-        *ppvObj = (ITfDisplayAttributeProvider*)this;
+        *ppvObj = nullptr;
+        if (nullptr != this->m_pDispalyAttributeProvider)
+        {
+            *ppvObj = (ITfDisplayAttributeProvider*)(this->m_pDispalyAttributeProvider);
+            this->m_pDispalyAttributeProvider->AddRef();
+        }
+        //*ppvObj = (ITfDisplayAttributeProvider*)this;
     }
     else if (IsEqualIID(riid, IID_ITfThreadFocusSink))
     {
@@ -213,20 +229,6 @@ STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
     UnInitDisplayAttributeGuidAtomSink();
     UnInitFunctionProviderSink();
     UnInitTextProcessorEngineSink();
-    return 0;
-}
-
-
-// ITfDisplayAttributeProvider
-STDMETHODIMP CBaiLuInputMethodClass::EnumDisplayAttributeInfo(__RPC__deref_out_opt IEnumTfDisplayAttributeInfo** ppEnum)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::EnumDisplayAttributeInfo");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::GetDisplayAttributeInfo(__RPC__in REFGUID guidInfo, __RPC__deref_out_opt ITfDisplayAttributeInfo** ppInfo)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::GetDisplayAttributeInfo");
     return 0;
 }
 

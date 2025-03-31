@@ -20,6 +20,8 @@ SET(BAILU_IME_SOURCE_FILE
 ./BaiLuTextEditSink.cpp
 ./BaiLuCompositionSink.hpp
 ./BaiLuCompositionSink.cpp
+./BaiLuDisplayAttributeProvider.hpp
+./BaiLuDisplayAttributeProvider.cpp
 ./BaiLuIME.rc
 ./BaiLuIME.def)
 
