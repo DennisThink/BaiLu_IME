@@ -26,6 +26,8 @@ SET(BAILU_IME_SOURCE_FILE
 ./BaiLuDisplayAttributeProvider.cpp
 ./BaiLuActiveLanguageProfileNotifySink.hpp
 ./BaiLuActiveLanguageProfileNotifySink.cpp
+./BaiLuThreadFocusSink.hpp
+./BaiLuThreadFocusSink.cpp
 ./BaiLuIME.rc
 ./BaiLuIME.def)
 

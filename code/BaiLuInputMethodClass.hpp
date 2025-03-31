@@ -6,9 +6,9 @@
 #include "BaiLuTextEditSink.hpp"
 #include "BaiLuCompositionSink.hpp"
 #include "BaiLuDisplayAttributeProvider.hpp"
+#include "BaiLuThreadFocusSink.hpp"
 #include <string>
 class CBaiLuInputMethodClass : public ITfTextInputProcessorEx,
-    public ITfThreadFocusSink,
     public ITfFunctionProvider,
     public ITfFnGetPreferredTouchKeyboardLayout
 {
@@ -38,8 +38,8 @@ public:
     //STDMETHODIMP OnActivated(_In_ REFCLSID clsid, _In_ REFGUID guidProfile, _In_ BOOL isActivated) override;
 
     // ITfThreadFocusSink
-    STDMETHODIMP OnSetThreadFocus() override;
-    STDMETHODIMP OnKillThreadFocus() override;
+    //STDMETHODIMP OnSetThreadFocus() override;
+    //STDMETHODIMP OnKillThreadFocus() override;
 
     // ITfFunctionProvider
     STDMETHODIMP GetType(__RPC__out GUID* pguid) override;
@@ -82,6 +82,7 @@ private:
     CBaiLuTextEditSink* m_pTextEditSink;
     CBaiLuCompositionSink* m_pCompositionSink;
     CBaiLuDisplayAttributeProvider* m_pDispalyAttributeProvider;
+    CBaiLuThreadFocusSink* m_pThreadFocusSink;
     int m_refCount;
     ITfThreadMgr* m_pThreadMgr;
     TfClientId m_tfClientId;

@@ -54,6 +54,15 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
             m_pDispalyAttributeProvider->AddRef();
         }
     }
+    {
+        CBaiLuThreadFocusSink* pSink = new CBaiLuThreadFocusSink();
+        if (nullptr != pSink)
+        {
+            m_pThreadFocusSink = pSink;
+            pSink = nullptr;
+            this->m_pThreadFocusSink->AddRef();
+        }
+    }
 }
 
 CBaiLuInputMethodClass::~CBaiLuInputMethodClass()
@@ -240,7 +249,7 @@ STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
 //}
 
 // ITfThreadFocusSink
-STDMETHODIMP CBaiLuInputMethodClass::OnSetThreadFocus()
+/*STDMETHODIMP CBaiLuInputMethodClass::OnSetThreadFocus()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetThreadFocus");
     return 0;
@@ -250,7 +259,7 @@ STDMETHODIMP CBaiLuInputMethodClass::OnKillThreadFocus()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::OnKillThreadFocus");
     return 0;
-}
+}*/
 
 // ITfFunctionProvider
 STDMETHODIMP CBaiLuInputMethodClass::GetType(__RPC__out GUID* pguid)
