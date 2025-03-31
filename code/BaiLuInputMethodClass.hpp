@@ -4,9 +4,9 @@
 #include "BaiLuKeyEventSink.hpp"
 #include "BaiLuThreadMgrEventSink.hpp"
 #include "BaiLuTextEditSink.hpp"
+#include "BaiLuCompositionSink.hpp"
 #include <string>
 class CBaiLuInputMethodClass : public ITfTextInputProcessorEx,
-    public ITfCompositionSink,
     public ITfDisplayAttributeProvider,
     public ITfActiveLanguageProfileNotifySink,
     public ITfThreadFocusSink,
@@ -29,7 +29,7 @@ public:
     //STDMETHODIMP OnEndEdit(__RPC__in_opt ITfContext* pContext, TfEditCookie ecReadOnly, __RPC__in_opt ITfEditRecord* pEditRecord) override;
 
     // ITfCompositionSink
-    STDMETHODIMP OnCompositionTerminated(TfEditCookie ecWrite, _In_ ITfComposition* pComposition) override;
+    //STDMETHODIMP OnCompositionTerminated(TfEditCookie ecWrite, _In_ ITfComposition* pComposition) override;
 
     // ITfDisplayAttributeProvider
     STDMETHODIMP EnumDisplayAttributeInfo(__RPC__deref_out_opt IEnumTfDisplayAttributeInfo** ppEnum) override;
@@ -81,6 +81,7 @@ private:
     CBaiLuKeyEventSink* m_pKeyEventSink;
     CBaiLuThreadMgrEventSink* m_pThreadMgrEventSink;
     CBaiLuTextEditSink* m_pTextEditSink;
+    CBaiLuCompositionSink* m_pCompositionSink;
     int m_refCount;
     ITfThreadMgr* m_pThreadMgr;
     TfClientId m_tfClientId;

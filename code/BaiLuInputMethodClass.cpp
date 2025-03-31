@@ -5,6 +5,8 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
 {
     m_refCount = 0;
     m_pKeyEventSink = nullptr;
+    m_pThreadMgrEventSink = nullptr;
+    m_pCompositionSink = nullptr;
 
     {
         CBaiLuKeyEventSink* pSink = new CBaiLuKeyEventSink();
@@ -31,6 +33,15 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
             m_pTextEditSink = pSink;
             pSink = nullptr;
             m_pTextEditSink->AddRef();
+        }
+    }
+    {
+        CBaiLuCompositionSink* pSink = new CBaiLuCompositionSink();
+        if (nullptr != pSink)
+        {
+            m_pCompositionSink = pSink;
+            pSink = nullptr;
+            m_pCompositionSink->AddRef();
         }
     }
 }
@@ -93,7 +104,12 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfCompositionSink))
     {
-        *ppvObj = (ITfKeyEventSink*)this;
+        if (nullptr != this->m_pCompositionSink)
+        {
+            this->m_pCompositionSink->AddRef();
+            *ppvObj = (ITfCompositionSink*)(this->m_pCompositionSink);
+        }
+        //*ppvObj = (ITfKeyEventSink*)this;
     }
     else if (IsEqualIID(riid, IID_ITfDisplayAttributeProvider))
     {
@@ -200,13 +216,6 @@ STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
     return 0;
 }
 
-
-// ITfCompositionSink
-STDMETHODIMP CBaiLuInputMethodClass::OnCompositionTerminated(TfEditCookie ecWrite, _In_ ITfComposition* pComposition)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnCompositionTerminated");
-    return 0;
-}
 
 // ITfDisplayAttributeProvider
 STDMETHODIMP CBaiLuInputMethodClass::EnumDisplayAttributeInfo(__RPC__deref_out_opt IEnumTfDisplayAttributeInfo** ppEnum)
