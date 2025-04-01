@@ -63,6 +63,35 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
             this->m_pThreadFocusSink->AddRef();
         }
     }
+
+    {
+        CBaiLuFunctionProvider* pProvider = new CBaiLuFunctionProvider();
+        if (nullptr != pProvider)
+        {
+            m_pFunctionProvider = pProvider;
+            pProvider = nullptr;
+            this->m_pFunctionProvider->AddRef();
+        }
+    }
+    {
+        CBaiLuFnGetPreferredTouchKeyBoardLayout* pLayout = new CBaiLuFnGetPreferredTouchKeyBoardLayout();
+        if (nullptr != pLayout)
+        {
+            m_pBoarderLayout = pLayout;
+            pLayout = nullptr;
+            m_pBoarderLayout->AddRef();
+        }
+
+    }
+    {
+        CBaiLuActiveLanguageProfileNotifySink* pSink = new CBaiLuActiveLanguageProfileNotifySink();
+        if (nullptr != pSink)
+        {
+            m_pNotifySink = pSink;
+            m_pNotifySink->AddRef();
+            pSink = nullptr;
+        }
+    }
 }
 
 CBaiLuInputMethodClass::~CBaiLuInputMethodClass()
@@ -119,14 +148,19 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfActiveLanguageProfileNotifySink))
     {
-        *ppvObj = (ITfActiveLanguageProfileNotifySink*)this;
+        //if(nullptr != m_p)
+        if (nullptr != m_pNotifySink)
+        {
+            m_pNotifySink->AddRef();
+            *ppvObj = m_pNotifySink;
+        }
     }
     else if (IsEqualIID(riid, IID_ITfCompositionSink))
     {
         if (nullptr != this->m_pCompositionSink)
         {
-            this->m_pCompositionSink->AddRef();
-            *ppvObj = (ITfCompositionSink*)(this->m_pCompositionSink);
+            m_pCompositionSink->AddRef();
+            *ppvObj =m_pCompositionSink;
         }
         //*ppvObj = (ITfKeyEventSink*)this;
     }
@@ -135,31 +169,51 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         *ppvObj = nullptr;
         if (nullptr != this->m_pDispalyAttributeProvider)
         {
-            *ppvObj = (ITfDisplayAttributeProvider*)(this->m_pDispalyAttributeProvider);
-            this->m_pDispalyAttributeProvider->AddRef();
+            *ppvObj = m_pDispalyAttributeProvider;
+            m_pDispalyAttributeProvider->AddRef();
         }
-        //*ppvObj = (ITfDisplayAttributeProvider*)this;
     }
     else if (IsEqualIID(riid, IID_ITfThreadFocusSink))
     {
-        *ppvObj = (ITfThreadFocusSink*)this;
+        if (nullptr != m_pThreadFocusSink)
+        {
+            *ppvObj = m_pThreadFocusSink;
+            m_pThreadFocusSink->AddRef();
+        }
     }
     else if (IsEqualIID(riid, IID_ITfFunctionProvider))
     {
-        *ppvObj = (ITfFunctionProvider*)this;
+        if (nullptr != m_pFunctionProvider)
+        {
+            *ppvObj = m_pFunctionProvider;
+            m_pFunctionProvider->AddRef();
+        }
     }
     else if (IsEqualIID(riid, IID_ITfFunction))
     {
-        *ppvObj = (ITfFunction*)this;
+        if (nullptr != m_pBoarderLayout)
+        {
+            *ppvObj = m_pBoarderLayout;
+            m_pBoarderLayout->AddRef();
+        }
+        
     }
     else if (IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
     {
-        *ppvObj = (ITfFnGetPreferredTouchKeyboardLayout*)this;
+        if (nullptr != m_pBoarderLayout)
+        {
+            *ppvObj = m_pBoarderLayout;
+            m_pBoarderLayout->AddRef();
+        }
+    }
+    else
+    {
+        LogUtil::LogInfo("UnKnown IID");
     }
 
     if (*ppvObj)
     {
-        AddRef();
+        //AddRef();
         return S_OK;
     }
 
@@ -241,58 +295,7 @@ STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
     return 0;
 }
 
-// ITfActiveLanguageProfileNotifySink
-//STDMETHODIMP CBaiLuInputMethodClass::OnActivated(_In_ REFCLSID clsid, _In_ REFGUID guidProfile, _In_ BOOL isActivated)
-//{
-//    LogUtil::LogInfo("CBaiLuInputMethodClass::OnActivated");
-//    return 0;
-//}
 
-// ITfThreadFocusSink
-/*STDMETHODIMP CBaiLuInputMethodClass::OnSetThreadFocus()
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetThreadFocus");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnKillThreadFocus()
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnKillThreadFocus");
-    return 0;
-}*/
-
-// ITfFunctionProvider
-STDMETHODIMP CBaiLuInputMethodClass::GetType(__RPC__out GUID* pguid)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::GetType");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::GetDescription(__RPC__deref_out_opt BSTR* pbstrDesc)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::GetDescription");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::GetFunction(__RPC__in REFGUID rguid, __RPC__in REFIID riid, __RPC__deref_out_opt IUnknown** ppunk)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::GetFunction");
-    return 0;
-}
-
-// ITfFunction
-STDMETHODIMP CBaiLuInputMethodClass::GetDisplayName(_Out_ BSTR* pbstrDisplayName)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::GetDisplayName");
-    return 0;
-}
-
-// ITfFnGetPreferredTouchKeyboardLayout, it is the Optimized layout feature.
-STDMETHODIMP CBaiLuInputMethodClass::GetLayout(_Out_ TKBLayoutType* ptkblayoutType, _Out_ WORD* pwPreferredLayoutId)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::GetLayout");
-    return 0;
-}
 
 
 CBaiLuInputMethodClass* CBaiLuInputMethodClass::m_pInstance = nullptr;

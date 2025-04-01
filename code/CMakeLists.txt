@@ -28,6 +28,10 @@ SET(BAILU_IME_SOURCE_FILE
 ./BaiLuActiveLanguageProfileNotifySink.cpp
 ./BaiLuThreadFocusSink.hpp
 ./BaiLuThreadFocusSink.cpp
+./BaiLuFunctionProvider.hpp
+./BaiLuFunctionProvider.cpp
+./BaiLuFnGetPreferredTouchKeyboardLayout.hpp
+./BaiLuFnGetPreferredTouchKeyboardLayout.cpp
 ./BaiLuIME.rc
 ./BaiLuIME.def)
 
