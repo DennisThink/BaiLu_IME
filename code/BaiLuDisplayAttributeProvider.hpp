@@ -21,5 +21,7 @@ public:
     virtual HRESULT STDMETHODCALLTYPE GetDisplayAttributeInfo(
         /* [in] */ __RPC__in REFGUID guid,
         /* [out] */ __RPC__deref_out_opt ITfDisplayAttributeInfo** ppInfo) override;
+private:
+    int m_refCount;
 };
 #endif

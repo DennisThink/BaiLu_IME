@@ -1,7 +1,8 @@
 #include "BaiLuDisplayAttributeProvider.hpp"
+#include "Log.hpp"
 CBaiLuDisplayAttributeProvider::CBaiLuDisplayAttributeProvider()
 {
-
+    m_refCount = 0;
 }
 CBaiLuDisplayAttributeProvider::~CBaiLuDisplayAttributeProvider()
 {
@@ -16,12 +17,16 @@ HRESULT STDMETHODCALLTYPE CBaiLuDisplayAttributeProvider::QueryInterface(
 
 ULONG STDMETHODCALLTYPE CBaiLuDisplayAttributeProvider::AddRef(void)
 {
-    return 0;
+    m_refCount++;
+    LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::AddRef %d", m_refCount);
+    return m_refCount;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuDisplayAttributeProvider::Release(void)
 {
-    return 0;
+    m_refCount--;
+    LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::Release %d", m_refCount);
+    return m_refCount;
 }
 HRESULT STDMETHODCALLTYPE CBaiLuDisplayAttributeProvider::EnumDisplayAttributeInfo(
     /* [out] */ __RPC__deref_out_opt IEnumTfDisplayAttributeInfo** ppEnum)

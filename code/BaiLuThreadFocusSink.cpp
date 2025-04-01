@@ -1,6 +1,8 @@
 #include "BaiLuThreadFocusSink.hpp"
+#include "Log.hpp"
 CBaiLuThreadFocusSink::CBaiLuThreadFocusSink()
 {
+    m_refCount = 0;
 }
 
 CBaiLuThreadFocusSink::~CBaiLuThreadFocusSink()
@@ -17,12 +19,20 @@ HRESULT STDMETHODCALLTYPE CBaiLuThreadFocusSink::QueryInterface(
 
 ULONG STDMETHODCALLTYPE CBaiLuThreadFocusSink::AddRef(void)
 {
-    return 0;
+    
+    m_refCount++;
+    LogUtil::LogInfo("CBaiLuThreadFocusSink::AddRef %d", m_refCount);
+    return m_refCount;
+
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuThreadFocusSink::Release(void)
 {
-    return 0;
+    
+    m_refCount--;
+    LogUtil::LogInfo("CBaiLuThreadFocusSink::Release %d", m_refCount);
+    return m_refCount;
+
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuThreadFocusSink::OnSetThreadFocus(void)

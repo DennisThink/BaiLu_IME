@@ -19,5 +19,7 @@ public:
         /* [out] */ __RPC__out TKBLayoutType* pTKBLayoutType,
         __RPC__in WORD* pwPreferredLayoutId) override;
     virtual STDMETHODIMP GetDisplayName(_Out_ BSTR* pbstrDisplayName) override;
+private:
+    int m_refCount;
 };
 #endif

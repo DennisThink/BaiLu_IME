@@ -19,5 +19,7 @@ public:
         /* [in] */ __RPC__in REFCLSID clsid,
         /* [in] */ __RPC__in REFGUID guidProfile,
         /* [in] */ BOOL fActivated) override;
+private:
+    int m_refCount;
 };
 #endif

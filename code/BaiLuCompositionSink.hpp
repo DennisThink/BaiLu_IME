@@ -18,5 +18,7 @@ public:
     virtual HRESULT STDMETHODCALLTYPE OnCompositionTerminated(
         /* [in] */ TfEditCookie ecWrite,
         /* [in] */ __RPC__in_opt ITfComposition* pComposition) override;
+private:
+    int m_refCount;
 };
 #endif

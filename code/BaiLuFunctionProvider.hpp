@@ -25,5 +25,7 @@ public:
         /* [in] */ __RPC__in REFGUID rguid,
         /* [in] */ __RPC__in REFIID riid,
         /* [iid_is][out] */ __RPC__deref_out_opt IUnknown** ppunk) override;
+private:
+    int m_refCount;
 };
 #endif

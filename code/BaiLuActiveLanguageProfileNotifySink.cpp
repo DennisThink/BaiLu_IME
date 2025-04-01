@@ -1,6 +1,8 @@
 #include "BaiLuActiveLanguageProfileNotifySink.hpp"
+#include "Log.hpp"
 CBaiLuActiveLanguageProfileNotifySink::CBaiLuActiveLanguageProfileNotifySink()
 {
+    m_refCount = 0;
 }
 
 CBaiLuActiveLanguageProfileNotifySink::~CBaiLuActiveLanguageProfileNotifySink()
@@ -17,12 +19,16 @@ HRESULT STDMETHODCALLTYPE CBaiLuActiveLanguageProfileNotifySink::QueryInterface(
 
 ULONG STDMETHODCALLTYPE CBaiLuActiveLanguageProfileNotifySink::AddRef(void)
 {
-    return 0;
+    m_refCount++;
+    LogUtil::LogInfo("CBaiLuActiveLanguageProfileNotifySink::AddRef %d", m_refCount);
+    return m_refCount;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuActiveLanguageProfileNotifySink::Release(void)
 {
-    return 0;
+    m_refCount--;
+    LogUtil::LogInfo("CBaiLuActiveLanguageProfileNotifySink::Release %d", m_refCount);
+    return m_refCount;
 }
 
 

@@ -23,6 +23,7 @@ public:
     STDMETHODIMP OnPushContext(_In_ ITfContext* pContext) override;
     STDMETHODIMP OnPopContext(_In_ ITfContext* pContext) override;
 protected:
+    int m_refCount;
     //
     ITfDocumentMgr* m_pPrevTfDocumentMgr;
     ITfDocumentMgr* m_pCurTfDocumentMgr;

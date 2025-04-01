@@ -19,5 +19,7 @@ public:
         /* [in] */ __RPC__in_opt ITfContext* pic,
         /* [in] */ TfEditCookie ecReadOnly,
         /* [in] */ __RPC__in_opt ITfEditRecord* pEditRecord) override;
+private:
+    int m_refCount;
 };
 #endif

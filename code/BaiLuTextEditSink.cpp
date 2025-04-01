@@ -1,7 +1,8 @@
 #include "BaiLuTextEditSink.hpp"
+#include "Log.hpp"
 CBaiLuTextEditSink::CBaiLuTextEditSink()
 {
-
+    m_refCount = 0;
 }
 
 CBaiLuTextEditSink::~CBaiLuTextEditSink()
@@ -18,12 +19,16 @@ HRESULT STDMETHODCALLTYPE CBaiLuTextEditSink::QueryInterface(
 
 ULONG STDMETHODCALLTYPE CBaiLuTextEditSink::AddRef(void)
 {
-    return 0;
+    m_refCount++;
+    LogUtil::LogInfo("CBaiLuTextEditSink::AddRef %d", m_refCount);
+    return m_refCount;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuTextEditSink::Release(void)
 {
-    return 0;
+    m_refCount--;
+    LogUtil::LogInfo("CBaiLuTextEditSink::Release %d", m_refCount);
+    return m_refCount;
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuTextEditSink::OnEndEdit(

@@ -1,8 +1,8 @@
 #include "BaiLuCompositionSink.hpp"
-
+#include "Log.hpp"
 CBaiLuCompositionSink::CBaiLuCompositionSink()
 {
-
+    m_refCount = 0;
 }
 CBaiLuCompositionSink::~CBaiLuCompositionSink()
 {
@@ -17,12 +17,16 @@ HRESULT STDMETHODCALLTYPE CBaiLuCompositionSink::QueryInterface(
 
 ULONG STDMETHODCALLTYPE CBaiLuCompositionSink::AddRef(void)
 {
-    return 0;
+    m_refCount++;
+    LogUtil::LogInfo("CBaiLuCompositionSink::AddRef %d", m_refCount);
+    return m_refCount;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuCompositionSink::Release(void)
 {
-    return 0;
+    m_refCount--;
+    LogUtil::LogInfo("CBaiLuCompositionSink::Release %d", m_refCount);
+    return m_refCount;
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuCompositionSink::OnCompositionTerminated(

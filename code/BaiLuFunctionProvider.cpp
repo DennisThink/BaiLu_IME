@@ -1,7 +1,8 @@
 #include "BaiLuFunctionProvider.hpp"
+#include "Log.hpp"
 CBaiLuFunctionProvider::CBaiLuFunctionProvider()
 {
-    
+    m_refCount = 0;
 }
 CBaiLuFunctionProvider::~CBaiLuFunctionProvider()
 {
@@ -17,11 +18,17 @@ HRESULT STDMETHODCALLTYPE CBaiLuFunctionProvider::QueryInterface(
 
 ULONG STDMETHODCALLTYPE CBaiLuFunctionProvider::AddRef(void)
 {
+    m_refCount++;
+    LogUtil::LogInfo("CBaiLuFunctionProvider::AddRef %d", m_refCount);
+    return m_refCount;
     return 0;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuFunctionProvider::Release(void)
 {
+    m_refCount++;
+    LogUtil::LogInfo("CBaiLuFunctionProvider::Release %d", m_refCount);
+    return m_refCount;
     return 0;
 }
 

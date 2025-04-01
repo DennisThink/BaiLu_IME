@@ -18,5 +18,7 @@ public:
     virtual HRESULT STDMETHODCALLTYPE OnSetThreadFocus(void) override;
 
     virtual HRESULT STDMETHODCALLTYPE OnKillThreadFocus(void) override;
+private:
+    int m_refCount;
 };
 #endif

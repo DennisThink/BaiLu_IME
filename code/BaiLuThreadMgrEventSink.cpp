@@ -4,7 +4,7 @@
 
 CBaiLuThreadMgrEventSink::CBaiLuThreadMgrEventSink()
 {
-
+    m_refCount = 0;
 }
 
 CBaiLuThreadMgrEventSink::~CBaiLuThreadMgrEventSink()
@@ -22,12 +22,16 @@ HRESULT STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::QueryInterface(
 
 ULONG STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::AddRef(void)
 {
-    return 0;
+    m_refCount++;
+    LogUtil::LogInfo("CBaiLuThreadMgrEventSink::AddRef %d", m_refCount);
+    return m_refCount;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::Release(void)
 {
-    return 0;
+    m_refCount--;
+    LogUtil::LogInfo("CBaiLuThreadMgrEventSink::Release %d", m_refCount);
+    return m_refCount;
 }
 
 // ITfThreadMgrEventSink

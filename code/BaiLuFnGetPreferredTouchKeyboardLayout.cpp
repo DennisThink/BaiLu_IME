@@ -1,7 +1,8 @@
 #include "BaiLuFnGetPreferredTouchKeyboardLayout.hpp"
+#include "Log.hpp"
 CBaiLuFnGetPreferredTouchKeyBoardLayout::CBaiLuFnGetPreferredTouchKeyBoardLayout()
 {
-
+    m_refCount = 0;
 }
 
 CBaiLuFnGetPreferredTouchKeyBoardLayout::~CBaiLuFnGetPreferredTouchKeyBoardLayout()
@@ -18,7 +19,9 @@ HRESULT STDMETHODCALLTYPE CBaiLuFnGetPreferredTouchKeyBoardLayout::QueryInterfac
 
 ULONG STDMETHODCALLTYPE CBaiLuFnGetPreferredTouchKeyBoardLayout::AddRef(void)
 {
-    return 0;
+    m_refCount++;
+    LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::AddRef %d", m_refCount);
+    return m_refCount;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuFnGetPreferredTouchKeyBoardLayout::Release(void)
