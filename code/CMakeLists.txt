@@ -32,6 +32,8 @@ SET(BAILU_IME_SOURCE_FILE
 ./BaiLuFunctionProvider.cpp
 ./BaiLuFnGetPreferredTouchKeyboardLayout.hpp
 ./BaiLuFnGetPreferredTouchKeyboardLayout.cpp
+./BaiLuInputProcessorProfileAgent.hpp
+./BaiLuInputProcessorProfileAgent.cpp
 ./BaiLuIME.rc
 ./BaiLuIME.def)
 

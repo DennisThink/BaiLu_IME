@@ -1,5 +1,6 @@
 #include "BaiLuInputMethodClass.hpp"
 #include "GlobalValues.hpp"
+#include "BaiLuInputProcessorProfileAgent.hpp"
 #include "Log.hpp"
 CBaiLuInputMethodClass::CBaiLuInputMethodClass()
 {
@@ -325,7 +326,7 @@ bool CBaiLuInputMethodClass::InitThreadMgrEventSink()
     }
     DWORD cookie= TF_INVALID_COOKIE;
     qResult = pSource->AdviseSink(IID_ITfThreadMgrEventSink,
-        (ITfThreadMgrEventSink*)(this->m_pThreadMgrEventSink),
+        m_pThreadMgrEventSink,
         &cookie);
     if (FAILED(qResult))
     {
@@ -352,7 +353,7 @@ bool CBaiLuInputMethodClass::InitKeyEventSink()
     }
     HRESULT hR = S_OK;
     hR = pKeyStrokeMgr->AdviseKeyEventSink(this->m_tfClientId,
-        (ITfKeyEventSink*)(this->m_pKeyEventSink),
+        m_pKeyEventSink,
         TRUE);
     pKeyStrokeMgr->Release();
     return (hR == S_OK);
@@ -403,7 +404,7 @@ bool CBaiLuInputMethodClass::InitTextEditSink()
     ret = FALSE;
     if (SUCCEEDED(m_pCurTfContext->QueryInterface(IID_ITfSource, (void**)&pSource)))
     {
-        if (SUCCEEDED(pSource->AdviseSink(IID_ITfTextEditSink, (ITfTextEditSink*)this, &m_textEditSinkCookie)))
+        if (SUCCEEDED(pSource->AdviseSink(IID_ITfTextEditSink, m_pTextEditSink, &m_textEditSinkCookie)))
         {
             ret = TRUE;
         }
@@ -433,7 +434,9 @@ bool CBaiLuInputMethodClass::InitActiveLanguageProfileNotifySink()
         return ret;
     }
 
-    if (pSource->AdviseSink(IID_ITfActiveLanguageProfileNotifySink, (ITfActiveLanguageProfileNotifySink*)this, &m_activeLanguageProfileNotifySinkCookie) != S_OK)
+    if (pSource->AdviseSink(IID_ITfActiveLanguageProfileNotifySink, 
+        m_pNotifySink, 
+        &m_activeLanguageProfileNotifySinkCookie) != S_OK)
     {
         m_activeLanguageProfileNotifySinkCookie = TF_INVALID_COOKIE;
         goto Exit;
@@ -456,7 +459,9 @@ bool CBaiLuInputMethodClass::InitThreadFocusSink()
         return FALSE;
     }
 
-    if (FAILED(pSource->AdviseSink(IID_ITfThreadFocusSink, (ITfThreadFocusSink*)this, &m_dwThreadFocusSinkCookie)))
+    if (FAILED(pSource->AdviseSink(IID_ITfThreadFocusSink,
+        m_pThreadFocusSink, 
+        &m_dwThreadFocusSinkCookie)))
     {
         pSource->Release();
         return FALSE;
@@ -530,12 +535,12 @@ bool CBaiLuInputMethodClass::InitFunctionProviderSink()
 bool CBaiLuInputMethodClass::InitTextProcessorEngineSink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::InitTextProcessorEngineSink");
-    /*LANGID langid = 0;
+    LANGID langid = 0;
     CLSID clsid = GUID_NULL;
     GUID guidProfile = GUID_NULL;
 
     // Get default profile.
-    CTfInputProcessorProfile profile;
+    CBaiLuInputProcessorProfileAgent profile;
 
     if (FAILED(profile.CreateInstance()))
     {
@@ -553,7 +558,7 @@ bool CBaiLuInputMethodClass::InitTextProcessorEngineSink()
     }
 
     // Is this already added?
-    if (_pCompositionProcessorEngine != nullptr)
+    /*if (_pCompositionProcessorEngine != nullptr)
     {
         LANGID langidProfile = 0;
         GUID guidLanguageProfile = GUID_NULL;
@@ -589,6 +594,7 @@ bool CBaiLuInputMethodClass::InitTextProcessorEngineSink()
 void CBaiLuInputMethodClass::UnInitThreadMgrEventSink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitThreadMgrEventSink");
+
     return;
 }
 
@@ -610,11 +616,39 @@ void CBaiLuInputMethodClass::UnInitKeyEventSink()
 void CBaiLuInputMethodClass::UnInitActiveLanguageProfileNotifySink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitActiveLanguageProfileNotifySink");
+    ITfSource* pSource = nullptr;
+
+    if (m_activeLanguageProfileNotifySinkCookie == TF_INVALID_COOKIE)
+    {
+        return; // never Advised
+    }
+
+    if (m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)&pSource) == S_OK)
+    {
+        pSource->UnadviseSink(m_activeLanguageProfileNotifySinkCookie);
+        pSource->Release();
+    }
+
+    m_activeLanguageProfileNotifySinkCookie = TF_INVALID_COOKIE;
     return;
 }
 void CBaiLuInputMethodClass::UnInitThreadFocusSink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitThreadFocusSink");
+    ITfSource* pSource = nullptr;
+
+    if (FAILED(m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)&pSource)))
+    {
+        return;
+    }
+
+    if (FAILED(pSource->UnadviseSink(m_dwThreadFocusSinkCookie)))
+    {
+        pSource->Release();
+        return;
+    }
+
+    pSource->Release();
     return;
 }
 void CBaiLuInputMethodClass::UnInitDisplayAttributeGuidAtomSink()
@@ -625,6 +659,12 @@ void CBaiLuInputMethodClass::UnInitDisplayAttributeGuidAtomSink()
 void CBaiLuInputMethodClass::UnInitFunctionProviderSink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitFunctionProviderSink");
+    ITfSourceSingle* pSourceSingle = nullptr;
+    if (SUCCEEDED(m_pThreadMgr->QueryInterface(IID_ITfSourceSingle, (void**)&pSourceSingle)))
+    {
+        pSourceSingle->UnadviseSingleSink(m_tfClientId, IID_ITfFunctionProvider);
+        pSourceSingle->Release();
+    }
     return;
 }
 void CBaiLuInputMethodClass::UnInitTextProcessorEngineSink()
