@@ -3,15 +3,17 @@
 CBaiLuKeyEventSink::CBaiLuKeyEventSink()
 {
 	m_refCount = 0;
+	LogUtil::LogInfo("CBaiLuKeyEventSink::CBaiLuKeyEventSink %", m_refCount);
 }
 
 CBaiLuKeyEventSink::~CBaiLuKeyEventSink()
 {
-
+	LogUtil::LogInfo("CBaiLuKeyEventSink::~CBaiLuKeyEventSink %", m_refCount);
 }
 HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnSetFocus(
 	/* [in] */ BOOL fForeground) 
 {
+	LogUtil::LogInfo("CBaiLuKeyEventSink::~CBaiLuKeyEventSink %", m_refCount);
 	return 0;
 }
 
@@ -21,6 +23,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnTestKeyDown(
 	/* [in] */ LPARAM lParam,
 	/* [out] */ BOOL* pfEaten)
 {
+	LogUtil::LogInfo("CBaiLuKeyEventSink::OnTestKeyDown %", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnTestKeyDown");
 	return 0;
 }
@@ -31,6 +34,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnTestKeyUp(
 	/* [in] */ LPARAM lParam,
 	/* [out] */ BOOL* pfEaten)
 {
+	LogUtil::LogInfo("CBaiLuKeyEventSink::OnTestKeyUp %", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnTestKeyUp");
 	return 0;
 }
@@ -41,6 +45,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnKeyDown(
 	/* [in] */ LPARAM lParam,
 	/* [out] */ BOOL* pfEaten)
 {
+	LogUtil::LogInfo("CBaiLuKeyEventSink::OnKeyDown %", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnKeyDown");
 	return 0;
 }
@@ -51,6 +56,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnKeyUp(
 	/* [in] */ LPARAM lParam,
 	/* [out] */ BOOL* pfEaten)
 {
+	LogUtil::LogInfo("CBaiLuKeyEventSink::OnKeyUp %", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnKeyUp");
 	return 0;
 }
@@ -60,6 +66,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnPreservedKey(
 	/* [in] */ REFGUID rguid,
 	/* [out] */ BOOL* pfEaten)
 {
+	LogUtil::LogInfo("CBaiLuKeyEventSink::OnPreservedKey %", m_refCount);
 	return 0;
 }
 
@@ -67,7 +74,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::QueryInterface(
 	/* [in] */ REFIID riid,
 	/* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
-	LogUtil::LogInfo("%s", "QueryInterface");
+	LogUtil::LogInfo("CBaiLuKeyEventSink::QueryInterface %", m_refCount);
 	return 0;
 }
 
@@ -104,6 +111,7 @@ std::string CBaiLuKeyEventSink::VirtualKeyCodeToString(UINT vkCode) {
 }
 void CBaiLuKeyEventSink::LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::string method)
 {
+	LogUtil::LogInfo("CBaiLuKeyEventSink::LogKeyDownAndUp");
 	UINT vCode = UINT(wParam);
 	std::string strCodeName = VirtualKeyCodeToString(vCode);
 	char buff[1024] = { 0 };

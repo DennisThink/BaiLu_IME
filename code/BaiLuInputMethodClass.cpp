@@ -4,6 +4,7 @@
 #include "Log.hpp"
 CBaiLuInputMethodClass::CBaiLuInputMethodClass()
 {
+    LogUtil::LogInfo("CBaiLuInputMethodClass::CBaiLuInputMethodClass");
     m_refCount = 0;
     m_pKeyEventSink = nullptr;
     m_pThreadMgrEventSink = nullptr;
@@ -93,11 +94,12 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
             pSink = nullptr;
         }
     }
+    AddRef();
 }
 
 CBaiLuInputMethodClass::~CBaiLuInputMethodClass()
 {
-    
+    LogUtil::LogInfo("CBaiLuInputMethodClass::~CBaiLuInputMethodClass");
 }
 
 // IUnknown
@@ -106,22 +108,28 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     LogUtil::LogInfo("CBaiLuInputMethodClass::QueryInterface");
     if (ppvObj == nullptr)
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
         return E_INVALIDARG;
     }
 
-    *ppvObj = nullptr;
+    *ppvObj = NULL;
 
     if (IsEqualIID(riid, IID_IUnknown) ||
         IsEqualIID(riid, IID_ITfTextInputProcessor))
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        AddRef();
         *ppvObj = (ITfTextInputProcessor*)this;
     }
     else if (IsEqualIID(riid, IID_ITfTextInputProcessorEx))
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        AddRef();
         *ppvObj = (ITfTextInputProcessorEx*)this;
     }
     else if (IsEqualIID(riid, IID_ITfThreadMgrEventSink))
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
         if (nullptr != this->m_pThreadMgrEventSink)
         {
             this->m_pThreadMgrEventSink->AddRef();
@@ -130,7 +138,7 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfTextEditSink))
     {
-        *ppvObj = nullptr;
+        LogUtil::LogTrace(__FILE__, __LINE__);
         if (nullptr != this->m_pTextEditSink)
         {
             this->m_pTextEditSink->AddRef();
@@ -140,16 +148,16 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfKeyEventSink))
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
         if (nullptr != this->m_pKeyEventSink)
         {
             m_pKeyEventSink->AddRef();
-            *ppvObj = (ITfKeyEventSink*)(m_pKeyEventSink);
+            *ppvObj = (m_pKeyEventSink);
         }
-        //*ppvObj = (ITfKeyEventSink*)this;
     }
     else if (IsEqualIID(riid, IID_ITfActiveLanguageProfileNotifySink))
     {
-        //if(nullptr != m_p)
+        LogUtil::LogTrace(__FILE__, __LINE__);
         if (nullptr != m_pNotifySink)
         {
             m_pNotifySink->AddRef();
@@ -158,16 +166,16 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfCompositionSink))
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
         if (nullptr != this->m_pCompositionSink)
         {
             m_pCompositionSink->AddRef();
             *ppvObj =m_pCompositionSink;
         }
-        //*ppvObj = (ITfKeyEventSink*)this;
     }
     else if (IsEqualIID(riid, IID_ITfDisplayAttributeProvider))
     {
-        *ppvObj = nullptr;
+        LogUtil::LogTrace(__FILE__, __LINE__);
         if (nullptr != this->m_pDispalyAttributeProvider)
         {
             *ppvObj = m_pDispalyAttributeProvider;
@@ -176,6 +184,7 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfThreadFocusSink))
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
         if (nullptr != m_pThreadFocusSink)
         {
             *ppvObj = m_pThreadFocusSink;
@@ -184,6 +193,7 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfFunctionProvider))
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
         if (nullptr != m_pFunctionProvider)
         {
             *ppvObj = m_pFunctionProvider;
@@ -192,15 +202,16 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfFunction))
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
         if (nullptr != m_pBoarderLayout)
         {
             *ppvObj = m_pBoarderLayout;
             m_pBoarderLayout->AddRef();
         }
-        
     }
     else if (IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
         if (nullptr != m_pBoarderLayout)
         {
             *ppvObj = m_pBoarderLayout;
@@ -209,12 +220,15 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else
     {
-        LogUtil::LogInfo("UnKnown IID");
+        GUID gid = riid;
+        LogUtil::LogInfo("UnKnown IID %x %x %x %x",gid.Data1,gid.Data2,gid.Data3,gid.Data4);
+        *ppvObj = NULL;
     }
 
-    if (*ppvObj)
+    if (*ppvObj != NULL)
     {
-        //AddRef();
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        AddRef();
         return S_OK;
     }
 

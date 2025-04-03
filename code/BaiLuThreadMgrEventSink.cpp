@@ -4,12 +4,13 @@
 
 CBaiLuThreadMgrEventSink::CBaiLuThreadMgrEventSink()
 {
+    LogUtil::LogInfo("CBaiLuThreadMgrEventSink::CBaiLuThreadMgrEventSink");
     m_refCount = 0;
 }
 
 CBaiLuThreadMgrEventSink::~CBaiLuThreadMgrEventSink()
 {
-
+    LogUtil::LogInfo("CBaiLuThreadMgrEventSink::~CBaiLuThreadMgrEventSink");
 }
 
 //IUnKnown
@@ -17,6 +18,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::QueryInterface(
     /* [in] */ REFIID riid,
     /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
+    LogUtil::LogInfo("CBaiLuThreadMgrEventSink::QueryInterface");
     return 0;
 }
 

@@ -37,5 +37,6 @@ HRESULT STDMETHODCALLTYPE CBaiLuActiveLanguageProfileNotifySink::OnActivated(
     /* [in] */ __RPC__in REFGUID guidProfile,
     /* [in] */ BOOL fActivated)
 {
+    LogUtil::LogInfo("CBaiLuActiveLanguageProfileNotifySink::OnActivated");
     return 0;
 }

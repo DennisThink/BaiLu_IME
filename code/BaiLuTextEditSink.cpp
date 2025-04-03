@@ -2,18 +2,20 @@
 #include "Log.hpp"
 CBaiLuTextEditSink::CBaiLuTextEditSink()
 {
+    LogUtil::LogInfo("CBaiLuKeyEventSink::CBaiLuTextEditSink");
     m_refCount = 0;
 }
 
 CBaiLuTextEditSink::~CBaiLuTextEditSink()
 {
-
+    LogUtil::LogInfo("CBaiLuKeyEventSink::~CBaiLuTextEditSink");
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuTextEditSink::QueryInterface(
     /* [in] */ REFIID riid,
     /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
+    LogUtil::LogInfo("CBaiLuKeyEventSink::QueryInterface");
     return 0;
 }
 
@@ -36,5 +38,6 @@ HRESULT STDMETHODCALLTYPE CBaiLuTextEditSink::OnEndEdit(
     /* [in] */ TfEditCookie ecReadOnly,
     /* [in] */ __RPC__in_opt ITfEditRecord* pEditRecord)
 {
+    LogUtil::LogInfo("CBaiLuKeyEventSink::OnEndEdit");
     return 0;
 }
