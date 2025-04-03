@@ -3,17 +3,19 @@
 CBaiLuActiveLanguageProfileNotifySink::CBaiLuActiveLanguageProfileNotifySink()
 {
     m_refCount = 0;
+    LogUtil::LogInfo("CBaiLuActiveLanguageProfileNotifySink::CBaiLuActiveLanguageProfileNotifySink %d", m_refCount);
 }
 
 CBaiLuActiveLanguageProfileNotifySink::~CBaiLuActiveLanguageProfileNotifySink()
 {
-
+    LogUtil::LogInfo("CBaiLuActiveLanguageProfileNotifySink::~CBaiLuActiveLanguageProfileNotifySink %d", m_refCount);
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuActiveLanguageProfileNotifySink::QueryInterface(
     /* [in] */ REFIID riid,
     /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
+    LogUtil::LogInfo("CBaiLuActiveLanguageProfileNotifySink::QueryInterface %d", m_refCount);
     return 0;
 }
 

@@ -221,7 +221,7 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     else
     {
         GUID gid = riid;
-        LogUtil::LogInfo("UnKnown IID %x %x %x %x",gid.Data1,gid.Data2,gid.Data3,gid.Data4);
+        LogUtil::LogInfo("UnKnown IID %x %x %x",gid.Data1,gid.Data2,gid.Data3);
         *ppvObj = NULL;
     }
 
@@ -230,6 +230,12 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         LogUtil::LogTrace(__FILE__, __LINE__);
         AddRef();
         return S_OK;
+    }
+    else
+    {
+        LogUtil::LogInfo("QueryInterface Failed");
+        GUID gid = riid;
+        LogUtil::LogInfo("UnKnown IID %x %x %x", gid.Data1, gid.Data2, gid.Data3);
     }
 
     return E_NOINTERFACE;
