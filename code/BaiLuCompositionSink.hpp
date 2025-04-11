@@ -4,6 +4,8 @@
 class CBaiLuCompositionSink :public ITfCompositionSink
 {
 public:
+    static HRESULT CreateInstance(CBaiLuCompositionSink** pOut);
+protected:
 	CBaiLuCompositionSink();
 	virtual ~CBaiLuCompositionSink();
 public:

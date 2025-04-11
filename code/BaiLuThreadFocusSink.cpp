@@ -1,5 +1,16 @@
 #include "BaiLuThreadFocusSink.hpp"
 #include "Log.hpp"
+
+HRESULT CBaiLuThreadFocusSink::CreateInstance(CBaiLuThreadFocusSink** ppOut)
+{
+    CBaiLuThreadFocusSink* pInst = new CBaiLuThreadFocusSink();
+    if (nullptr != pInst && nullptr != ppOut)
+    {
+        *ppOut = pInst;
+        return S_OK;
+    }
+    return -1;
+}
 CBaiLuThreadFocusSink::CBaiLuThreadFocusSink()
 {
     LogUtil::LogInfo("CBaiLuThreadFocusSink::CBaiLuThreadFocusSink");

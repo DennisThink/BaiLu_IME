@@ -1,5 +1,17 @@
 #include "BaiLuCompositionSink.hpp"
 #include "Log.hpp"
+
+HRESULT CBaiLuCompositionSink::CreateInstance(CBaiLuCompositionSink** pOut)
+{
+    CBaiLuCompositionSink* pInst = new CBaiLuCompositionSink();
+    if (nullptr != pOut && nullptr != pInst)
+    {
+        *pOut = pInst;
+        return S_OK;
+    }
+    return -1;
+}
+
 CBaiLuCompositionSink::CBaiLuCompositionSink()
 {
     m_refCount = 0;

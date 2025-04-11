@@ -5,6 +5,8 @@
 class CBaiLuKeyEventSink :public ITfKeyEventSink
 {
 public:
+    static HRESULT CreateInstance(CBaiLuKeyEventSink** pOut);
+protected:
 	CBaiLuKeyEventSink();
 	virtual ~CBaiLuKeyEventSink();
 public:

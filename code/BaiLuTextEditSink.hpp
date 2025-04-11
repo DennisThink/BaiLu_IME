@@ -4,6 +4,8 @@
 class CBaiLuTextEditSink :public ITfTextEditSink
 {
 public:
+    static HRESULT CreateInstance(CBaiLuTextEditSink** pOut);
+protected:
     CBaiLuTextEditSink();
     virtual ~CBaiLuTextEditSink();
 public:

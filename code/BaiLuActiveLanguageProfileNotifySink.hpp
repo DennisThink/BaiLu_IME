@@ -4,6 +4,8 @@
 class CBaiLuActiveLanguageProfileNotifySink :public ITfActiveLanguageProfileNotifySink
 {
 public:
+    static HRESULT CreateInstance(CBaiLuActiveLanguageProfileNotifySink** ppOut);
+protected:
     CBaiLuActiveLanguageProfileNotifySink();
     virtual ~CBaiLuActiveLanguageProfileNotifySink();
 public:

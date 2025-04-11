@@ -1,5 +1,17 @@
 #include "BaiLuActiveLanguageProfileNotifySink.hpp"
 #include "Log.hpp"
+
+HRESULT CBaiLuActiveLanguageProfileNotifySink::CreateInstance(CBaiLuActiveLanguageProfileNotifySink** ppOut)
+{
+    CBaiLuActiveLanguageProfileNotifySink* pInst = new CBaiLuActiveLanguageProfileNotifySink();
+    if (nullptr != pInst && nullptr != ppOut)
+    {
+        *ppOut = pInst;
+        return S_OK;
+    }
+    return -1;
+}
+
 CBaiLuActiveLanguageProfileNotifySink::CBaiLuActiveLanguageProfileNotifySink()
 {
     m_refCount = 0;

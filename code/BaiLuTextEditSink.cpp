@@ -1,5 +1,17 @@
 #include "BaiLuTextEditSink.hpp"
 #include "Log.hpp"
+
+HRESULT CBaiLuTextEditSink::CreateInstance(CBaiLuTextEditSink** pOut)
+{
+    CBaiLuTextEditSink* pInst = new CBaiLuTextEditSink();
+    if ((nullptr != pInst) && 
+        (pOut != nullptr))
+    {
+        *pOut = pInst;
+        return S_OK;
+    }
+    return -1;
+}
 CBaiLuTextEditSink::CBaiLuTextEditSink()
 {
     LogUtil::LogInfo("CBaiLuKeyEventSink::CBaiLuTextEditSink");

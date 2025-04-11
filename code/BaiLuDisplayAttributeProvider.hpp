@@ -4,6 +4,8 @@
 class CBaiLuDisplayAttributeProvider :public ITfDisplayAttributeProvider
 {
 public:
+    static HRESULT CreateInstance(CBaiLuDisplayAttributeProvider** ppOut);
+protected:
 	CBaiLuDisplayAttributeProvider();
 	virtual ~CBaiLuDisplayAttributeProvider();
 public:

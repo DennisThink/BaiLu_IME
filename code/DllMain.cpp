@@ -13,8 +13,11 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID pvReserved)
         case DLL_PROCESS_ATTACH: {
             LogUtil::OpenLogFile();
             LogUtil::LogInfo("DLL_PROCESS_ATTACH");
+            if (!InitializeCriticalSectionAndSpinCount(&GlobalValue::g_cs, 0))
+            {
+                return FALSE;
+            }
             GlobalValue::UnSetClassFactoryInitValue();
-            InitializeCriticalSection(&GlobalValue::g_cs);
             GlobalValue::SetClassFactoryInitValue();
             GlobalValue::SetInstanceHandle(hInstance);
 
@@ -24,7 +27,7 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID pvReserved)
             LogUtil::LogInfo("DLL_PROCESS_DETACH");
             LogUtil::CloseLogFile();
             GlobalValue::UnSetClassFactoryInitValue();
-            //DeleteCriticalSection(&GlobalValue::g_cs);
+            DeleteCriticalSection(&GlobalValue::g_cs);
         }break;
 
         case DLL_THREAD_ATTACH: {

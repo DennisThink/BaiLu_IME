@@ -4,6 +4,8 @@
 class CBaiLuFnGetPreferredTouchKeyBoardLayout :public ITfFnGetPreferredTouchKeyboardLayout
 {
 public:
+    static HRESULT CreateInstance(CBaiLuFnGetPreferredTouchKeyBoardLayout** ppOut); 
+protected:
     CBaiLuFnGetPreferredTouchKeyBoardLayout();
     virtual ~CBaiLuFnGetPreferredTouchKeyBoardLayout();
 public:

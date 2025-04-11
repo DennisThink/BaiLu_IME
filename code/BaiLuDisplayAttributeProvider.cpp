@@ -1,5 +1,17 @@
 #include "BaiLuDisplayAttributeProvider.hpp"
 #include "Log.hpp"
+
+HRESULT CBaiLuDisplayAttributeProvider::CreateInstance(CBaiLuDisplayAttributeProvider** ppOut)
+{
+    CBaiLuDisplayAttributeProvider* pInst = new CBaiLuDisplayAttributeProvider();
+    if (nullptr != pInst && nullptr != ppOut)
+    {
+        *ppOut = pInst;
+        return S_OK;
+    }
+    return -1;
+}
+
 CBaiLuDisplayAttributeProvider::CBaiLuDisplayAttributeProvider()
 {
     LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::CBaiLuDisplayAttributeProvider");

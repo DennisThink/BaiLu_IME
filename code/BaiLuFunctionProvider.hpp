@@ -4,6 +4,8 @@
 class CBaiLuFunctionProvider :public ITfFunctionProvider
 {
 public:
+    static HRESULT CreateInstance(CBaiLuFunctionProvider** ppOut);
+protected:
     CBaiLuFunctionProvider();
     virtual ~CBaiLuFunctionProvider();
 public:

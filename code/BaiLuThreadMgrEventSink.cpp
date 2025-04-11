@@ -1,11 +1,24 @@
 #include "BaiLuThreadMgrEventSink.hpp"
 #include "Log.hpp"
 
-
+HRESULT CBaiLuThreadMgrEventSink::CreateInstance(CBaiLuThreadMgrEventSink** pInst)
+{
+    CBaiLuThreadMgrEventSink* pOut = new CBaiLuThreadMgrEventSink();
+    if (nullptr != pOut && pInst != nullptr)
+    {
+        *pInst = pOut;
+        return S_OK;
+    }
+    return -1;
+}
 CBaiLuThreadMgrEventSink::CBaiLuThreadMgrEventSink()
 {
     LogUtil::LogInfo("CBaiLuThreadMgrEventSink::CBaiLuThreadMgrEventSink");
     m_refCount = 0;
+    m_pPrevTfDocumentMgr = nullptr;
+    m_pCurTfDocumentMgr = nullptr;
+    m_pCurTfContext = nullptr;
+
 }
 
 CBaiLuThreadMgrEventSink::~CBaiLuThreadMgrEventSink()

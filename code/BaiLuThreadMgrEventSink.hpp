@@ -4,6 +4,8 @@
 class CBaiLuThreadMgrEventSink:public ITfThreadMgrEventSink
 {
 public:
+    static HRESULT CreateInstance(CBaiLuThreadMgrEventSink** pInst);
+protected:
     CBaiLuThreadMgrEventSink();
     virtual ~CBaiLuThreadMgrEventSink();
 public:

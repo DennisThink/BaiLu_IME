@@ -4,6 +4,8 @@
 class CBaiLuThreadFocusSink :public ITfThreadFocusSink
 {
 public:
+    static HRESULT CreateInstance(CBaiLuThreadFocusSink** ppOut);
+protected:
     CBaiLuThreadFocusSink();
     virtual ~CBaiLuThreadFocusSink();
 public:

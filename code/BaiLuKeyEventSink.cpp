@@ -1,5 +1,15 @@
 #include "BaiLuKeyEventSink.hpp"
 #include "Log.hpp"
+HRESULT CBaiLuKeyEventSink::CreateInstance(CBaiLuKeyEventSink** pOut)
+{
+	CBaiLuKeyEventSink* pInst = new CBaiLuKeyEventSink();
+	if (nullptr != pInst&& pOut != nullptr)
+	{
+		*pOut = pInst;
+		return S_OK;
+	}
+	return -1;
+}
 CBaiLuKeyEventSink::CBaiLuKeyEventSink()
 {
 	m_refCount = 0;

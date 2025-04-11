@@ -1,5 +1,17 @@
 #include "BaiLuFnGetPreferredTouchKeyboardLayout.hpp"
 #include "Log.hpp"
+
+HRESULT CBaiLuFnGetPreferredTouchKeyBoardLayout::CreateInstance(CBaiLuFnGetPreferredTouchKeyBoardLayout** ppOut)
+{
+    CBaiLuFnGetPreferredTouchKeyBoardLayout* pInst = new CBaiLuFnGetPreferredTouchKeyBoardLayout();
+    if (nullptr != pInst && nullptr != ppOut)
+    {
+        *ppOut = pInst;
+        return S_OK;
+    }
+    return -1;
+}
+
 CBaiLuFnGetPreferredTouchKeyBoardLayout::CBaiLuFnGetPreferredTouchKeyBoardLayout()
 {
     LogUtil::LogInfo("CBaiLuFnGetPreferredTouchKeyBoardLayout::CBaiLuFnGetPreferredTouchKeyBoardLayout");

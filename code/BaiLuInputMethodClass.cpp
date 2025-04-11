@@ -6,13 +6,21 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::CBaiLuInputMethodClass");
     m_refCount = 0;
-    m_pKeyEventSink = nullptr;
-    m_pThreadMgrEventSink = nullptr;
-    m_pCompositionSink = nullptr;
+    m_pKeyEventSink=nullptr;
+    m_pThreadMgrEventSink=nullptr;
+    m_pTextEditSink=nullptr;
+    m_pCompositionSink=nullptr;
+    m_pDispalyAttributeProvider=nullptr;
+    m_pThreadFocusSink=nullptr;
+    m_pFunctionProvider=nullptr;
+    m_pBoarderLayout=nullptr;
+    m_pNotifySink=nullptr;
 
     {
-        CBaiLuKeyEventSink* pSink = new CBaiLuKeyEventSink();
-        if (nullptr != pSink)
+        CBaiLuKeyEventSink* pSink = nullptr;
+        HRESULT hr = CBaiLuKeyEventSink::CreateInstance(&pSink);
+        if ( SUCCEEDED(hr) && 
+             (nullptr != pSink) )
         {
             m_pKeyEventSink = pSink;
             pSink = nullptr;
@@ -20,7 +28,8 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
     }
     {
-        CBaiLuThreadMgrEventSink* pSink = new CBaiLuThreadMgrEventSink();
+        CBaiLuThreadMgrEventSink* pSink = nullptr;
+        HRESULT hr = CBaiLuThreadMgrEventSink::CreateInstance(&pSink);
         if (nullptr != pSink)
         {
             m_pThreadMgrEventSink = pSink;
@@ -29,7 +38,8 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
     }
     {
-        CBaiLuTextEditSink* pSink = new CBaiLuTextEditSink();
+        CBaiLuTextEditSink* pSink = nullptr;
+        HRESULT hr = CBaiLuTextEditSink::CreateInstance(&pSink);
         if (nullptr != pSink)
         {
             m_pTextEditSink = pSink;
@@ -38,7 +48,8 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
     }
     {
-        CBaiLuCompositionSink* pSink = new CBaiLuCompositionSink();
+        CBaiLuCompositionSink* pSink = nullptr;
+        HRESULT hr = CBaiLuCompositionSink::CreateInstance(&pSink);
         if (nullptr != pSink)
         {
             m_pCompositionSink = pSink;
@@ -48,7 +59,8 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
     }
 
     {
-        CBaiLuDisplayAttributeProvider* pProvider = new CBaiLuDisplayAttributeProvider();
+        CBaiLuDisplayAttributeProvider* pProvider = nullptr;
+        HRESULT hr = CBaiLuDisplayAttributeProvider::CreateInstance(&pProvider);
         if (nullptr != pProvider)
         {
             m_pDispalyAttributeProvider = pProvider;
@@ -57,9 +69,10 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
     }
     {
-        CBaiLuThreadFocusSink* pSink = new CBaiLuThreadFocusSink();
+        CBaiLuThreadFocusSink* pSink = nullptr;
+        HRESULT hr = CBaiLuThreadFocusSink::CreateInstance(&pSink);
         if (nullptr != pSink)
-        {
+        { 
             m_pThreadFocusSink = pSink;
             pSink = nullptr;
             this->m_pThreadFocusSink->AddRef();
@@ -67,16 +80,18 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
     }
 
     {
-        CBaiLuFunctionProvider* pProvider = new CBaiLuFunctionProvider();
-        if (nullptr != pProvider)
+        CBaiLuFunctionProvider* pSink = nullptr;
+        HRESULT hr = CBaiLuFunctionProvider::CreateInstance(&pSink);
+        if (nullptr != pSink)
         {
-            m_pFunctionProvider = pProvider;
-            pProvider = nullptr;
+            m_pFunctionProvider = pSink;
+            pSink = nullptr;
             this->m_pFunctionProvider->AddRef();
         }
     }
     {
-        CBaiLuFnGetPreferredTouchKeyBoardLayout* pLayout = new CBaiLuFnGetPreferredTouchKeyBoardLayout();
+        CBaiLuFnGetPreferredTouchKeyBoardLayout* pLayout = nullptr;
+        HRESULT hr = CBaiLuFnGetPreferredTouchKeyBoardLayout::CreateInstance(&pLayout);
         if (nullptr != pLayout)
         {
             m_pBoarderLayout = pLayout;
@@ -86,7 +101,8 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
 
     }
     {
-        CBaiLuActiveLanguageProfileNotifySink* pSink = new CBaiLuActiveLanguageProfileNotifySink();
+        CBaiLuActiveLanguageProfileNotifySink* pSink = nullptr;
+        HRESULT hr = CBaiLuActiveLanguageProfileNotifySink::CreateInstance(&pSink);
         if (nullptr != pSink)
         {
             m_pNotifySink = pSink;
@@ -105,8 +121,8 @@ CBaiLuInputMethodClass::~CBaiLuInputMethodClass()
 // IUnknown
 STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void** ppvObj)
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::QueryInterface");
-    if (ppvObj == nullptr)
+    LogUtil::LogInfo("CBaiLuInputMethodClass::QueryInterface Begin");
+    if (ppvObj == NULL)
     {
         LogUtil::LogTrace(__FILE__, __LINE__);
         return E_INVALIDARG;
@@ -144,7 +160,6 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
             this->m_pTextEditSink->AddRef();
             *ppvObj = this->m_pTextEditSink;
         }
-
     }
     else if (IsEqualIID(riid, IID_ITfKeyEventSink))
     {
@@ -222,23 +237,16 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     {
         GUID gid = riid;
         LogUtil::LogInfo("UnKnown IID %x %x %x",gid.Data1,gid.Data2,gid.Data3);
-        *ppvObj = NULL;
     }
 
     if (*ppvObj != NULL)
     {
         LogUtil::LogTrace(__FILE__, __LINE__);
-        AddRef();
         return S_OK;
     }
-    else
-    {
-        LogUtil::LogInfo("QueryInterface Failed");
-        GUID gid = riid;
-        LogUtil::LogInfo("UnKnown IID %x %x %x", gid.Data1, gid.Data2, gid.Data3);
-    }
-
-    return E_NOINTERFACE;
+    HRESULT hr = E_NOINTERFACE;
+    LogUtil::LogInfo("CBaiLuInputMethodClass::QueryInterface End");
+    return hr;
 }
 
 STDMETHODIMP_(ULONG) CBaiLuInputMethodClass::AddRef(void)
@@ -275,7 +283,7 @@ STDMETHODIMP CBaiLuInputMethodClass::ActivateEx(ITfThreadMgr* pThreadMgr, TfClie
         {
             goto ExitError;
         }
-        if (!InitActiveLanguageProfileNotifySink())
+        /*if (!InitActiveLanguageProfileNotifySink())
         {
             goto ExitError;
         }
@@ -294,26 +302,26 @@ STDMETHODIMP CBaiLuInputMethodClass::ActivateEx(ITfThreadMgr* pThreadMgr, TfClie
         if (!InitTextProcessorEngineSink())
         {
             goto ExitError;
-        }
+        }*/
         return S_OK;
 
 ExitError:
         Deactivate();
         return E_FAIL;
     }
-    return 0;
+    return S_OK;
 }
 STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::Deactivate");
     UnInitThreadMgrEventSink();
     UnInitKeyEventSink();
-    UnInitActiveLanguageProfileNotifySink();
+    /*UnInitActiveLanguageProfileNotifySink();
     UnInitThreadFocusSink();
     UnInitDisplayAttributeGuidAtomSink();
     UnInitFunctionProviderSink();
-    UnInitTextProcessorEngineSink();
-    return 0;
+    UnInitTextProcessorEngineSink();*/
+    return S_OK;
 }
 
 

@@ -1,5 +1,18 @@
 #include "BaiLuFunctionProvider.hpp"
 #include "Log.hpp"
+
+HRESULT CBaiLuFunctionProvider::CreateInstance(CBaiLuFunctionProvider** ppOut)
+{
+    CBaiLuFunctionProvider* pInst = new CBaiLuFunctionProvider();
+    if (nullptr != pInst && ppOut != nullptr)
+    {
+        *ppOut = pInst;
+        return S_OK;
+    }
+    return -1;
+}
+
+
 CBaiLuFunctionProvider::CBaiLuFunctionProvider()
 {
     LogUtil::LogInfo("CBaiLuFunctionProvider::CBaiLuFunctionProvider");
