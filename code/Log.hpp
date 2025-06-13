@@ -6,6 +6,7 @@ namespace LogUtil
     void OpenLogFile();
     void LogInfo(const char * formatStr, ...);
     void LogTrace(const char* pFileName, const int line);
+    void LogError(const char* pFileName, const int line);
     void CloseLogFile();
 };
 #endif

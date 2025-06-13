@@ -18,7 +18,6 @@ CBaiLuThreadMgrEventSink::CBaiLuThreadMgrEventSink()
     m_pPrevTfDocumentMgr = nullptr;
     m_pCurTfDocumentMgr = nullptr;
     m_pCurTfContext = nullptr;
-
 }
 
 CBaiLuThreadMgrEventSink::~CBaiLuThreadMgrEventSink()
@@ -32,7 +31,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::QueryInterface(
     /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
     LogUtil::LogInfo("CBaiLuThreadMgrEventSink::QueryInterface");
-    return 0;
+    return -1;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::AddRef(void)
@@ -48,39 +47,56 @@ ULONG STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::Release(void)
     LogUtil::LogInfo("CBaiLuThreadMgrEventSink::Release %d", m_refCount);
     return m_refCount;
 }
-
+void CBaiLuThreadMgrEventSink::CheckRefCount() const
+{
+    LogUtil::LogInfo("CBaiLuThreadMgrEventSink::CheckRefCount %d", m_refCount);
+}
 // ITfThreadMgrEventSink
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnInitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr)
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnInitDocumentMgr");
-    this->m_pCurTfDocumentMgr = pDocMgr;
-    return 0;
+    
+    if (nullptr != pDocMgr)
+    {
+        LogUtil::LogInfo("CBaiLuInputMethodClass::OnInitDocumentMgr Succeed");
+        //this->m_pCurTfDocumentMgr = pDocMgr;
+        //this->m_pCurTfDocumentMgr->AddRef();
+        return S_OK;
+    }
+    else
+    {
+        LogUtil::LogInfo("CBaiLuInputMethodClass::OnInitDocumentMgr Param Error");
+        return -1;
+    }
 }
 
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnUninitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr)
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::OnUninitDocumentMgr");
+    /*if (nullptr != this->m_pCurTfDocumentMgr)
+    {
+        this->m_pCurTfDocumentMgr->Release();
+    }*/
     return 0;
 }
 
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnSetFocus(_In_ ITfDocumentMgr* pDocMgrFocus, _In_ ITfDocumentMgr* pDocMgrPrevFocus)
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetFocus");
-    this->m_pPrevTfDocumentMgr = pDocMgrPrevFocus;
-    this->m_pCurTfDocumentMgr = pDocMgrFocus;
-    return 0;
+    //this->m_pPrevTfDocumentMgr = pDocMgrPrevFocus;
+    //this->m_pCurTfDocumentMgr = pDocMgrFocus;
+    return S_OK;
 }
 
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnPushContext(_In_ ITfContext* pContext)
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::OnPushContext");
-    m_pCurTfContext = pContext;
+    //m_pCurTfContext = pContext;
     return 0;
 }
 
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnPopContext(_In_ ITfContext* pContext)
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::OnPopContext");
-    m_pCurTfContext = pContext;
+    //m_pCurTfContext = pContext;
     return 0;
 }

@@ -52,13 +52,13 @@ STDAPI  DllGetClassObject(
             }
             else
             {
-                LogUtil::LogTrace(__FILE__, __LINE__);
+                LogUtil::LogError(__FILE__, __LINE__);
             }
             LeaveCriticalSection(&GlobalValue::g_cs);
         }
         else
         {
-            LogUtil::LogTrace(__FILE__, __LINE__);
+            LogUtil::LogError(__FILE__, __LINE__);
         }
 
         if (IsEqualIID(riid, IID_IClassFactory) ||
@@ -79,13 +79,13 @@ STDAPI  DllGetClassObject(
                 }
                 else
                 {
-                    LogUtil::LogTrace(__FILE__, __LINE__);
+                    LogUtil::LogError(__FILE__, __LINE__);
                 }
             }
         }
         else
         {
-            LogUtil::LogTrace(__FILE__, __LINE__);
+            LogUtil::LogError(__FILE__, __LINE__);
         }
         LogUtil::LogTrace(__FILE__, __LINE__);
         *ppv = nullptr;
@@ -95,7 +95,7 @@ STDAPI  DllGetClassObject(
     else
     {
         *ppv = nullptr;
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        LogUtil::LogError(__FILE__, __LINE__);
         return CLASS_E_CLASSNOTAVAILABLE;
     }
 }

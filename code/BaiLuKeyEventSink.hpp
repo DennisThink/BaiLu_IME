@@ -17,6 +17,7 @@ public:
     virtual ULONG STDMETHODCALLTYPE AddRef(void)override;
 
     virtual ULONG STDMETHODCALLTYPE Release(void)override;
+    void CheckRefCount() const;
 public:
     virtual HRESULT STDMETHODCALLTYPE OnSetFocus(
         /* [in] */ BOOL fForeground) override;

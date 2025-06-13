@@ -101,6 +101,11 @@ ULONG STDMETHODCALLTYPE CBaiLuKeyEventSink::Release(void)
 	LogUtil::LogInfo("CBaiLuKeyEventSink::Release %d", m_refCount);
 	return m_refCount;
 }
+
+void CBaiLuKeyEventSink::CheckRefCount() const
+{
+	LogUtil::LogInfo("CBaiLuKeyEventSink::CheckRefCount %d", m_refCount);
+}
 std::string CBaiLuKeyEventSink::VirtualKeyCodeToString(UINT vkCode) {
 	// 用于存储键名的缓冲区
 	char keyName[256] = { 0 };

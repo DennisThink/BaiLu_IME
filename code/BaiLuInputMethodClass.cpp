@@ -23,8 +23,12 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
              (nullptr != pSink) )
         {
             m_pKeyEventSink = pSink;
-            pSink = nullptr;
             m_pKeyEventSink->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
     }
     {
@@ -33,8 +37,12 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         if (nullptr != pSink)
         {
             m_pThreadMgrEventSink = pSink;
-            pSink = nullptr;
             m_pThreadMgrEventSink->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
     }
     {
@@ -43,8 +51,12 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         if (nullptr != pSink)
         {
             m_pTextEditSink = pSink;
-            pSink = nullptr;
             m_pTextEditSink->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
     }
     {
@@ -53,8 +65,12 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         if (nullptr != pSink)
         {
             m_pCompositionSink = pSink;
-            pSink = nullptr;
             m_pCompositionSink->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
     }
 
@@ -64,8 +80,12 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         if (nullptr != pProvider)
         {
             m_pDispalyAttributeProvider = pProvider;
-            pProvider = nullptr;
             m_pDispalyAttributeProvider->AddRef();
+            pProvider = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
     }
     {
@@ -74,8 +94,12 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         if (nullptr != pSink)
         { 
             m_pThreadFocusSink = pSink;
-            pSink = nullptr;
             this->m_pThreadFocusSink->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
     }
 
@@ -85,8 +109,12 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         if (nullptr != pSink)
         {
             m_pFunctionProvider = pSink;
-            pSink = nullptr;
             this->m_pFunctionProvider->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
     }
     {
@@ -95,8 +123,12 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         if (nullptr != pLayout)
         {
             m_pBoarderLayout = pLayout;
-            pLayout = nullptr;
             m_pBoarderLayout->AddRef();
+            pLayout = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
 
     }
@@ -108,6 +140,10 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
             m_pNotifySink = pSink;
             m_pNotifySink->AddRef();
             pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
     }
     AddRef();
@@ -124,7 +160,7 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     LogUtil::LogInfo("CBaiLuInputMethodClass::QueryInterface Begin");
     if (ppvObj == NULL)
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        LogUtil::LogError(__FILE__, __LINE__);
         return E_INVALIDARG;
     }
 
@@ -142,6 +178,15 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         LogUtil::LogTrace(__FILE__, __LINE__);
         AddRef();
         *ppvObj = (ITfTextInputProcessorEx*)this;
+    }
+    else if (IsEqualIID(riid, IID_ITfKeyEventSink))
+    {
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        if (nullptr != this->m_pKeyEventSink)
+        {
+            m_pKeyEventSink->AddRef();
+            *ppvObj = (m_pKeyEventSink);
+        }
     }
     else if (IsEqualIID(riid, IID_ITfThreadMgrEventSink))
     {
@@ -161,15 +206,7 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
             *ppvObj = this->m_pTextEditSink;
         }
     }
-    else if (IsEqualIID(riid, IID_ITfKeyEventSink))
-    {
-        LogUtil::LogTrace(__FILE__, __LINE__);
-        if (nullptr != this->m_pKeyEventSink)
-        {
-            m_pKeyEventSink->AddRef();
-            *ppvObj = (m_pKeyEventSink);
-        }
-    }
+
     else if (IsEqualIID(riid, IID_ITfActiveLanguageProfileNotifySink))
     {
         LogUtil::LogTrace(__FILE__, __LINE__);
@@ -277,14 +314,17 @@ STDMETHODIMP CBaiLuInputMethodClass::ActivateEx(ITfThreadMgr* pThreadMgr, TfClie
     {
         if (!InitThreadMgrEventSink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
         if (!InitKeyEventSink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
-        /*if (!InitActiveLanguageProfileNotifySink())
+        if (!InitActiveLanguageProfileNotifySink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
         if (!InitThreadFocusSink())
@@ -302,7 +342,7 @@ STDMETHODIMP CBaiLuInputMethodClass::ActivateEx(ITfThreadMgr* pThreadMgr, TfClie
         if (!InitTextProcessorEngineSink())
         {
             goto ExitError;
-        }*/
+        }
         return S_OK;
 
 ExitError:
@@ -316,11 +356,11 @@ STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
     LogUtil::LogInfo("CBaiLuInputMethodClass::Deactivate");
     UnInitThreadMgrEventSink();
     UnInitKeyEventSink();
-    /*UnInitActiveLanguageProfileNotifySink();
     UnInitThreadFocusSink();
+    UnInitActiveLanguageProfileNotifySink();
     UnInitDisplayAttributeGuidAtomSink();
     UnInitFunctionProviderSink();
-    UnInitTextProcessorEngineSink();*/
+    UnInitTextProcessorEngineSink();
     return S_OK;
 }
 
@@ -347,22 +387,33 @@ bool CBaiLuInputMethodClass::InitThreadMgrEventSink()
     LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadMgrEventSink");
     ITfSource* pSource = nullptr;
     bool bRet = false;
-    auto qResult = m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)(&pSource));
-    if (FAILED(qResult))
+    HRESULT qResult = m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)(&pSource));
+    if (FAILED(qResult) && (nullptr != pSource))
     {
+        LogUtil::LogError(__FILE__, __LINE__);
         return bRet;
+    }
+
+    if (m_pThreadMgrEventSink)
+    {
+        m_pThreadMgrEventSink->CheckRefCount();
     }
     DWORD cookie= TF_INVALID_COOKIE;
     qResult = pSource->AdviseSink(IID_ITfThreadMgrEventSink,
         m_pThreadMgrEventSink,
         &cookie);
+    if (m_pThreadMgrEventSink)
+    {
+        m_pThreadMgrEventSink->CheckRefCount();
+    }
     if (FAILED(qResult))
     {
+        LogUtil::LogError(__FILE__, __LINE__);
+        LogUtil::LogInfo("HRESULT %ld", (long)(qResult));
         cookie = TF_INVALID_COOKIE;
     }
     else
     {
-        
         bRet = true;
     }
     m_threadMgrEventSinkCookie = cookie;
@@ -380,10 +431,22 @@ bool CBaiLuInputMethodClass::InitKeyEventSink()
         return bRet;
     }
     HRESULT hR = S_OK;
+    if (m_pKeyEventSink)
+    {
+        m_pKeyEventSink->CheckRefCount();
+    }
     hR = pKeyStrokeMgr->AdviseKeyEventSink(this->m_tfClientId,
         m_pKeyEventSink,
         TRUE);
+    if (m_pKeyEventSink)
+    {
+        m_pKeyEventSink->CheckRefCount();
+    }
     pKeyStrokeMgr->Release();
+    if (m_pKeyEventSink)
+    {
+        m_pKeyEventSink->CheckRefCount();
+    }
     return (hR == S_OK);
 }
 

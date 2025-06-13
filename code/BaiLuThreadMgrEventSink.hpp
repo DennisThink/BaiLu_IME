@@ -17,6 +17,8 @@ public:
     virtual ULONG STDMETHODCALLTYPE AddRef(void)override;
 
     virtual ULONG STDMETHODCALLTYPE Release(void)override;
+
+    void CheckRefCount() const;
 public:
     // ITfThreadMgrEventSink
     STDMETHODIMP OnInitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr) override;
