@@ -1,4 +1,5 @@
 #include "GlobalValues.hpp"
+#include <Psapi.h>
 namespace GlobalValue
 {
     static HINSTANCE g_dllInstanceHandle=0;
@@ -59,8 +60,8 @@ namespace GlobalValue
     }
     LANGID GetLanguageId()
     {
-        //LANGID result = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
-        LANGID result = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+        LANGID result = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
+        //LANGID result = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
         return result;
     }
     bool SetInstanceHandle(HINSTANCE hInstance)
@@ -146,6 +147,19 @@ namespace GlobalValue
 
         pTemp[j++] = L'}';
         return TRUE;
+    }
+
+    std::string GetProcessName(DWORD pid)
+    {
+        std::string result = "UNKNOWN";
+        HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
+        if (hProcess != NULL) {
+            char buffer[MAX_PATH];
+            GetModuleBaseNameA(hProcess, NULL, buffer, MAX_PATH);
+            result = std::string(buffer);
+            CloseHandle(hProcess);
+        }
+        return result;
     }
 }
 

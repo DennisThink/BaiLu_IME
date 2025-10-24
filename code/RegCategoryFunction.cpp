@@ -3,15 +3,9 @@
 #include "private.hpp"
 #include "GlobalValues.hpp"
 static const GUID SupportCategories[] = {
-    GUID_TFCAT_TIP_KEYBOARD,
-    GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER,
-    GUID_TFCAT_TIPCAP_UIELEMENTENABLED,
-    GUID_TFCAT_TIPCAP_SECUREMODE,
-    GUID_TFCAT_TIPCAP_COMLESS,
-    GUID_TFCAT_TIPCAP_INPUTMODECOMPARTMENT,
-    GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT,
-    GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT,
+    GUID_TFCAT_TIP_KEYBOARD
 };
+
 bool CRegCategoryFunction::InstallRegCategory()
 {
     LogUtil::LogInfo(("RegisterCategories"));
@@ -21,7 +15,7 @@ bool CRegCategoryFunction::InstallRegCategory()
     hr = CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_ITfCategoryMgr, (void**)&pCategoryMgr);
     if (FAILED(hr))
     {
-        return FALSE;
+        return false;
     }
 
     for each(GUID guid in SupportCategories)

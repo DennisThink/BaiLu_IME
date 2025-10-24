@@ -1,97 +1,325 @@
 #include "BaiLuInputMethodClass.hpp"
 #include "GlobalValues.hpp"
+#include "BaiLuInputProcessorProfileAgent.hpp"
 #include "Log.hpp"
 CBaiLuInputMethodClass::CBaiLuInputMethodClass()
 {
+    LogUtil::LogInfo("CBaiLuInputMethodClass::CBaiLuInputMethodClass");
     m_refCount = 0;
-    m_pKeyEventSink = nullptr;
+    m_pKeyEventSink=nullptr;
+    m_pThreadMgrEventSink=nullptr;
+    m_pTextEditSink=nullptr;
+    m_pCompositionSink=nullptr;
+    m_pDispalyAttributeProvider=nullptr;
+    m_pThreadFocusSink=nullptr;
+    m_pFunctionProvider=nullptr;
+    m_pBoarderLayout=nullptr;
+    m_pNotifySink=nullptr;
 
-    CBaiLuKeyEventSink * pSink = new CBaiLuKeyEventSink();
-    if (nullptr != pSink)
     {
-        m_pKeyEventSink = pSink;
-        pSink = nullptr;
-        m_pKeyEventSink->AddRef();
-    }   
+        CBaiLuKeyEventSink* pSink = nullptr;
+        HRESULT hr = CBaiLuKeyEventSink::CreateInstance(&pSink);
+        if ( SUCCEEDED(hr) && 
+             (nullptr != pSink) )
+        {
+            m_pKeyEventSink = pSink;
+            m_pKeyEventSink->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
+    }
+    {
+        CBaiLuThreadMgrEventSink* pSink = nullptr;
+        HRESULT hr = CBaiLuThreadMgrEventSink::CreateInstance(&pSink);
+        if (nullptr != pSink)
+        {
+            m_pThreadMgrEventSink = pSink;
+            m_pThreadMgrEventSink->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
+    }
+    {
+        CBaiLuTextEditSink* pSink = nullptr;
+        HRESULT hr = CBaiLuTextEditSink::CreateInstance(&pSink);
+        if (nullptr != pSink)
+        {
+            m_pTextEditSink = pSink;
+            m_pTextEditSink->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
+    }
+    {
+        CBaiLuCompositionSink* pSink = nullptr;
+        HRESULT hr = CBaiLuCompositionSink::CreateInstance(&pSink);
+        if (nullptr != pSink)
+        {
+            m_pCompositionSink = pSink;
+            m_pCompositionSink->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
+    }
+
+    {
+        CBaiLuDisplayAttributeProvider* pProvider = nullptr;
+        HRESULT hr = CBaiLuDisplayAttributeProvider::CreateInstance(&pProvider);
+        if (nullptr != pProvider)
+        {
+            m_pDispalyAttributeProvider = pProvider;
+            m_pDispalyAttributeProvider->AddRef();
+            pProvider = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
+    }
+    {
+        CBaiLuThreadFocusSink* pSink = nullptr;
+        HRESULT hr = CBaiLuThreadFocusSink::CreateInstance(&pSink);
+        if (nullptr != pSink)
+        { 
+            m_pThreadFocusSink = pSink;
+            this->m_pThreadFocusSink->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
+    }
+
+    {
+        CBaiLuFunctionProvider* pSink = nullptr;
+        HRESULT hr = CBaiLuFunctionProvider::CreateInstance(&pSink);
+        if (nullptr != pSink)
+        {
+            m_pFunctionProvider = pSink;
+            this->m_pFunctionProvider->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
+    }
+    {
+        CBaiLuFnGetPreferredTouchKeyBoardLayout* pLayout = nullptr;
+        HRESULT hr = CBaiLuFnGetPreferredTouchKeyBoardLayout::CreateInstance(&pLayout);
+        if (nullptr != pLayout)
+        {
+            m_pBoarderLayout = pLayout;
+            m_pBoarderLayout->AddRef();
+            pLayout = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
+
+    }
+    {
+        CBaiLuActiveLanguageProfileNotifySink* pSink = nullptr;
+        HRESULT hr = CBaiLuActiveLanguageProfileNotifySink::CreateInstance(&pSink);
+        if (nullptr != pSink)
+        {
+            m_pNotifySink = pSink;
+            m_pNotifySink->AddRef();
+            pSink = nullptr;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
+    }
+    AddRef();
 }
 
 CBaiLuInputMethodClass::~CBaiLuInputMethodClass()
 {
-    
+    LogUtil::LogInfo("CBaiLuInputMethodClass::~CBaiLuInputMethodClass");
 }
 
 // IUnknown
 STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void** ppvObj)
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::QueryInterface");
-    if (ppvObj == nullptr)
+    LogUtil::LogInfo("CBaiLuInputMethodClass::QueryInterface Begin");
+    if (ppvObj == NULL)
     {
+        LogUtil::LogError(__FILE__, __LINE__);
         return E_INVALIDARG;
     }
 
-    *ppvObj = nullptr;
+    *ppvObj = NULL;
 
     if (IsEqualIID(riid, IID_IUnknown) ||
         IsEqualIID(riid, IID_ITfTextInputProcessor))
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        AddRef();
         *ppvObj = (ITfTextInputProcessor*)this;
     }
     else if (IsEqualIID(riid, IID_ITfTextInputProcessorEx))
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        AddRef();
         *ppvObj = (ITfTextInputProcessorEx*)this;
-    }
-    else if (IsEqualIID(riid, IID_ITfThreadMgrEventSink))
-    {
-        *ppvObj = (ITfThreadMgrEventSink*)this;
-    }
-    else if (IsEqualIID(riid, IID_ITfTextEditSink))
-    {
-        *ppvObj = (ITfTextEditSink*)this;
     }
     else if (IsEqualIID(riid, IID_ITfKeyEventSink))
     {
+        LogUtil::LogTrace(__FILE__, __LINE__);
         if (nullptr != this->m_pKeyEventSink)
         {
             m_pKeyEventSink->AddRef();
-            *ppvObj = (ITfKeyEventSink*)(m_pKeyEventSink);
+            *ppvObj = (m_pKeyEventSink);
         }
-        //*ppvObj = (ITfKeyEventSink*)this;
     }
+    else if (IsEqualIID(riid, IID_ITfThreadMgrEventSink))
+    {
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        if (nullptr != this->m_pThreadMgrEventSink)
+        {
+            this->m_pThreadMgrEventSink->AddRef();
+            *ppvObj = this->m_pThreadMgrEventSink;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
+    }
+    else if (IsEqualIID(riid, IID_ITfTextEditSink))
+    {
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        if (nullptr != this->m_pTextEditSink)
+        {
+            this->m_pTextEditSink->AddRef();
+            *ppvObj = this->m_pTextEditSink;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
+    }
+
     else if (IsEqualIID(riid, IID_ITfActiveLanguageProfileNotifySink))
     {
-        *ppvObj = (ITfActiveLanguageProfileNotifySink*)this;
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        if (nullptr != m_pNotifySink)
+        {
+            m_pNotifySink->AddRef();
+            *ppvObj = m_pNotifySink;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
     }
     else if (IsEqualIID(riid, IID_ITfCompositionSink))
     {
-        *ppvObj = (ITfKeyEventSink*)this;
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        if (nullptr != this->m_pCompositionSink)
+        {
+            m_pCompositionSink->AddRef();
+            *ppvObj =m_pCompositionSink;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
     }
     else if (IsEqualIID(riid, IID_ITfDisplayAttributeProvider))
     {
-        *ppvObj = (ITfDisplayAttributeProvider*)this;
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        if (nullptr != this->m_pDispalyAttributeProvider)
+        {
+            *ppvObj = m_pDispalyAttributeProvider;
+            m_pDispalyAttributeProvider->AddRef();
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
     }
     else if (IsEqualIID(riid, IID_ITfThreadFocusSink))
     {
-        *ppvObj = (ITfThreadFocusSink*)this;
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        if (nullptr != m_pThreadFocusSink)
+        {
+            *ppvObj = m_pThreadFocusSink;
+            m_pThreadFocusSink->AddRef();
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
     }
     else if (IsEqualIID(riid, IID_ITfFunctionProvider))
     {
-        *ppvObj = (ITfFunctionProvider*)this;
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        if (nullptr != m_pFunctionProvider)
+        {
+            *ppvObj = m_pFunctionProvider;
+            m_pFunctionProvider->AddRef();
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
     }
     else if (IsEqualIID(riid, IID_ITfFunction))
     {
-        *ppvObj = (ITfFunction*)this;
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        if (nullptr != m_pBoarderLayout)
+        {
+            *ppvObj = m_pBoarderLayout;
+            m_pBoarderLayout->AddRef();
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
     }
     else if (IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
     {
-        *ppvObj = (ITfFnGetPreferredTouchKeyboardLayout*)this;
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        if (nullptr != m_pBoarderLayout)
+        {
+            *ppvObj = m_pBoarderLayout;
+            m_pBoarderLayout->AddRef();
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
+    }
+    else
+    {
+        GUID gid = riid;
+        LogUtil::LogInfo("UnKnown IID %x %x %x",gid.Data1,gid.Data2,gid.Data3);
     }
 
-    if (*ppvObj)
+    if (*ppvObj != NULL)
     {
-        AddRef();
+        LogUtil::LogTrace(__FILE__, __LINE__);
         return S_OK;
     }
-
+    LogUtil::LogInfo("CBaiLuInputMethodClass::QueryInterface End");
+    LogUtil::LogError(__FILE__, __LINE__);
+    *ppvObj = nullptr;
     return E_NOINTERFACE;
 }
 
@@ -118,173 +346,68 @@ STDMETHODIMP CBaiLuInputMethodClass::ActivateEx(ITfThreadMgr* pThreadMgr, TfClie
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::ActivateEx");
     this->m_pThreadMgr = pThreadMgr;
+    m_pThreadMgr->AddRef();
     this->m_tfClientId = tfClientId;
     this->m_dwFlags = dwFlags;
     {
         if (!InitThreadMgrEventSink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
         if (!InitKeyEventSink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
-        if (!InitActiveLanguageProfileNotifySink())
+        /*if (!InitActiveLanguageProfileNotifySink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
-        }
+        }*/
         if (!InitThreadFocusSink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
         if (!InitDisplayAttributeGuidAtomSink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
         if (!InitFunctionProviderSink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
         if (!InitTextProcessorEngineSink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
         return S_OK;
 
-ExitError:
+    ExitError:
+        LogUtil::LogError(__FILE__, __LINE__);
         Deactivate();
         return E_FAIL;
     }
-    return 0;
+    return S_OK;
 }
 STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::Deactivate");
     UnInitThreadMgrEventSink();
     UnInitKeyEventSink();
-    UnInitActiveLanguageProfileNotifySink();
     UnInitThreadFocusSink();
+    UnInitActiveLanguageProfileNotifySink();
     UnInitDisplayAttributeGuidAtomSink();
     UnInitFunctionProviderSink();
     UnInitTextProcessorEngineSink();
-    return 0;
+    return S_OK;
 }
 
-// ITfThreadMgrEventSink
-STDMETHODIMP CBaiLuInputMethodClass::OnInitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnInitDocumentMgr");
-    this->m_pCurTfDocumentMgr = pDocMgr;
-    return 0;
-}
 
-STDMETHODIMP CBaiLuInputMethodClass::OnUninitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnUninitDocumentMgr");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnSetFocus(_In_ ITfDocumentMgr* pDocMgrFocus, _In_ ITfDocumentMgr* pDocMgrPrevFocus)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetFocus");
-    this->m_pPrevTfDocumentMgr = pDocMgrPrevFocus;
-    this->m_pCurTfDocumentMgr = pDocMgrFocus;
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnPushContext(_In_ ITfContext* pContext)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnPushContext");
-    m_pCurTfContext = pContext;
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnPopContext(_In_ ITfContext* pContext)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnPopContext");
-    m_pCurTfContext = pContext;
-    return 0;
-}
-
-// ITfTextEditSink
-STDMETHODIMP CBaiLuInputMethodClass::OnEndEdit(__RPC__in_opt ITfContext* pContext, TfEditCookie ecReadOnly, __RPC__in_opt ITfEditRecord* pEditRecord)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnEndEdit");
-    return 0;
-}
-
-// ITfCompositionSink
-STDMETHODIMP CBaiLuInputMethodClass::OnCompositionTerminated(TfEditCookie ecWrite, _In_ ITfComposition* pComposition)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnCompositionTerminated");
-    return 0;
-}
-
-// ITfDisplayAttributeProvider
-STDMETHODIMP CBaiLuInputMethodClass::EnumDisplayAttributeInfo(__RPC__deref_out_opt IEnumTfDisplayAttributeInfo** ppEnum)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::EnumDisplayAttributeInfo");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::GetDisplayAttributeInfo(__RPC__in REFGUID guidInfo, __RPC__deref_out_opt ITfDisplayAttributeInfo** ppInfo)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::GetDisplayAttributeInfo");
-    return 0;
-}
-
-// ITfActiveLanguageProfileNotifySink
-STDMETHODIMP CBaiLuInputMethodClass::OnActivated(_In_ REFCLSID clsid, _In_ REFGUID guidProfile, _In_ BOOL isActivated)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnActivated");
-    return 0;
-}
-
-// ITfThreadFocusSink
-STDMETHODIMP CBaiLuInputMethodClass::OnSetThreadFocus()
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetThreadFocus");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::OnKillThreadFocus()
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnKillThreadFocus");
-    return 0;
-}
-
-// ITfFunctionProvider
-STDMETHODIMP CBaiLuInputMethodClass::GetType(__RPC__out GUID* pguid)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::GetType");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::GetDescription(__RPC__deref_out_opt BSTR* pbstrDesc)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::GetDescription");
-    return 0;
-}
-
-STDMETHODIMP CBaiLuInputMethodClass::GetFunction(__RPC__in REFGUID rguid, __RPC__in REFIID riid, __RPC__deref_out_opt IUnknown** ppunk)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::GetFunction");
-    return 0;
-}
-
-// ITfFunction
-STDMETHODIMP CBaiLuInputMethodClass::GetDisplayName(_Out_ BSTR* pbstrDisplayName)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::GetDisplayName");
-    return 0;
-}
-
-// ITfFnGetPreferredTouchKeyboardLayout, it is the Optimized layout feature.
-STDMETHODIMP CBaiLuInputMethodClass::GetLayout(_Out_ TKBLayoutType* ptkblayoutType, _Out_ WORD* pwPreferredLayoutId)
-{
-    LogUtil::LogInfo("CBaiLuInputMethodClass::GetLayout");
-    return 0;
-}
 
 
 CBaiLuInputMethodClass* CBaiLuInputMethodClass::m_pInstance = nullptr;
@@ -307,22 +430,38 @@ bool CBaiLuInputMethodClass::InitThreadMgrEventSink()
     LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadMgrEventSink");
     ITfSource* pSource = nullptr;
     bool bRet = false;
-    auto qResult = m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)(&pSource));
+    HRESULT qResult = m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)(&pSource));
     if (FAILED(qResult))
     {
+        LogUtil::LogError(__FILE__, __LINE__);
+        return bRet;
+    }
+
+    if (m_pThreadMgrEventSink)
+    {
+        m_pThreadMgrEventSink->CheckRefCount();
+    }
+    else
+    {
+        LogUtil::LogError(__FILE__, __LINE__);
         return bRet;
     }
     DWORD cookie= TF_INVALID_COOKIE;
     qResult = pSource->AdviseSink(IID_ITfThreadMgrEventSink,
-        (ITfThreadMgrEventSink*)(this),
+        m_pThreadMgrEventSink,
         &cookie);
+    if (m_pThreadMgrEventSink)
+    {
+        m_pThreadMgrEventSink->CheckRefCount();
+    }
     if (FAILED(qResult))
     {
+        LogUtil::LogError(__FILE__, __LINE__);
+        LogUtil::LogInfo("HRESULT %ul Cookie %x", (unsigned long)(qResult),cookie);
         cookie = TF_INVALID_COOKIE;
     }
     else
     {
-        
         bRet = true;
     }
     m_threadMgrEventSinkCookie = cookie;
@@ -340,10 +479,22 @@ bool CBaiLuInputMethodClass::InitKeyEventSink()
         return bRet;
     }
     HRESULT hR = S_OK;
+    if (m_pKeyEventSink)
+    {
+        m_pKeyEventSink->CheckRefCount();
+    }
     hR = pKeyStrokeMgr->AdviseKeyEventSink(this->m_tfClientId,
-        (ITfKeyEventSink*)(this->m_pKeyEventSink),
+        m_pKeyEventSink,
         TRUE);
+    if (m_pKeyEventSink)
+    {
+        m_pKeyEventSink->CheckRefCount();
+    }
     pKeyStrokeMgr->Release();
+    if (m_pKeyEventSink)
+    {
+        m_pKeyEventSink->CheckRefCount();
+    }
     return (hR == S_OK);
 }
 
@@ -392,7 +543,7 @@ bool CBaiLuInputMethodClass::InitTextEditSink()
     ret = FALSE;
     if (SUCCEEDED(m_pCurTfContext->QueryInterface(IID_ITfSource, (void**)&pSource)))
     {
-        if (SUCCEEDED(pSource->AdviseSink(IID_ITfTextEditSink, (ITfTextEditSink*)this, &m_textEditSinkCookie)))
+        if (SUCCEEDED(pSource->AdviseSink(IID_ITfTextEditSink, m_pTextEditSink, &m_textEditSinkCookie)))
         {
             ret = TRUE;
         }
@@ -422,7 +573,9 @@ bool CBaiLuInputMethodClass::InitActiveLanguageProfileNotifySink()
         return ret;
     }
 
-    if (pSource->AdviseSink(IID_ITfActiveLanguageProfileNotifySink, (ITfActiveLanguageProfileNotifySink*)this, &m_activeLanguageProfileNotifySinkCookie) != S_OK)
+    if (pSource->AdviseSink(IID_ITfActiveLanguageProfileNotifySink, 
+        m_pNotifySink, 
+        &m_activeLanguageProfileNotifySinkCookie) != S_OK)
     {
         m_activeLanguageProfileNotifySinkCookie = TF_INVALID_COOKIE;
         goto Exit;
@@ -445,7 +598,9 @@ bool CBaiLuInputMethodClass::InitThreadFocusSink()
         return FALSE;
     }
 
-    if (FAILED(pSource->AdviseSink(IID_ITfThreadFocusSink, (ITfThreadFocusSink*)this, &m_dwThreadFocusSinkCookie)))
+    if (FAILED(pSource->AdviseSink(IID_ITfThreadFocusSink,
+        m_pThreadFocusSink, 
+        &m_dwThreadFocusSinkCookie)))
     {
         pSource->Release();
         return FALSE;
@@ -519,12 +674,12 @@ bool CBaiLuInputMethodClass::InitFunctionProviderSink()
 bool CBaiLuInputMethodClass::InitTextProcessorEngineSink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::InitTextProcessorEngineSink");
-    /*LANGID langid = 0;
+    LANGID langid = 0;
     CLSID clsid = GUID_NULL;
     GUID guidProfile = GUID_NULL;
 
     // Get default profile.
-    CTfInputProcessorProfile profile;
+    CBaiLuInputProcessorProfileAgent profile;
 
     if (FAILED(profile.CreateInstance()))
     {
@@ -542,7 +697,7 @@ bool CBaiLuInputMethodClass::InitTextProcessorEngineSink()
     }
 
     // Is this already added?
-    if (_pCompositionProcessorEngine != nullptr)
+    /*if (_pCompositionProcessorEngine != nullptr)
     {
         LANGID langidProfile = 0;
         GUID guidLanguageProfile = GUID_NULL;
@@ -578,6 +733,7 @@ bool CBaiLuInputMethodClass::InitTextProcessorEngineSink()
 void CBaiLuInputMethodClass::UnInitThreadMgrEventSink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitThreadMgrEventSink");
+
     return;
 }
 
@@ -599,11 +755,39 @@ void CBaiLuInputMethodClass::UnInitKeyEventSink()
 void CBaiLuInputMethodClass::UnInitActiveLanguageProfileNotifySink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitActiveLanguageProfileNotifySink");
+    ITfSource* pSource = nullptr;
+
+    if (m_activeLanguageProfileNotifySinkCookie == TF_INVALID_COOKIE)
+    {
+        return; // never Advised
+    }
+
+    if (m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)&pSource) == S_OK)
+    {
+        pSource->UnadviseSink(m_activeLanguageProfileNotifySinkCookie);
+        pSource->Release();
+    }
+
+    m_activeLanguageProfileNotifySinkCookie = TF_INVALID_COOKIE;
     return;
 }
 void CBaiLuInputMethodClass::UnInitThreadFocusSink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitThreadFocusSink");
+    ITfSource* pSource = nullptr;
+
+    if (FAILED(m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)&pSource)))
+    {
+        return;
+    }
+
+    if (FAILED(pSource->UnadviseSink(m_dwThreadFocusSinkCookie)))
+    {
+        pSource->Release();
+        return;
+    }
+
+    pSource->Release();
     return;
 }
 void CBaiLuInputMethodClass::UnInitDisplayAttributeGuidAtomSink()
@@ -614,6 +798,12 @@ void CBaiLuInputMethodClass::UnInitDisplayAttributeGuidAtomSink()
 void CBaiLuInputMethodClass::UnInitFunctionProviderSink()
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitFunctionProviderSink");
+    ITfSourceSingle* pSourceSingle = nullptr;
+    if (SUCCEEDED(m_pThreadMgr->QueryInterface(IID_ITfSourceSingle, (void**)&pSourceSingle)))
+    {
+        pSourceSingle->UnadviseSingleSink(m_tfClientId, IID_ITfFunctionProvider);
+        pSourceSingle->Release();
+    }
     return;
 }
 void CBaiLuInputMethodClass::UnInitTextProcessorEngineSink()

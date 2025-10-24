@@ -55,6 +55,17 @@ namespace LogUtil
         sprintf_s(buff,128, "PID:%ld TID:%ld %s %d\n", processId, threadId, pFileName, line);
         OutputDebugString(buff);
     }
+
+    void LogError(const char* pFileName, const int line)
+    {
+        char buff[128] = { 0 };
+        memset(buff, 0, 128);
+        DWORD processId = GetCurrentProcessId();
+        DWORD threadId = GetCurrentThreadId();
+        sprintf_s(buff, 128, "[ERROR] PID:%ld TID:%ld %s %d\n", processId, threadId, pFileName, line);
+        OutputDebugString(buff);
+    }
+
     void CloseLogFile()
     {
         std::cout<<"Close Log File"<<std::endl;
