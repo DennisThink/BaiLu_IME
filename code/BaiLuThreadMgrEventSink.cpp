@@ -31,7 +31,18 @@ HRESULT STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::QueryInterface(
     /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
     LogUtil::LogInfo("CBaiLuThreadMgrEventSink::QueryInterface");
-    return -1;
+    if (IsEqualIID(riid, IID_ITfThreadMgrEventSink))
+    {
+        LogUtil::LogTrace(__FILE__, __LINE__);
+        this->AddRef();
+        *ppvObject = this;
+        return S_OK;
+    }
+    else
+    {
+        return S_OK;
+    }
+
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::AddRef(void)
@@ -54,7 +65,7 @@ void CBaiLuThreadMgrEventSink::CheckRefCount() const
 // ITfThreadMgrEventSink
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnInitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr)
 {
-    
+    return E_NOTIMPL;
     if (nullptr != pDocMgr)
     {
         LogUtil::LogInfo("CBaiLuInputMethodClass::OnInitDocumentMgr Succeed");
@@ -71,6 +82,7 @@ STDMETHODIMP CBaiLuThreadMgrEventSink::OnInitDocumentMgr(_In_ ITfDocumentMgr* pD
 
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnUninitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr)
 {
+    return E_NOTIMPL;
     LogUtil::LogInfo("CBaiLuInputMethodClass::OnUninitDocumentMgr");
     /*if (nullptr != this->m_pCurTfDocumentMgr)
     {
@@ -91,12 +103,12 @@ STDMETHODIMP CBaiLuThreadMgrEventSink::OnPushContext(_In_ ITfContext* pContext)
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::OnPushContext");
     //m_pCurTfContext = pContext;
-    return 0;
+    return E_NOTIMPL;
 }
 
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnPopContext(_In_ ITfContext* pContext)
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::OnPopContext");
     //m_pCurTfContext = pContext;
-    return 0;
+    return E_NOTIMPL;
 }

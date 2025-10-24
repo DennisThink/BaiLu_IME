@@ -196,6 +196,10 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
             this->m_pThreadMgrEventSink->AddRef();
             *ppvObj = this->m_pThreadMgrEventSink;
         }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
     }
     else if (IsEqualIID(riid, IID_ITfTextEditSink))
     {
@@ -204,6 +208,10 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         {
             this->m_pTextEditSink->AddRef();
             *ppvObj = this->m_pTextEditSink;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
     }
 
@@ -215,6 +223,10 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
             m_pNotifySink->AddRef();
             *ppvObj = m_pNotifySink;
         }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
     }
     else if (IsEqualIID(riid, IID_ITfCompositionSink))
     {
@@ -223,6 +235,10 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         {
             m_pCompositionSink->AddRef();
             *ppvObj =m_pCompositionSink;
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
     }
     else if (IsEqualIID(riid, IID_ITfDisplayAttributeProvider))
@@ -233,6 +249,10 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
             *ppvObj = m_pDispalyAttributeProvider;
             m_pDispalyAttributeProvider->AddRef();
         }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
     }
     else if (IsEqualIID(riid, IID_ITfThreadFocusSink))
     {
@@ -241,6 +261,10 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         {
             *ppvObj = m_pThreadFocusSink;
             m_pThreadFocusSink->AddRef();
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
     }
     else if (IsEqualIID(riid, IID_ITfFunctionProvider))
@@ -251,6 +275,10 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
             *ppvObj = m_pFunctionProvider;
             m_pFunctionProvider->AddRef();
         }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
     }
     else if (IsEqualIID(riid, IID_ITfFunction))
     {
@@ -260,6 +288,10 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
             *ppvObj = m_pBoarderLayout;
             m_pBoarderLayout->AddRef();
         }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+        }
     }
     else if (IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
     {
@@ -268,6 +300,10 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         {
             *ppvObj = m_pBoarderLayout;
             m_pBoarderLayout->AddRef();
+        }
+        else
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
         }
     }
     else
@@ -281,9 +317,11 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         LogUtil::LogTrace(__FILE__, __LINE__);
         return S_OK;
     }
-    HRESULT hr = E_NOINTERFACE;
+
     LogUtil::LogInfo("CBaiLuInputMethodClass::QueryInterface End");
-    return hr;
+    LogUtil::LogError(__FILE__, __LINE__);
+    *ppvObj = nullptr;
+    return E_NOINTERFACE;
 }
 
 STDMETHODIMP_(ULONG) CBaiLuInputMethodClass::AddRef(void)
@@ -309,6 +347,7 @@ STDMETHODIMP CBaiLuInputMethodClass::ActivateEx(ITfThreadMgr* pThreadMgr, TfClie
 {
     LogUtil::LogInfo("CBaiLuInputMethodClass::ActivateEx");
     this->m_pThreadMgr = pThreadMgr;
+    m_pThreadMgr->AddRef();
     this->m_tfClientId = tfClientId;
     this->m_dwFlags = dwFlags;
     {
@@ -322,30 +361,35 @@ STDMETHODIMP CBaiLuInputMethodClass::ActivateEx(ITfThreadMgr* pThreadMgr, TfClie
             LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
-        if (!InitActiveLanguageProfileNotifySink())
+        /*if (!InitActiveLanguageProfileNotifySink())
+        {
+            LogUtil::LogError(__FILE__, __LINE__);
+            goto ExitError;
+        }*/
+        if (!InitThreadFocusSink())
         {
             LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
-        if (!InitThreadFocusSink())
-        {
-            goto ExitError;
-        }
         if (!InitDisplayAttributeGuidAtomSink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
         if (!InitFunctionProviderSink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
         if (!InitTextProcessorEngineSink())
         {
+            LogUtil::LogError(__FILE__, __LINE__);
             goto ExitError;
         }
         return S_OK;
 
-ExitError:
+    ExitError:
+        LogUtil::LogError(__FILE__, __LINE__);
         Deactivate();
         return E_FAIL;
     }
@@ -388,7 +432,17 @@ bool CBaiLuInputMethodClass::InitThreadMgrEventSink()
     ITfSource* pSource = nullptr;
     bool bRet = false;
     HRESULT qResult = m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)(&pSource));
-    if (FAILED(qResult) && (nullptr != pSource))
+    if (FAILED(qResult))
+    {
+        LogUtil::LogError(__FILE__, __LINE__);
+        return bRet;
+    }
+
+    if (m_pThreadMgrEventSink)
+    {
+        m_pThreadMgrEventSink->CheckRefCount();
+    }
+    else
     {
         LogUtil::LogError(__FILE__, __LINE__);
         return bRet;
@@ -409,7 +463,7 @@ bool CBaiLuInputMethodClass::InitThreadMgrEventSink()
     if (FAILED(qResult))
     {
         LogUtil::LogError(__FILE__, __LINE__);
-        LogUtil::LogInfo("HRESULT %ld", (long)(qResult));
+        LogUtil::LogInfo("HRESULT %ul Cookie %x", (unsigned long)(qResult),cookie);
         cookie = TF_INVALID_COOKIE;
     }
     else
