@@ -15,11 +15,16 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID pvReserved)
             LogUtil::LogInfo("DLL_PROCESS_ATTACH");
             if (!InitializeCriticalSectionAndSpinCount(&GlobalValue::g_cs, 0))
             {
+                LogUtil::LogInfo("InitializeCriticalSectionAndSpinCount Failed");
                 return FALSE;
             }
-            GlobalValue::UnSetClassFactoryInitValue();
-            GlobalValue::SetClassFactoryInitValue();
-            GlobalValue::SetInstanceHandle(hInstance);
+            else
+            {
+                LogUtil::LogInfo("InitializeCriticalSectionAndSpinCount Succeed");
+                GlobalValue::UnSetClassFactoryInitValue();
+                GlobalValue::SetClassFactoryInitValue();
+                GlobalValue::SetInstanceHandle(hInstance);
+            }
 
         }break;
 

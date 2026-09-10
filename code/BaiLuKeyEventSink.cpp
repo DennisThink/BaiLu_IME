@@ -1,5 +1,7 @@
 #include "BaiLuKeyEventSink.hpp"
 #include "Log.hpp"
+#include "CommonFunction.hpp"
+#include "BaiLuInputCore.hpp"
 HRESULT CBaiLuKeyEventSink::CreateInstance(CBaiLuKeyEventSink** pOut)
 {
 	CBaiLuKeyEventSink* pInst = new CBaiLuKeyEventSink();
@@ -35,7 +37,8 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnTestKeyDown(
 {
 	LogUtil::LogInfo("CBaiLuKeyEventSink::OnTestKeyDown %d", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnTestKeyDown");
-	return 0;
+	*pfEaten = TRUE;
+	return S_OK;
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnTestKeyUp(
@@ -46,7 +49,8 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnTestKeyUp(
 {
 	LogUtil::LogInfo("CBaiLuKeyEventSink::OnTestKeyUp %d", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnTestKeyUp");
-	return 0;
+	*pfEaten = TRUE;
+	return S_OK;
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnKeyDown(
@@ -57,7 +61,14 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnKeyDown(
 {
 	LogUtil::LogInfo("CBaiLuKeyEventSink::OnKeyDown %d", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnKeyDown");
-	return 0;
+	*pfEaten = TRUE;
+
+	CBaiLuInputCore* pInputCore = CBaiLuInputCore::GetInstance();
+	if(pInputCore != nullptr)
+	{
+		pInputCore->DealOnKeyDown(wParam, lParam);
+	}
+	return S_OK;
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnKeyUp(
@@ -68,7 +79,13 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnKeyUp(
 {
 	LogUtil::LogInfo("CBaiLuKeyEventSink::OnKeyUp %d", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnKeyUp");
-	return 0;
+	*pfEaten = TRUE;
+	CBaiLuInputCore* pInputCore = CBaiLuInputCore::GetInstance();
+	if (pInputCore != nullptr)
+	{
+		pInputCore->DealOnKeyUp(wParam, lParam);
+	}
+	return S_OK;
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnPreservedKey(
@@ -106,24 +123,7 @@ void CBaiLuKeyEventSink::CheckRefCount() const
 {
 	LogUtil::LogInfo("CBaiLuKeyEventSink::CheckRefCount %d", m_refCount);
 }
-std::string CBaiLuKeyEventSink::VirtualKeyCodeToString(UINT vkCode) {
-	// 用于存储键名的缓冲区
-	char keyName[256] = { 0 };
 
-	// 将虚拟键码转换为扫描码
-	UINT scanCode = MapVirtualKey(vkCode, MAPVK_VK_TO_VSC);
-
-	// 构造lParam用于GetKeyNameText函数
-	// 高16位放扫描码，低16位中的第25位（bit24）用于指示扩展键
-	LONG lParam = (scanCode << 16);
-
-	// 获取键名
-	if (GetKeyNameTextA(lParam, keyName, sizeof(keyName)) > 0) {
-		return std::string(keyName);
-	}
-
-	return "Unknown Key";
-}
 void CBaiLuKeyEventSink::LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::string method)
 {
 	LogUtil::LogInfo("CBaiLuKeyEventSink::LogKeyDownAndUp");

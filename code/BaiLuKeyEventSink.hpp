@@ -53,7 +53,6 @@ public:
 
 protected:
     void LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::string method);
-    std::string VirtualKeyCodeToString(UINT vkCode);
 private:
     int m_refCount;
 

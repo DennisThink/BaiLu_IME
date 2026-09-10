@@ -41,6 +41,7 @@ namespace LogUtil
                 time.wHour, time.wMinute, time.wSecond,
                 pBuff);
             OutputDebugString(buffer);
+            std::cout << buffer << std::endl;
         }
 
         delete[] pBuff;
@@ -54,6 +55,7 @@ namespace LogUtil
         DWORD threadId = GetCurrentThreadId();
         sprintf_s(buff,128, "PID:%ld TID:%ld %s %d\n", processId, threadId, pFileName, line);
         OutputDebugString(buff);
+        std::cout << buff << std::endl;
     }
 
     void LogError(const char* pFileName, const int line)
@@ -64,6 +66,7 @@ namespace LogUtil
         DWORD threadId = GetCurrentThreadId();
         sprintf_s(buff, 128, "[ERROR] PID:%ld TID:%ld %s %d\n", processId, threadId, pFileName, line);
         OutputDebugString(buff);
+        std::cout << buff << std::endl;
     }
 
     void CloseLogFile()

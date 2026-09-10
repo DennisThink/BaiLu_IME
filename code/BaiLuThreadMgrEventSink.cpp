@@ -1,6 +1,6 @@
 #include "BaiLuThreadMgrEventSink.hpp"
 #include "Log.hpp"
-
+#include "BaiLuInputCore.hpp"
 HRESULT CBaiLuThreadMgrEventSink::CreateInstance(CBaiLuThreadMgrEventSink** pInst)
 {
     CBaiLuThreadMgrEventSink* pOut = new CBaiLuThreadMgrEventSink();
@@ -96,6 +96,24 @@ STDMETHODIMP CBaiLuThreadMgrEventSink::OnSetFocus(_In_ ITfDocumentMgr* pDocMgrFo
     LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetFocus");
     //this->m_pPrevTfDocumentMgr = pDocMgrPrevFocus;
     //this->m_pCurTfDocumentMgr = pDocMgrFocus;
+    if (pDocMgrFocus)
+    {
+        ITfContext* context = nullptr;
+
+        HRESULT hr = pDocMgrFocus->GetTop(&context);
+
+        if (SUCCEEDED(hr) && context)
+        {
+            CBaiLuInputCore* pCore = CBaiLuInputCore::GetInstance();
+            if (pCore)
+            {
+                pCore->SetCurTfContext(context);
+            }
+            context->Release();
+        }
+    }
+
+    return S_OK;
     return S_OK;
 }
 
