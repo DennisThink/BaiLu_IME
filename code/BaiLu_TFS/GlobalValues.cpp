@@ -154,8 +154,8 @@ namespace GlobalValue
         std::string result = "UNKNOWN";
         HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
         if (hProcess != NULL) {
-            char buffer[MAX_PATH];
-            GetModuleBaseNameA(hProcess, NULL, buffer, MAX_PATH);
+            TCHAR buffer[MAX_PATH];
+            GetModuleBaseName(hProcess, NULL, buffer, MAX_PATH);
             result = std::string(buffer);
             CloseHandle(hProcess);
         }

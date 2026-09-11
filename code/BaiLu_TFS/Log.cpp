@@ -40,7 +40,7 @@ namespace LogUtil
                 time.wYear, time.wMonth, time.wDay,
                 time.wHour, time.wMinute, time.wSecond,
                 pBuff);
-            OutputDebugString(buffer);
+            OutputDebugStringA(buffer);
             std::cout << buffer << std::endl;
         }
 
@@ -54,7 +54,7 @@ namespace LogUtil
         DWORD processId = GetCurrentProcessId();
         DWORD threadId = GetCurrentThreadId();
         sprintf_s(buff,128, "PID:%ld TID:%ld %s %d\n", processId, threadId, pFileName, line);
-        OutputDebugString(buff);
+        OutputDebugStringA(buff);
         std::cout << buff << std::endl;
     }
 
@@ -65,7 +65,7 @@ namespace LogUtil
         DWORD processId = GetCurrentProcessId();
         DWORD threadId = GetCurrentThreadId();
         sprintf_s(buff, 128, "[ERROR] PID:%ld TID:%ld %s %d\n", processId, threadId, pFileName, line);
-        OutputDebugString(buff);
+        OutputDebugStringA(buff);
         std::cout << buff << std::endl;
     }
 

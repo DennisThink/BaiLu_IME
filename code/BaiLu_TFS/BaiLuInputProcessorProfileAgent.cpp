@@ -2,13 +2,13 @@
 #include "Log.hpp"
 CBaiLuInputProcessorProfileAgent::CBaiLuInputProcessorProfileAgent()
 {
-    LogUtil::LogInfo(TEXT("CBaiLuInputProcessorProfileAgent::CBaiLuInputProcessorProfileAgent"));
+    LogUtil::LogInfo(("CBaiLuInputProcessorProfileAgent::CBaiLuInputProcessorProfileAgent"));
     _pInputProcessorProfile = nullptr;
 }
 
 CBaiLuInputProcessorProfileAgent::~CBaiLuInputProcessorProfileAgent()
 {
-    LogUtil::LogInfo(TEXT("CBaiLuInputProcessorProfileAgent::~CBaiLuInputProcessorProfileAgent"));
+    LogUtil::LogInfo(("CBaiLuInputProcessorProfileAgent::~CBaiLuInputProcessorProfileAgent"));
     if (_pInputProcessorProfile) {
         _pInputProcessorProfile->Release();
         _pInputProcessorProfile = nullptr;
@@ -17,7 +17,7 @@ CBaiLuInputProcessorProfileAgent::~CBaiLuInputProcessorProfileAgent()
 
 HRESULT CBaiLuInputProcessorProfileAgent::CreateInstance()
 {
-    LogUtil::LogInfo(TEXT("CBaiLuInputProcessorProfileAgent::CreateInstance"));
+    LogUtil::LogInfo("CBaiLuInputProcessorProfileAgent::CreateInstance");
     HRESULT	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER,
         IID_ITfInputProcessorProfiles, (void**)&_pInputProcessorProfile);
 
@@ -26,7 +26,7 @@ HRESULT CBaiLuInputProcessorProfileAgent::CreateInstance()
 
 HRESULT CBaiLuInputProcessorProfileAgent::GetCurrentLanguage(_Out_ LANGID* plangid)
 {
-    LogUtil::LogInfo(TEXT("CBaiLuInputProcessorProfileAgent::GetCurrentLanguage"));
+    LogUtil::LogInfo(("CBaiLuInputProcessorProfileAgent::GetCurrentLanguage"));
     if (_pInputProcessorProfile)
     {
         return _pInputProcessorProfile->GetCurrentLanguage(plangid);
@@ -39,7 +39,7 @@ HRESULT CBaiLuInputProcessorProfileAgent::GetCurrentLanguage(_Out_ LANGID* plang
 
 HRESULT CBaiLuInputProcessorProfileAgent::GetDefaultLanguageProfile(LANGID langid, REFGUID catid, _Out_ CLSID* pclsid, _Out_ GUID* pguidProfile)
 {
-    LogUtil::LogInfo(TEXT("CBaiLuInputProcessorProfileAgent::GetDefaultLanguageProfile"));
+    LogUtil::LogInfo(("CBaiLuInputProcessorProfileAgent::GetDefaultLanguageProfile"));
     if (_pInputProcessorProfile)
     {
         return _pInputProcessorProfile->GetDefaultLanguageProfile(langid, catid, pclsid, pguidProfile);

@@ -109,11 +109,22 @@ STDMETHODIMP CBaiLuThreadMgrEventSink::OnSetFocus(_In_ ITfDocumentMgr* pDocMgrFo
             {
                 pCore->SetCurTfContext(context);
             }
+            else
+            {
+                LogUtil::LogInfo("CBaiLuInputCore::GetInstance GetInstance failed");
+            }
             context->Release();
         }
+        else
+        {
+			LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetFocus GetTop failed");
+        }
+    }
+    else
+    {
+		LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetFocus pDocMgrFocus is null");
     }
 
-    return S_OK;
     return S_OK;
 }
 

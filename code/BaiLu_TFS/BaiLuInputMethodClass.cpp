@@ -578,7 +578,7 @@ bool CBaiLuInputMethodClass::InitTextEditSink()
 
 bool CBaiLuInputMethodClass::InitActiveLanguageProfileNotifySink()
 {
-    LogUtil::LogInfo(TEXT("CBaiLuInputMethodClass::_InitActiveLanguageProfileNotifySink"));
+    LogUtil::LogInfo("CBaiLuInputMethodClass::_InitActiveLanguageProfileNotifySink");
     ITfSource* pSource = nullptr;
     BOOL ret = FALSE;
 
@@ -604,7 +604,7 @@ Exit:
 
 bool CBaiLuInputMethodClass::InitThreadFocusSink()
 {
-    LogUtil::LogInfo(TEXT("CBaiLuInputMethodClass::_InitThreadFocusSink"));
+    LogUtil::LogInfo("CBaiLuInputMethodClass::_InitThreadFocusSink");
     ITfSource* pSource = nullptr;
 
     if (FAILED(m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)&pSource)))

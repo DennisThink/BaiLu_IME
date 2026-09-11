@@ -5,7 +5,9 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID pvReserved)
 {
     DWORD pID = GetCurrentProcessId();
     std::string processName = GlobalValue::GetProcessName(pID);
-    LogUtil::LogInfo("DllMain %s", processName.c_str());
+	std::string strName(processName.begin(), processName.end());
+    LogUtil::LogInfo("DllMain %ld", pID);
+    //LogUtil::LogInfo("DllMain %s", strName.c_str());
     if (processName == "regsvr32.exe" || processName == "NOTEPAD.EXE")
     {
         switch (dwReason)
@@ -46,12 +48,12 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID pvReserved)
             LogUtil::LogInfo("Should not Go Here");
         }break;
         }
-        LogUtil::LogInfo("DllMain TRUE %s", processName.c_str());
+        LogUtil::LogInfo("DllMain TRUE %s", strName.c_str());
         return TRUE;
     }
     else
     {
-        LogUtil::LogInfo("DllMain FALSE %s", processName.c_str());
+        LogUtil::LogInfo("DllMain FALSE %s", strName.c_str());
         return FALSE;
     }
 }

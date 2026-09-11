@@ -9,13 +9,13 @@ static std::string GetProcessName(DWORD pid)
     std::string result = "UNKNOWN";
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
     if (hProcess != NULL) {
-        char buffer[MAX_PATH];
-        GetModuleBaseNameA(hProcess,NULL,buffer, MAX_PATH);
+        TCHAR buffer[MAX_PATH];
+        GetModuleBaseName(hProcess,NULL,buffer, MAX_PATH);
         result = std::string(buffer);
         LogUtil::LogInfo("GetModuleBaseNameA %s", buffer);
         GetModuleFileNameEx(hProcess, NULL, buffer, MAX_PATH);
         LogUtil::LogInfo("GetModuleFileNameEx %s", buffer);
-        GetProcessImageFileNameA(hProcess,buffer, MAX_PATH);
+        GetProcessImageFileName(hProcess,buffer, MAX_PATH);
         LogUtil::LogInfo("GetProcessImageFileNameA %s", buffer);
        
         CloseHandle(hProcess);

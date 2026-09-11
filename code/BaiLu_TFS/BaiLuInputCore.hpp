@@ -4,6 +4,22 @@
 #include <string>
 #include <vector>
 #include "private.hpp"
+enum class KeyType
+{
+	NoneKey,
+	CharacterKey,
+	NumberKey,
+	ControlKey,
+	ModifierKey
+};
+struct KeyInfo
+{
+	KeyType _type;
+	int _keyValue;
+};
+
+
+
 class CBaiLuInputCore
 {
 public:
@@ -24,10 +40,11 @@ private:
 	void InsertWordToWindow(const std::string& strWord);
 	void _UpdateComposition(ITfContext* pContext, const std::string& strText);
 	ITfContext* _GetFocusContext();
+	KeyInfo GetKeyInfo(WPARAM wParam, LPARAM lParam);
 private:
 	std::vector<std::string> m_vecWord;
-	CBaiLuInputCore() {}
-	~CBaiLuInputCore() {}
+	CBaiLuInputCore();
+	~CBaiLuInputCore();
 	ITfContext* m_pCurTfContext;
 	TfClientId m_clientID;
 };
