@@ -222,13 +222,14 @@ void CandidateWindow::SetCandidates(
 
 int CandidateWindow::GetSelectedIndex() const
 {
-    return 0;
+    return m_selectedIndex;
 }
 
 void CandidateWindow::SetSelectedIndex(int index)
 {
     if (m_view)
     {
+        m_selectedIndex = index;
 		m_view->SetSelectedIndex(index);
     }
 }

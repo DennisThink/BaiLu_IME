@@ -37,12 +37,15 @@ public:
 private:
 	void LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::string method);
 	void ShowWordBySpace(WPARAM wParam, LPARAM lParam);
-	void InsertWordToWindow(const std::string& strWord);
+	void InsertWordToWindow(const std::wstring& strWord);
 	void _UpdateComposition(ITfContext* pContext, const std::string& strText);
 	ITfContext* _GetFocusContext();
 	KeyInfo GetKeyInfo(WPARAM wParam, LPARAM lParam);
+	void ProcessKeyInfo(const KeyInfo& keyInfo);
+	bool IsChandidateWindowShow()const;
 private:
-	std::vector<std::string> m_vecWord;
+	std::vector<wchar_t> m_vecWord;
+	std::vector<std::wstring> m_vecCandidate;
 	CBaiLuInputCore();
 	~CBaiLuInputCore();
 	ITfContext* m_pCurTfContext;

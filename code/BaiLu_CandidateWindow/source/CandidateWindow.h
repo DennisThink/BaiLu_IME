@@ -45,6 +45,6 @@ private:
 private:
     HWND m_hwnd = nullptr;
     HINSTANCE m_hInstance = nullptr;
-
+	int m_selectedIndex = -1;
     std::unique_ptr<ICandidateView> m_view;
 };

@@ -17,11 +17,33 @@ void CBaiLuInputCore::DealOnKeyUp(WPARAM wParam, LPARAM lParam)
 {
 	LogUtil::LogInfo("CBaiLuInputCore::DealOnKeyUp wParam=%d lParam=%ld", wParam, lParam);
 	LogKeyDownAndUp(wParam, lParam, "DealOnKeyUp");
-	ShowWordBySpace(wParam, lParam);
+	{
+		KeyInfo keyInfo = GetKeyInfo(wParam, lParam);
+		ProcessKeyInfo(keyInfo);
+	}
 }
 void CBaiLuInputCore::SetCurTfContext(ITfContext* pContext)
 {
-	m_pCurTfContext = pContext;
+	if(m_pCurTfContext != nullptr)
+	{
+		LogUtil::LogInfo("CBaiLuInputCore::SetCurTfContext: m_pCurTfContext is not null");
+		m_pCurTfContext->Release();
+	}
+	else
+	{
+		LogUtil::LogInfo("CBaiLuInputCore::SetCurTfContext: m_pCurTfContext is null");
+	}
+	if(pContext == nullptr)
+	{
+		LogUtil::LogInfo("CBaiLuInputCore::SetCurTfContext: pContext is null");
+	}
+	else
+	{
+		LogUtil::LogInfo("CBaiLuInputCore::SetCurTfContext: pContext is not null");
+		m_pCurTfContext = pContext;
+		m_pCurTfContext->AddRef();
+	}
+
 	LogUtil::LogInfo("CBaiLuInputCore::SetCurTfContext");
 }
 void CBaiLuInputCore::SetClientID(TfClientId clientID)
@@ -31,42 +53,7 @@ void CBaiLuInputCore::SetClientID(TfClientId clientID)
 }
 void CBaiLuInputCore::ShowWordBySpace(WPARAM wParam, LPARAM lParam)
 {
-	LONG vCode = (wParam);
-	if (vCode == VK_SPACE)
-	{
-		std::string strWord;
-		for (const auto& word : m_vecWord)
-		{
-			strWord += word;
-		}
-		LogUtil::LogInfo("CBaiLuInputCore::ShowWordBySpace: %s", strWord.c_str());
-		m_vecWord.clear();
-		InsertWordToWindow(strWord);
-	}
-	else
-	{
-		UINT vCode = UINT(wParam);
-		std::string strCodeName = VirtualKeyCodeToString(vCode);
-		m_vecWord.push_back(strCodeName);
-		std::string strWord;
-		for (auto item : m_vecWord)
-		{
-			strWord += item;
-		}
-		SimpleCandidateGenerator candidateGenerator;
-		std::wstring strUserInput(strWord.begin(),strWord.end());
-		auto candidates = candidateGenerator.Generate(strUserInput,5);
-		if(g_candidateWindow)
-		{
-			g_candidateWindow->SetCandidates(candidates);
-			g_candidateWindow->Show();
-		}
-		else
-		{
-			LogUtil::LogInfo("CBaiLuInputCore::ShowWordBySpace: g_candidateWindow is null");
-		}
 
-	}
 }
 
 ITfContext* CBaiLuInputCore::_GetFocusContext()
@@ -79,39 +66,57 @@ void CBaiLuInputCore::_UpdateComposition(ITfContext* pContext, const std::string
 {
 
 }
-void CBaiLuInputCore::InsertWordToWindow(const std::string& strWord)
+void CBaiLuInputCore::InsertWordToWindow(const std::wstring& strWord)
 {
-	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s", strWord.c_str());
-	
+	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %ls", strWord.c_str());
+	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s %d", __FILE__, __LINE__);
 	if (!this->m_pCurTfContext)
 	{
 		LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: m_pCurTfContext is null");
 		return;
 	}
+	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s %d", __FILE__, __LINE__);
 	BaiLuEditSession* session =
 		new BaiLuEditSession(
 			m_pCurTfContext,
 			strWord
 		);
-
+	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s %d", __FILE__, __LINE__);
+	if(nullptr == session)
+	{
+		LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: BaiLuEditSession is null");
+		return;
+	}
+	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s %d", __FILE__, __LINE__);
 	HRESULT sessionResult = E_FAIL;
 
+	// 注意：这里必须使用同步编辑会话,具体原因不清楚
+	// 只使用 TF_ES_READWRITE 时，候选词提交可能出现
+	// DoEditSession 已执行，但文本没有稳定插入的情况。
 	HRESULT hr = m_pCurTfContext->RequestEditSession(
 		m_clientID,
 		session,
-		TF_ES_READWRITE,
+		TF_ES_READWRITE|TF_ES_SYNC,
 		&sessionResult
 	);
+	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s %d", __FILE__, __LINE__);
 
-	if(hr != S_OK)
+	if(FAILED(hr))
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: RequestEditSession failed");
+		LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: RequestEditSession failed with HRESULT: 0x%08X", hr);
+		return;
 	}
-	if(sessionResult != S_OK)
+	if(FAILED(sessionResult))
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: EditSession failed");
+		LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: EditSession failed with HRESULT: 0x%08X", sessionResult);
+		return;
 	}
-	session->Release();
+	if(session)
+	{
+		session->Release();
+		session = nullptr;
+	}
+	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s %d", __FILE__, __LINE__);
 }
 
 void CBaiLuInputCore::LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::string method)
@@ -158,6 +163,105 @@ CBaiLuInputCore::~CBaiLuInputCore()
 	LogUtil::LogInfo("CBaiLuInputCore::~CBaiLuInputCore");
 }
 
+bool CBaiLuInputCore::IsChandidateWindowShow()const
+{
+	if (g_candidateWindow)
+	{
+		return IsWindowVisible(g_candidateWindow->GetHandle());
+	}
+	return false;
+}
+void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
+{
+	switch (keyInfo._type)
+	{
+	case KeyType::NoneKey:
+	{
+		LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo NoneKey");
+	}break;
+	case KeyType::CharacterKey:
+	{
+		LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo CharacterKey: %c", keyInfo._keyValue);
+		wchar_t inputChar = static_cast<wchar_t>(keyInfo._keyValue);
+		
+		// Handle character key input for normal text input
+		if (inputChar == L' ')
+		{
+			
+		}
+		else
+		{
+			m_vecWord.push_back(inputChar);
+			if (!m_vecWord.empty())
+			{
+				std::wstring strWord(m_vecWord.begin(), m_vecWord.end());
+				m_vecCandidate.clear();
+				m_vecCandidate = SimpleCandidateGenerator().Generate(strWord, 5);
+				if(g_candidateWindow)
+				{
+					g_candidateWindow->SetCandidates(m_vecCandidate);
+					g_candidateWindow->Show();
+				}
+				else
+				{
+					LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo g_candidateWindow is null");
+				}
+			}
+		}
+	}break;
+	case KeyType::NumberKey:
+	{
+		LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo NumberKey: %d", keyInfo._keyValue);
+		if (IsChandidateWindowShow())
+		{
+			// Handle number key selection for candidate window
+			if(g_candidateWindow)
+			{
+				int index = keyInfo._keyValue; // Assuming number keys 1-9 correspond to candidate indices 0-8
+				if(index >= 0 && index < m_vecCandidate.size())
+				{
+					g_candidateWindow->SetSelectedIndex(index);
+				}
+				else
+				{
+					LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo NumberKey: Invalid candidate index");
+				}
+			}
+		}
+		else
+		{
+			// Handle number key input for normal text input
+			std::wstring selectedWord = std::to_wstring(keyInfo._keyValue);
+			InsertWordToWindow(selectedWord);
+		}
+	}break;
+	case KeyType::ControlKey:
+	{
+		LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo ControlKey: %d", keyInfo._keyValue);
+		if(keyInfo._keyValue == VK_SPACE)
+		{
+			if (g_candidateWindow)
+			{
+				int index = g_candidateWindow->GetSelectedIndex();
+				if (index >= 0 && index < m_vecCandidate.size())
+				{
+					std::wstring selectedWord = m_vecCandidate[index];
+					InsertWordToWindow(selectedWord);
+					m_vecWord.clear();
+					m_vecCandidate.clear();
+					g_candidateWindow->Hide();
+				}
+				else
+				{
+					LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo Space: Invalid candidate index");
+				}
+			}
+		}
+	}break;
+	default:
+		break;
+	}
+}
 KeyInfo CBaiLuInputCore::GetKeyInfo(WPARAM wParam, LPARAM lParam)
 {
 	if (wParam >= 'A' && wParam <= 'Z')
@@ -180,6 +284,10 @@ KeyInfo CBaiLuInputCore::GetKeyInfo(WPARAM wParam, LPARAM lParam)
 	if (wParam == VK_ESCAPE)
 	{
 		return KeyInfo{ KeyType::ControlKey, VK_ESCAPE };
+	}
+	if(wParam == VK_SPACE)
+	{
+		return KeyInfo{ KeyType::ControlKey, VK_SPACE };
 	}
 
 	if (wParam == VK_BACK)
