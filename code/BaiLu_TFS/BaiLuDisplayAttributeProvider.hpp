@@ -1,6 +1,9 @@
 #ifndef _BAI_LU_DISPLAY_ATTRIBUTE_PROVIDER_H_
 #define _BAI_LU_DISPLAY_ATTRIBUTE_PROVIDER_H_
 #include "private.hpp"
+/*
+* TODO: 这个类是用来提供显示属性的，主要用于输入法的候选词显示和文本样式设置。
+*/
 class CBaiLuDisplayAttributeProvider :public ITfDisplayAttributeProvider
 {
 public:

@@ -832,7 +832,7 @@ void CBaiLuInputMethodClass::UnInitTextProcessorEngineSink()
 }
 
 
-void CBaiLuInputMethodClass::LogKeyDownAndUp(WPARAM wParam, LPARAM lParam,const std::string method)
+/*void CBaiLuInputMethodClass::LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::string method)
 {
     UINT vCode = UINT(wParam);
     std::string strCodeName = VirtualKeyCodeToString(vCode);
@@ -840,4 +840,4 @@ void CBaiLuInputMethodClass::LogKeyDownAndUp(WPARAM wParam, LPARAM lParam,const 
     sprintf(buff, "CBaiLuInputMethodClass Key %s  Name:%s  Code:%d  Code2: %d\n",method.c_str(), strCodeName.c_str(), vCode, (UINT)(lParam));
     std::string strLog(buff);
     LogUtil::LogInfo("%s",strLog.c_str());
-}
+}*/

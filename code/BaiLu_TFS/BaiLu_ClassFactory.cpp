@@ -42,7 +42,12 @@ STDMETHODIMP_(ULONG) CBaiLuClassFactory::Release(void)
     LogUtil::LogInfo("Release");
     m_refCount--;
     LogUtil::LogInfo("CBaiLuClassFactory Release %d", m_refCount);
-    return m_refCount;
+	ULONG nRet = m_refCount;
+	if (nRet == 0)
+    {
+        delete this;
+    }
+    return nRet;
 }
 
 // IClassFactory methods

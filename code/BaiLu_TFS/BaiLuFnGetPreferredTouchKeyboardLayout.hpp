@@ -1,6 +1,9 @@
 #ifndef _BAI_LU_FN_GET_PREFERRED_TOUCH_KEY_BOARD_LAYOUT_H_
 #define _BAI_LU_FN_GET_PREFERRED_TOUCH_KEY_BOARD_LAYOUT_H_
 #include "private.hpp"
+/*
+* TODO：我不知道为什么要有这个类，先实现了
+*/
 class CBaiLuFnGetPreferredTouchKeyBoardLayout :public ITfFnGetPreferredTouchKeyboardLayout
 {
 public:

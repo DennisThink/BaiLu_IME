@@ -1,6 +1,9 @@
 #ifndef _BAI_LU_COMPOSITION_SINK_H_
 #define _BAI_LU_COMPOSITION_SINK_H_
 #include "private.hpp"
+/*
+* 作用暂时不清楚，先实现接口
+*/
 class CBaiLuCompositionSink :public ITfCompositionSink
 {
 public:

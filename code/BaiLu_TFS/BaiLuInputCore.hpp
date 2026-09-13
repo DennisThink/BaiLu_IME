@@ -4,6 +4,10 @@
 #include <string>
 #include <vector>
 #include "private.hpp"
+/*
+* 这个类是整个输入法的核心类，负责处理键盘输入，管理候选词窗口，以及与文本框进行交互。
+* 总的来说就是把所有其他的接口串起来，形成一个完整的输入法。
+*/
 enum class KeyType
 {
 	NoneKey,

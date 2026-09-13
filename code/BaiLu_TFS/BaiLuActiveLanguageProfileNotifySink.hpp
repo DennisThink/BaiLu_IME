@@ -1,6 +1,9 @@
 #ifndef _BAI_LU_ACTIVE_LANGUAGE_PROFILE_NOTIFY_SINK_H_
 #define _BAI_LU_ACTIVE_LANGUAGE_PROFILE_NOTIFY_SINK_H_
 #include "private.hpp"
+/*
+* 示例代码有，就添加了，具体作用还不清楚
+*/
 class CBaiLuActiveLanguageProfileNotifySink :public ITfActiveLanguageProfileNotifySink
 {
 public:

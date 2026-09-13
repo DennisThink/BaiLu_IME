@@ -1,6 +1,9 @@
 #ifndef _BAI_LU_FUNCTION_PROVIDER_H_
 #define _BAI_LU_FUNCTION_PROVIDER_H_
 #include "private.hpp"
+/*
+*TODO:我不知道这个类是干什么的，先实现了接口
+*/
 class CBaiLuFunctionProvider :public ITfFunctionProvider
 {
 public:

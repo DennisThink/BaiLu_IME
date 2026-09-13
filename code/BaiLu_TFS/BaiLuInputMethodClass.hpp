@@ -11,6 +11,10 @@
 #include "BaiLuFnGetPreferredTouchKeyboardLayout.hpp"
 #include "BaiLuActiveLanguageProfileNotifySink.hpp"
 #include <string>
+/*
+* 输入法的激活和注销的类，主要是实现了ITfTextInputProcessorEx接口
+* 同时实现创建输入法相关的COM对象
+*/
 class CBaiLuInputMethodClass : public ITfTextInputProcessorEx
 {
 public:
@@ -48,7 +52,7 @@ protected:
     void UnInitDisplayAttributeGuidAtomSink();
     void UnInitFunctionProviderSink();
     void UnInitTextProcessorEngineSink();
-    void LogKeyDownAndUp(WPARAM wParam, LPARAM lParam,const std::string method);
+    //void LogKeyDownAndUp(WPARAM wParam, LPARAM lParam,const std::string method);
 private:
     CBaiLuKeyEventSink* m_pKeyEventSink;
     CBaiLuThreadMgrEventSink* m_pThreadMgrEventSink;
