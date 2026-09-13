@@ -185,27 +185,21 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 		wchar_t inputChar = static_cast<wchar_t>(keyInfo._keyValue);
 		
 		// Handle character key input for normal text input
-		if (inputChar == L' ')
+
+		m_vecWord.push_back(inputChar);
+		if (!m_vecWord.empty())
 		{
-			
-		}
-		else
-		{
-			m_vecWord.push_back(inputChar);
-			if (!m_vecWord.empty())
+			std::wstring strWord(m_vecWord.begin(), m_vecWord.end());
+			m_vecCandidate.clear();
+			m_vecCandidate = SimpleCandidateGenerator().Generate(strWord, 5);
+			if(g_candidateWindow)
 			{
-				std::wstring strWord(m_vecWord.begin(), m_vecWord.end());
-				m_vecCandidate.clear();
-				m_vecCandidate = SimpleCandidateGenerator().Generate(strWord, 5);
-				if(g_candidateWindow)
-				{
-					g_candidateWindow->SetCandidates(m_vecCandidate);
-					g_candidateWindow->Show();
-				}
-				else
-				{
-					LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo g_candidateWindow is null");
-				}
+				g_candidateWindow->SetCandidates(m_vecCandidate);
+				g_candidateWindow->Show();
+			}
+			else
+			{
+				LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo g_candidateWindow is null");
 			}
 		}
 	}break;
@@ -217,7 +211,7 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 			// Handle number key selection for candidate window
 			if(g_candidateWindow)
 			{
-				int index = keyInfo._keyValue; // Assuming number keys 1-9 correspond to candidate indices 0-8
+				int index = keyInfo._keyValue-1; // Assuming number keys 1-9 correspond to candidate indices 0-8
 				if(index >= 0 && index < m_vecCandidate.size())
 				{
 					g_candidateWindow->SetSelectedIndex(index);
@@ -254,6 +248,31 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 				else
 				{
 					LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo Space: Invalid candidate index");
+				}
+			}
+		}
+		else if (keyInfo._keyValue == VK_BACK)
+		{
+			if (!m_vecWord.empty())
+			{
+				auto endIter = m_vecWord.end();
+				endIter--;
+				std::wstring strWord(m_vecWord.begin(), endIter);
+				m_vecCandidate.clear();
+				m_vecCandidate = SimpleCandidateGenerator().Generate(strWord, 5);
+				if (g_candidateWindow)
+				{
+					g_candidateWindow->SetCandidates(m_vecCandidate);
+					g_candidateWindow->Show();
+				}
+				else
+				{
+					LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo g_candidateWindow is null");
+				}
+				m_vecWord.clear();
+				for (auto item = strWord.begin(); item != strWord.end(); item++)
+				{
+					m_vecWord.push_back(*item);
 				}
 			}
 		}
