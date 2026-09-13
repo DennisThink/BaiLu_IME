@@ -14,7 +14,7 @@ HRESULT CBaiLuThreadMgrEventSink::CreateInstance(CBaiLuThreadMgrEventSink** pIns
 CBaiLuThreadMgrEventSink::CBaiLuThreadMgrEventSink()
 {
     LogUtil::LogInfo("CBaiLuThreadMgrEventSink::CBaiLuThreadMgrEventSink");
-    m_refCount = 0;
+    m_refCount = 1;
     m_pPrevTfDocumentMgr = nullptr;
     m_pCurTfDocumentMgr = nullptr;
     m_pCurTfContext = nullptr;
@@ -56,7 +56,12 @@ ULONG STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::Release(void)
 {
     m_refCount--;
     LogUtil::LogInfo("CBaiLuThreadMgrEventSink::Release %d", m_refCount);
-    return m_refCount;
+	ULONG nRet = m_refCount;
+    if(nRet == 0)
+    {
+        delete this;
+	}
+    return nRet;
 }
 void CBaiLuThreadMgrEventSink::CheckRefCount() const
 {

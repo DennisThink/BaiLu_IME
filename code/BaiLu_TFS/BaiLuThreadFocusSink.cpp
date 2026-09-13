@@ -14,7 +14,7 @@ HRESULT CBaiLuThreadFocusSink::CreateInstance(CBaiLuThreadFocusSink** ppOut)
 CBaiLuThreadFocusSink::CBaiLuThreadFocusSink()
 {
     LogUtil::LogInfo("CBaiLuThreadFocusSink::CBaiLuThreadFocusSink");
-    m_refCount = 0;
+    m_refCount = 1;
 }
 
 CBaiLuThreadFocusSink::~CBaiLuThreadFocusSink()
@@ -44,7 +44,12 @@ ULONG STDMETHODCALLTYPE CBaiLuThreadFocusSink::Release(void)
     
     m_refCount--;
     LogUtil::LogInfo("CBaiLuThreadFocusSink::Release %d", m_refCount);
-    return m_refCount;
+	ULONG nRet = m_refCount;
+    if (m_refCount == 0)
+    {
+        delete this;
+    }
+    return nRet;
 
 }
 

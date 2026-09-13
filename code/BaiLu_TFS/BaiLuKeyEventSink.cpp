@@ -14,7 +14,7 @@ HRESULT CBaiLuKeyEventSink::CreateInstance(CBaiLuKeyEventSink** pOut)
 }
 CBaiLuKeyEventSink::CBaiLuKeyEventSink()
 {
-	m_refCount = 0;
+	m_refCount = 1;
 	LogUtil::LogInfo("CBaiLuKeyEventSink::CBaiLuKeyEventSink %d", m_refCount);
 }
 
@@ -116,7 +116,12 @@ ULONG STDMETHODCALLTYPE CBaiLuKeyEventSink::Release(void)
 {
 	m_refCount--;
 	LogUtil::LogInfo("CBaiLuKeyEventSink::Release %d", m_refCount);
-	return m_refCount;
+	ULONG nRet = m_refCount;
+	if(nRet == 0)
+	{
+		delete this;
+	}
+	return nRet;
 }
 
 void CBaiLuKeyEventSink::CheckRefCount() const

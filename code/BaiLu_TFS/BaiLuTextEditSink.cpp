@@ -15,12 +15,12 @@ HRESULT CBaiLuTextEditSink::CreateInstance(CBaiLuTextEditSink** pOut)
 CBaiLuTextEditSink::CBaiLuTextEditSink()
 {
     LogUtil::LogInfo("CBaiLuKeyEventSink::CBaiLuTextEditSink");
-    m_refCount = 0;
+    m_refCount = 1;
 }
 
 CBaiLuTextEditSink::~CBaiLuTextEditSink()
 {
-    LogUtil::LogInfo("CBaiLuKeyEventSink::~CBaiLuTextEditSink");
+    LogUtil::LogInfo("CBaiLuKeyEventSink::~CBaiLuTextEditSink %ld",this->m_refCount);
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuTextEditSink::QueryInterface(
@@ -42,7 +42,12 @@ ULONG STDMETHODCALLTYPE CBaiLuTextEditSink::Release(void)
 {
     m_refCount--;
     LogUtil::LogInfo("CBaiLuTextEditSink::Release %d", m_refCount);
-    return m_refCount;
+	ULONG nRet = m_refCount;
+    if (m_refCount == 0)
+    {
+        delete this;
+    }
+    return nRet;
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuTextEditSink::OnEndEdit(

@@ -2,7 +2,7 @@
 
 BaiLuLanguageBarItemButton::BaiLuLanguageBarItemButton(REFGUID guidLangBar, LPCWSTR description, LPCWSTR tooltip, DWORD onIconIndex, DWORD offIconIndex, BOOL isSecureMode)
 {
-
+	this->_refCount = 1;
 }
 
 BaiLuLanguageBarItemButton::~BaiLuLanguageBarItemButton()
@@ -17,11 +17,18 @@ STDMETHODIMP BaiLuLanguageBarItemButton::QueryInterface(REFIID riid, _Outptr_ vo
 }
 STDMETHODIMP_(ULONG) BaiLuLanguageBarItemButton::AddRef(void) 
 {
-	return 0;
+	_refCount++;
+	return _refCount;
 }
 STDMETHODIMP_(ULONG) BaiLuLanguageBarItemButton::Release(void)
 {
-	return 0;
+	_refCount--;
+	ULONG nRet = _refCount;
+	if(nRet == 0)
+	{
+		delete this;
+	}
+	return nRet;
 }
 
 // ITfLangBarItem

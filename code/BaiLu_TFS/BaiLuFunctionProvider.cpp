@@ -16,7 +16,7 @@ HRESULT CBaiLuFunctionProvider::CreateInstance(CBaiLuFunctionProvider** ppOut)
 CBaiLuFunctionProvider::CBaiLuFunctionProvider()
 {
     LogUtil::LogInfo("CBaiLuFunctionProvider::CBaiLuFunctionProvider");
-    m_refCount = 0;
+    m_refCount = 1;
 }
 CBaiLuFunctionProvider::~CBaiLuFunctionProvider()
 {
@@ -42,7 +42,12 @@ ULONG STDMETHODCALLTYPE CBaiLuFunctionProvider::Release(void)
 {
     m_refCount--;
     LogUtil::LogInfo("CBaiLuFunctionProvider::Release %d", m_refCount);
-    return m_refCount;
+	ULONG nRet = m_refCount;
+    if(m_refCount == 0)
+    {
+        delete this;
+	}
+    return nRet;
 }
 
 HRESULT STDMETHODCALLTYPE  CBaiLuFunctionProvider::GetType(

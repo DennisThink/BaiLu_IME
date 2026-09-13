@@ -14,7 +14,7 @@ HRESULT CBaiLuCompositionSink::CreateInstance(CBaiLuCompositionSink** pOut)
 
 CBaiLuCompositionSink::CBaiLuCompositionSink()
 {
-    m_refCount = 0;
+    m_refCount = 1;
     LogUtil::LogInfo("CBaiLuCompositionSink::CBaiLuCompositionSink %d", m_refCount);
 }
 CBaiLuCompositionSink::~CBaiLuCompositionSink()
@@ -40,7 +40,12 @@ ULONG STDMETHODCALLTYPE CBaiLuCompositionSink::Release(void)
 {
     m_refCount--;
     LogUtil::LogInfo("CBaiLuCompositionSink::Release %d", m_refCount);
-    return m_refCount;
+	ULONG nRet = m_refCount;
+    if(m_refCount == 0)
+    {
+        delete this;
+	}
+    return nRet;
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuCompositionSink::OnCompositionTerminated(

@@ -15,7 +15,7 @@ HRESULT CBaiLuDisplayAttributeProvider::CreateInstance(CBaiLuDisplayAttributePro
 CBaiLuDisplayAttributeProvider::CBaiLuDisplayAttributeProvider()
 {
     LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::CBaiLuDisplayAttributeProvider");
-    m_refCount = 0;
+    m_refCount = 1;
 }
 CBaiLuDisplayAttributeProvider::~CBaiLuDisplayAttributeProvider()
 {
@@ -40,7 +40,12 @@ ULONG STDMETHODCALLTYPE CBaiLuDisplayAttributeProvider::Release(void)
 {
     m_refCount--;
     LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::Release %d", m_refCount);
-    return m_refCount;
+	ULONG ulRet = m_refCount;
+    if (m_refCount == 0)
+    {
+        delete this;
+    }
+    return ulRet;
 }
 HRESULT STDMETHODCALLTYPE CBaiLuDisplayAttributeProvider::EnumDisplayAttributeInfo(
     /* [out] */ __RPC__deref_out_opt IEnumTfDisplayAttributeInfo** ppEnum)

@@ -15,7 +15,7 @@ HRESULT CBaiLuFnGetPreferredTouchKeyBoardLayout::CreateInstance(CBaiLuFnGetPrefe
 CBaiLuFnGetPreferredTouchKeyBoardLayout::CBaiLuFnGetPreferredTouchKeyBoardLayout()
 {
     LogUtil::LogInfo("CBaiLuFnGetPreferredTouchKeyBoardLayout::CBaiLuFnGetPreferredTouchKeyBoardLayout");
-    m_refCount = 0;
+    m_refCount = 1;
 }
 
 CBaiLuFnGetPreferredTouchKeyBoardLayout::~CBaiLuFnGetPreferredTouchKeyBoardLayout()
@@ -42,7 +42,12 @@ ULONG STDMETHODCALLTYPE CBaiLuFnGetPreferredTouchKeyBoardLayout::Release(void)
 {
     m_refCount--;
     LogUtil::LogInfo("CBaiLuFnGetPreferredTouchKeyBoardLayout::Release %d",m_refCount);
-    return m_refCount;
+	ULONG nRet = m_refCount;
+    if (m_refCount == 0)
+    {
+        delete this;
+    }
+    return nRet;
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuFnGetPreferredTouchKeyBoardLayout::GetLayout(

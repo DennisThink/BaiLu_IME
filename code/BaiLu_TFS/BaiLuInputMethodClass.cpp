@@ -337,7 +337,12 @@ STDMETHODIMP_(ULONG) CBaiLuInputMethodClass::Release(void)
 {
     m_refCount--;
     LogUtil::LogInfo("CBaiLuInputMethodClass::Release %d",m_refCount);
-    return 0;
+	ULONG nRet = m_refCount;
+    if (m_refCount == 0)
+    {
+        delete this;
+	}
+    return nRet;
 }
 
 // ITfTextInputProcessor

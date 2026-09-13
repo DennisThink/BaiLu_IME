@@ -17,7 +17,7 @@ ULONG BaiLuEditSession::AddRef()
 ULONG BaiLuEditSession::Release()
 {
 	this->_cRef--;
-	int count = this->_cRef;
+	ULONG count = this->_cRef;
     LogUtil::LogInfo("BaiLuEditSession::AddRef: _cRef=%d", this->_cRef);
     if(count ==0)
     {

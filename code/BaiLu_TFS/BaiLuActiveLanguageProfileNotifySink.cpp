@@ -14,7 +14,7 @@ HRESULT CBaiLuActiveLanguageProfileNotifySink::CreateInstance(CBaiLuActiveLangua
 
 CBaiLuActiveLanguageProfileNotifySink::CBaiLuActiveLanguageProfileNotifySink()
 {
-    m_refCount = 0;
+    m_refCount = 1;
     LogUtil::LogInfo("CBaiLuActiveLanguageProfileNotifySink::CBaiLuActiveLanguageProfileNotifySink %d", m_refCount);
 }
 
@@ -42,7 +42,12 @@ ULONG STDMETHODCALLTYPE CBaiLuActiveLanguageProfileNotifySink::Release(void)
 {
     m_refCount--;
     LogUtil::LogInfo("CBaiLuActiveLanguageProfileNotifySink::Release %d", m_refCount);
-    return m_refCount;
+    ULONG nRet = m_refCount;
+    if(m_refCount == 0)
+    {
+        delete this;
+	}
+    return nRet;
 }
 
 
