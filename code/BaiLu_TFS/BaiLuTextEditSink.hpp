@@ -1,6 +1,10 @@
 #ifndef _BAI_LU_TEXT_EDIT_SINK_H_
 #define _BAI_LU_TEXT_EDIT_SINK_H_
 #include "private.hpp"
+/*
+* 
+* 系统通知结束编辑的Sink，但是在哪里注册不清楚。
+*/
 class CBaiLuTextEditSink :public ITfTextEditSink
 {
 public:

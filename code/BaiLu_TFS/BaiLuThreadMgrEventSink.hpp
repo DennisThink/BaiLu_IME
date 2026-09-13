@@ -1,6 +1,9 @@
 #ifndef _BAI_LU_THREAD_EVENT_SINK_H_
 #define _BAI_LU_THREAD_EVENT_SINK_H_
 #include "private.hpp"
+/*
+* TSF用来通知获得焦点的Sink，我在此处获得了可以编辑的输入框的引用。
+*/
 class CBaiLuThreadMgrEventSink:public ITfThreadMgrEventSink
 {
 public:

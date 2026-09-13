@@ -1,6 +1,9 @@
 #ifndef _BAI_LU_THREAD_FOCUS_SINK_H_
 #define _BAI_LU_THREAD_FOCUS_SINK_H_
 #include "private.hpp"
+/*
+* TSF用来通知焦点变更的Sink，具体在哪里注册和怎么用不清楚。
+*/
 class CBaiLuThreadFocusSink :public ITfThreadFocusSink
 {
 public:

@@ -6,6 +6,9 @@
 #include <string>
 class ICandidateView;
 
+/*
+* 候选词窗口的基础类
+*/
 class CandidateWindow
 {
 public:

@@ -2,6 +2,9 @@
 #define _BAI_LU_KEY_EVENT_SINK_HPP_
 #include "private.hpp"
 #include <string>
+/*
+*用来接收TSF框架传递过来的按键消息，实际的消息处理在其他的类里，这个类只负责接收
+*/
 class CBaiLuKeyEventSink :public ITfKeyEventSink
 {
 public:

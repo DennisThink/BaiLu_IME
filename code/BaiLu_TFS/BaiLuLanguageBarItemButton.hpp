@@ -4,7 +4,9 @@
 
 class CCompartment;
 class CCompartmentEventSink;
-
+/*
+*TODO:不知道这个类做什么用的，先实现了再说
+*/
 class BaiLuLanguageBarItemButton : public ITfLangBarItemButton,
     public ITfSource
 {

@@ -1,5 +1,8 @@
 #pragma once
 
+/*
+* 竖排的候选词窗口，目前暂时使用ListBox来实现
+*/
 #include "ICandidateView.h"
 
 class ListCandidateView : public ICandidateView
