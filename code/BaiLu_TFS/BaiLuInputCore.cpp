@@ -1,6 +1,7 @@
 #include "BaiLuInputCore.hpp"
 #include "CommonFunction.hpp"
 #include "BaiLuEditSession.hpp"
+#include "BaiLu_DeleteBeforeEditSession.hpp"
 #include "private.hpp"
 #include "Log.hpp"
 #include "../BaiLu_CandidateGenerator/source/SimpleCandidateGenerator.h"
@@ -66,6 +67,32 @@ void CBaiLuInputCore::_UpdateComposition(ITfContext* pContext, const std::string
 {
 
 }
+
+void CBaiLuInputCore::DeleteWordByBackSpace()
+{
+	if (nullptr != this-> m_pCurTfContext)
+	{
+		CBaiLuDeleteEditSession* pSession = new CBaiLuDeleteEditSession(this->m_pCurTfContext);
+		HRESULT sessionResult = E_FAIL;
+
+		// 注意：这里必须使用同步编辑会话,具体原因不清楚
+		// 只使用 TF_ES_READWRITE 时，候选词提交可能出现
+		// DoEditSession 已执行，但文本没有稳定插入的情况。
+		HRESULT hr = m_pCurTfContext->RequestEditSession(
+			m_clientID,
+			pSession,
+			TF_ES_READWRITE | TF_ES_SYNC,
+			&sessionResult
+		);
+		if (pSession)
+		{
+			pSession->Release();
+			pSession = nullptr;
+		}
+	}
+
+}
+
 void CBaiLuInputCore::InsertWordToWindow(const std::wstring& strWord)
 {
 	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %ls", strWord.c_str());
@@ -253,27 +280,34 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 		}
 		else if (keyInfo._keyValue == VK_BACK)
 		{
-			if (!m_vecWord.empty())
+			if (IsChandidateWindowShow())
 			{
-				auto endIter = m_vecWord.end();
-				endIter--;
-				std::wstring strWord(m_vecWord.begin(), endIter);
-				m_vecCandidate.clear();
-				m_vecCandidate = SimpleCandidateGenerator().Generate(strWord, 5);
-				if (g_candidateWindow)
+				if (!m_vecWord.empty())
 				{
-					g_candidateWindow->SetCandidates(m_vecCandidate);
-					g_candidateWindow->Show();
+					auto endIter = m_vecWord.end();
+					endIter--;
+					std::wstring strWord(m_vecWord.begin(), endIter);
+					m_vecCandidate.clear();
+					m_vecCandidate = SimpleCandidateGenerator().Generate(strWord, 5);
+					if (g_candidateWindow)
+					{
+						g_candidateWindow->SetCandidates(m_vecCandidate);
+						g_candidateWindow->Show();
+					}
+					else
+					{
+						LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo g_candidateWindow is null");
+					}
+					m_vecWord.clear();
+					for (auto item = strWord.begin(); item != strWord.end(); item++)
+					{
+						m_vecWord.push_back(*item);
+					}
 				}
-				else
-				{
-					LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo g_candidateWindow is null");
-				}
-				m_vecWord.clear();
-				for (auto item = strWord.begin(); item != strWord.end(); item++)
-				{
-					m_vecWord.push_back(*item);
-				}
+			}
+			else
+			{
+				DeleteWordByBackSpace();
 			}
 		}
 	}break;
@@ -322,4 +356,67 @@ KeyInfo CBaiLuInputCore::GetKeyInfo(WPARAM wParam, LPARAM lParam)
 	}
 
 	return { KeyType::NoneKey, 0 };
+}
+
+HRESULT CBaiLuInputCore::DealTestKeyDown(WPARAM wParam, LPARAM lParam, BOOL* pfEaten)
+{
+	KeyInfo info = GetKeyInfo(wParam, lParam);
+	switch (info._type)
+	{
+		case KeyType::ControlKey:
+		{
+			if (info._keyValue == VK_BACK)
+			{
+				if (IsChandidateWindowShow())
+				{
+					*pfEaten = TRUE;
+				}
+				else
+				{
+					*pfEaten = FALSE;
+				}
+			}
+			else
+			{
+				*pfEaten = TRUE;
+			}
+		}break;
+		default:
+		{
+			*pfEaten = TRUE;
+		}break;
+	}
+	return S_OK;
+
+}
+
+HRESULT CBaiLuInputCore::DealTestKeyUp(WPARAM wParam, LPARAM lParam, BOOL* pfEaten)
+{
+	KeyInfo info = GetKeyInfo(wParam, lParam);
+	switch (info._type)
+	{
+	case KeyType::ControlKey:
+	{
+		if (info._keyValue == VK_BACK)
+		{
+			if (IsChandidateWindowShow())
+			{
+				*pfEaten = TRUE;
+			}
+			else
+			{
+				*pfEaten = FALSE;
+			}
+		}
+		else
+		{
+			*pfEaten = TRUE;
+		}
+	}break;
+	default:
+	{
+		*pfEaten = TRUE;
+	}break;
+	}
+	return S_OK;
 }

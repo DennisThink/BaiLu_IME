@@ -34,6 +34,8 @@ public:
 	}
 
 public:
+	HRESULT DealTestKeyDown(WPARAM wParam, LPARAM lParam, BOOL* pfEaten);
+	HRESULT DealTestKeyUp(WPARAM wParam, LPARAM lParam, BOOL* pfEaten);
 	void DealOnKeyDown(WPARAM wParam, LPARAM lParam);
 	void DealOnKeyUp(WPARAM wParam, LPARAM lParam);
 	void SetCurTfContext(ITfContext* pContext);
@@ -42,6 +44,7 @@ private:
 	void LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::string method);
 	void ShowWordBySpace(WPARAM wParam, LPARAM lParam);
 	void InsertWordToWindow(const std::wstring& strWord);
+	void DeleteWordByBackSpace();
 	void _UpdateComposition(ITfContext* pContext, const std::string& strText);
 	ITfContext* _GetFocusContext();
 	KeyInfo GetKeyInfo(WPARAM wParam, LPARAM lParam);

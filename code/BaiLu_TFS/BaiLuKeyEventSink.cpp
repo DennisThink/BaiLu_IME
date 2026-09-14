@@ -37,7 +37,11 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnTestKeyDown(
 {
 	LogUtil::LogInfo("CBaiLuKeyEventSink::OnTestKeyDown %d", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnTestKeyDown");
-	*pfEaten = TRUE;
+	CBaiLuInputCore* pInputCore = CBaiLuInputCore::GetInstance();
+	if (pInputCore != nullptr)
+	{
+		pInputCore->DealTestKeyDown(wParam, lParam,pfEaten);
+	}
 	return S_OK;
 }
 
@@ -49,7 +53,11 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnTestKeyUp(
 {
 	LogUtil::LogInfo("CBaiLuKeyEventSink::OnTestKeyUp %d", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnTestKeyUp");
-	*pfEaten = TRUE;
+	CBaiLuInputCore* pInputCore = CBaiLuInputCore::GetInstance();
+	if (pInputCore != nullptr)
+	{
+		pInputCore->DealTestKeyDown(wParam, lParam, pfEaten);
+	}
 	return S_OK;
 }
 

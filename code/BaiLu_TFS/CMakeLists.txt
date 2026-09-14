@@ -43,6 +43,8 @@ SET(BAILU_IME_SOURCE_FILE
 ./CommonFunction.cpp
 ./BaiLuEditSession.hpp 
 ./BaiLuEditSession.cpp
+./BaiLu_DeleteBeforeEditSession.hpp 
+./BaiLu_DeleteBeforeEditSession.cpp
 ./BaiLuIME.rc
 ./BaiLuIME.def)
 
