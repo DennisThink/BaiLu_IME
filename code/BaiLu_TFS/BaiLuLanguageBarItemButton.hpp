@@ -16,8 +16,8 @@ public:
 
     // IUnknown
     STDMETHODIMP QueryInterface(REFIID riid, _Outptr_ void** ppvObj) override;
-    STDMETHODIMP_(ULONG) AddRef(void) override;
-    STDMETHODIMP_(ULONG) Release(void) override;
+    virtual ULONG STDMETHODCALLTYPE AddRef(void) override;
+    virtual ULONG STDMETHODCALLTYPE Release(void) override;
 
     // ITfLangBarItem
     STDMETHODIMP GetInfo(_Out_ TF_LANGBARITEMINFO* pInfo) override;

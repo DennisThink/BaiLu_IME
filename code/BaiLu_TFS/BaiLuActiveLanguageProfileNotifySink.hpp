@@ -17,13 +17,13 @@ public:
         /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)override;
 
     virtual ULONG STDMETHODCALLTYPE AddRef(void)override;
-
     virtual ULONG STDMETHODCALLTYPE Release(void)override;
 public:
     virtual HRESULT STDMETHODCALLTYPE OnActivated(
         /* [in] */ __RPC__in REFCLSID clsid,
         /* [in] */ __RPC__in REFGUID guidProfile,
         /* [in] */ BOOL fActivated) override;
+private:
 private:
     int m_refCount;
 };

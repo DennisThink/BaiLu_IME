@@ -1,6 +1,9 @@
 #ifndef _BAI_LU_DELETE_EDIT_SESSION_H_
 #define _BAI_LU_DELETE_EDIT_SESSION_H_
 #include "private.hpp"
+/*
+** Not Used Now
+*/
 class CBaiLuDeleteEditSession :public ITfEditSession
 {
 public:

@@ -25,5 +25,6 @@ public:
     virtual HRESULT STDMETHODCALLTYPE OnKillThreadFocus(void) override;
 private:
     int m_refCount;
+    static CBaiLuThreadFocusSink* m_pStaticInst;
 };
 #endif

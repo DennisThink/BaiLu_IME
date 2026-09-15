@@ -28,8 +28,8 @@ public:
         REFIID riid,
         void** ppvObj) override;
 
-    virtual ULONG AddRef() override;
-    virtual ULONG Release() override;
+    virtual ULONG STDMETHODCALLTYPE AddRef() override;
+    virtual ULONG STDMETHODCALLTYPE Release() override;
 private:
     LONG _cRef;
     ITfContext* _pContext;

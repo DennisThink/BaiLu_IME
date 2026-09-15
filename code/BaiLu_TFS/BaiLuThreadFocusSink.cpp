@@ -1,12 +1,18 @@
 #include "BaiLuThreadFocusSink.hpp"
 #include "Log.hpp"
 
+CBaiLuThreadFocusSink* CBaiLuThreadFocusSink::m_pStaticInst = nullptr;
+
 HRESULT CBaiLuThreadFocusSink::CreateInstance(CBaiLuThreadFocusSink** ppOut)
 {
-    CBaiLuThreadFocusSink* pInst = new CBaiLuThreadFocusSink();
-    if (nullptr != pInst && nullptr != ppOut)
+    if (nullptr == m_pStaticInst)
     {
-        *ppOut = pInst;
+        m_pStaticInst = new CBaiLuThreadFocusSink();
+    }
+
+    if (nullptr != m_pStaticInst && nullptr != ppOut)
+    {
+        *ppOut = m_pStaticInst;
         return S_OK;
     }
     return -1;
@@ -15,10 +21,12 @@ CBaiLuThreadFocusSink::CBaiLuThreadFocusSink()
 {
     LogUtil::LogInfo("CBaiLuThreadFocusSink::CBaiLuThreadFocusSink");
     m_refCount = 1;
+    LogUtil::LogInfo("CBaiLuThreadFocusSink::CBaiLuThreadFocusSink %d", m_refCount);
 }
 
 CBaiLuThreadFocusSink::~CBaiLuThreadFocusSink()
 {
+    LogUtil::LogInfo("CBaiLuThreadFocusSink::~CBaiLuThreadFocusSink %d", m_refCount);
     LogUtil::LogInfo("CBaiLuThreadFocusSink::~CBaiLuThreadFocusSink");
 }
 
@@ -27,7 +35,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuThreadFocusSink::QueryInterface(
     /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
     LogUtil::LogInfo("CBaiLuThreadFocusSink::QueryInterface");
-    return 0;
+    return E_NOINTERFACE;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuThreadFocusSink::AddRef(void)

@@ -467,7 +467,7 @@ bool CBaiLuInputMethodClass::InitThreadMgrEventSink()
     }
     DWORD cookie= TF_INVALID_COOKIE;
     qResult = pSource->AdviseSink(IID_ITfThreadMgrEventSink,
-        m_pThreadMgrEventSink,
+        this,
         &cookie);
     if (m_pThreadMgrEventSink)
     {
@@ -562,7 +562,7 @@ bool CBaiLuInputMethodClass::InitTextEditSink()
     ret = FALSE;
     if (SUCCEEDED(m_pCurTfContext->QueryInterface(IID_ITfSource, (void**)&pSource)))
     {
-        if (SUCCEEDED(pSource->AdviseSink(IID_ITfTextEditSink, m_pTextEditSink, &m_textEditSinkCookie)))
+        if (SUCCEEDED(pSource->AdviseSink(IID_ITfTextEditSink, this, &m_textEditSinkCookie)))
         {
             ret = TRUE;
         }
@@ -593,7 +593,7 @@ bool CBaiLuInputMethodClass::InitActiveLanguageProfileNotifySink()
     }
 
     if (pSource->AdviseSink(IID_ITfActiveLanguageProfileNotifySink, 
-        m_pNotifySink, 
+        this, 
         &m_activeLanguageProfileNotifySinkCookie) != S_OK)
     {
         m_activeLanguageProfileNotifySinkCookie = TF_INVALID_COOKIE;
@@ -609,22 +609,25 @@ Exit:
 
 bool CBaiLuInputMethodClass::InitThreadFocusSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::_InitThreadFocusSink");
+    LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadFocusSink");
     ITfSource* pSource = nullptr;
-
+    LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadFocusSink %s %d",__FILE__,__LINE__);
     if (FAILED(m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)&pSource)))
     {
+        LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadFocusSink %s %d", __FILE__, __LINE__);
         return FALSE;
     }
+    LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadFocusSink %s %d", __FILE__, __LINE__);
 
     if (FAILED(pSource->AdviseSink(IID_ITfThreadFocusSink,
-        m_pThreadFocusSink, 
+        this, 
         &m_dwThreadFocusSinkCookie)))
     {
+        LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadFocusSink %s %d", __FILE__, __LINE__);
         pSource->Release();
         return FALSE;
     }
-
+    LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadFocusSink %s %d", __FILE__, __LINE__);
     pSource->Release();
 
     return TRUE;
@@ -800,11 +803,15 @@ void CBaiLuInputMethodClass::UnInitThreadFocusSink()
         return;
     }
 
-    if (FAILED(pSource->UnadviseSink(m_dwThreadFocusSinkCookie)))
+    /*
+    *NOTIE: we should not comment this function ,but it lead to crash,we do not find the reason yet.
+    *TODO:
+    */
+    /*if (FAILED(pSource->UnadviseSink(m_dwThreadFocusSinkCookie)))
     {
         pSource->Release();
         return;
-    }
+    }*/
 
     pSource->Release();
     return;
