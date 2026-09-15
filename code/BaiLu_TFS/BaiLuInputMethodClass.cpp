@@ -807,11 +807,11 @@ void CBaiLuInputMethodClass::UnInitThreadFocusSink()
     *NOTIE: we should not comment this function ,but it lead to crash,we do not find the reason yet.
     *TODO:
     */
-    /*if (FAILED(pSource->UnadviseSink(m_dwThreadFocusSinkCookie)))
+    if (FAILED(pSource->UnadviseSink(m_dwThreadFocusSinkCookie)))
     {
         pSource->Release();
         return;
-    }*/
+    }
 
     pSource->Release();
     return;

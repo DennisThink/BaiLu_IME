@@ -20,14 +20,14 @@ class CBaiLuInputMethodClass : public ITfTextInputProcessorEx
 public:
     // IUnknown
     STDMETHODIMP QueryInterface(REFIID riid, _Outptr_ void** ppvObj) override;
-    STDMETHODIMP_(ULONG) AddRef(void) override;
-    STDMETHODIMP_(ULONG) Release(void) override;
+    virtual STDMETHODIMP_(ULONG) AddRef(void) override;
+    virtual STDMETHODIMP_(ULONG) Release(void) override;
 
     // ITfTextInputProcessor
-    STDMETHODIMP Activate(ITfThreadMgr* pThreadMgr, TfClientId tfClientId) override;
+    virtual STDMETHODIMP Activate(ITfThreadMgr* pThreadMgr, TfClientId tfClientId) override;
     // ITfTextInputProcessorEx
-    STDMETHODIMP ActivateEx(ITfThreadMgr* pThreadMgr, TfClientId tfClientId, DWORD dwFlags) override;
-    STDMETHODIMP Deactivate() override;
+    virtual STDMETHODIMP ActivateEx(ITfThreadMgr* pThreadMgr, TfClientId tfClientId, DWORD dwFlags) override;
+    virtual STDMETHODIMP Deactivate() override;
 
     static CBaiLuInputMethodClass* GetSingleInstance();
 private:
