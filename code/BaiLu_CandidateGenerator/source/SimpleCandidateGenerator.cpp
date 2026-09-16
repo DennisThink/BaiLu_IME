@@ -33,15 +33,7 @@ std::vector<std::wstring> SimpleCandidateGenerator::Generate(
         candidates.push_back(L"help");
         candidates.push_back(L"here");
     }
-    else
-    {
-        candidates.push_back(input);
-        candidates.push_back(L"Dennis");
-        candidates.push_back(L"DennisT");
-        candidates.push_back(L"DennisTh");
-        candidates.push_back(L"DennisThi");
-        candidates.push_back(L"DennisThin");
-    }
+
     if (candidates.size() > maxCandidates)
     {
         candidates.resize(maxCandidates);

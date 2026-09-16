@@ -5,6 +5,7 @@
 #include "private.hpp"
 #include "Log.hpp"
 #include "../BaiLu_CandidateGenerator/source/SimpleCandidateGenerator.h"
+#include "../BaiLu_CandidateGenerator/source/SimpleQuanPinGenerator.h"
 #include "../BaiLu_CandidateWindow/source/CandidateWindow.h"
 #include "../BaiLu_CandidateWindow/source/ListCandidateView.h"
 #include "GlobalValues.hpp"
@@ -161,6 +162,8 @@ CBaiLuInputCore::CBaiLuInputCore()
 {
 	g_candidateWindow = nullptr;
 	m_pCurTfContext = nullptr;
+	//m_generator = std::make_unique<SimpleCandidateGenerator>();
+	m_generator = std::make_unique<CSimpleQuanPinGenerator>();
 	m_clientID = 0;
 	LogUtil::LogInfo("CBaiLuInputCore::CBaiLuInputCore");
 	auto pListView= std::make_unique<ListCandidateView>();
@@ -171,7 +174,7 @@ CBaiLuInputCore::CBaiLuInputCore()
 		{
 			g_candidateWindow->Create(GlobalValue::GetInstanceHandle());
 			g_candidateWindow->Move(300, 300);
-			g_candidateWindow->Show();
+			g_candidateWindow->Hide();
 		}
 		else
 		{
@@ -218,7 +221,10 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 		{
 			std::wstring strWord(m_vecWord.begin(), m_vecWord.end());
 			m_vecCandidate.clear();
-			m_vecCandidate = SimpleCandidateGenerator().Generate(strWord, 5);
+			if (m_generator)
+			{
+				m_vecCandidate = m_generator->Generate(strWord, 5);
+			}
 			if(g_candidateWindow)
 			{
 				g_candidateWindow->SetCandidates(m_vecCandidate);
@@ -288,7 +294,10 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 					endIter--;
 					std::wstring strWord(m_vecWord.begin(), endIter);
 					m_vecCandidate.clear();
-					m_vecCandidate = SimpleCandidateGenerator().Generate(strWord, 5);
+					if (m_generator)
+					{
+						m_vecCandidate = m_generator->Generate(strWord, 5);
+					}
 					if (g_candidateWindow)
 					{
 						g_candidateWindow->SetCandidates(m_vecCandidate);
