@@ -162,6 +162,7 @@ CBaiLuInputCore::CBaiLuInputCore()
 {
 	g_candidateWindow = nullptr;
 	m_pCurTfContext = nullptr;
+	m_curSelectedIndex = 0;
 	//m_generator = std::make_unique<SimpleCandidateGenerator>();
 	m_generator = std::make_unique<CSimpleQuanPinGenerator>();
 	m_clientID = 0;
@@ -173,7 +174,6 @@ CBaiLuInputCore::CBaiLuInputCore()
 		if (g_candidateWindow)
 		{
 			g_candidateWindow->Create(NULL, NULL);
-			//GlobalValue::GetInstanceHandle());
 			g_candidateWindow->Move(300, 300);
 			g_candidateWindow->Hide();
 		}
@@ -249,6 +249,7 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 				int index = keyInfo._keyValue-1; // Assuming number keys 1-9 correspond to candidate indices 0-8
 				if(index >= 0 && index < m_vecCandidate.size())
 				{
+					m_curSelectedIndex = index;
 					g_candidateWindow->SetSelectedIndex(index);
 				}
 				else
@@ -271,14 +272,14 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 		{
 			if (g_candidateWindow)
 			{
-				int index = g_candidateWindow->GetSelectedIndex();
-				if (index >= 0 && index < m_vecCandidate.size())
+				if (m_curSelectedIndex >= 0 && m_curSelectedIndex < m_vecCandidate.size())
 				{
-					std::wstring selectedWord = m_vecCandidate[index];
+					std::wstring selectedWord = m_vecCandidate[m_curSelectedIndex];
 					InsertWordToWindow(selectedWord);
 					m_vecWord.clear();
 					m_vecCandidate.clear();
 					g_candidateWindow->Hide();
+					m_curSelectedIndex = 0;
 				}
 				else
 				{

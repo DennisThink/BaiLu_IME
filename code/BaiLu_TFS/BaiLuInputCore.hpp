@@ -54,6 +54,7 @@ private:
 	bool IsChandidateWindowShow()const;
 private:
 	std::vector<wchar_t> m_vecWord;
+	int m_curSelectedIndex;
 	std::vector<std::wstring> m_vecCandidate;
 	CBaiLuInputCore();
 	~CBaiLuInputCore();
