@@ -169,10 +169,11 @@ CBaiLuInputCore::CBaiLuInputCore()
 	auto pListView= std::make_unique<ListCandidateView>();
 	if(nullptr != pListView)
 	{
-		g_candidateWindow = std::make_unique<CandidateWindow>(std::move(pListView));
+		g_candidateWindow = std::make_unique<CandidateWindow>();
 		if (g_candidateWindow)
 		{
-			g_candidateWindow->Create(GlobalValue::GetInstanceHandle());
+			g_candidateWindow->Create(NULL, NULL);
+			//GlobalValue::GetInstanceHandle());
 			g_candidateWindow->Move(300, 300);
 			g_candidateWindow->Hide();
 		}
@@ -227,6 +228,7 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 			}
 			if(g_candidateWindow)
 			{
+				g_candidateWindow->SetUserInput(strWord);
 				g_candidateWindow->SetCandidates(m_vecCandidate);
 				g_candidateWindow->Show();
 			}
@@ -300,6 +302,7 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 					}
 					if (g_candidateWindow)
 					{
+						g_candidateWindow->SetUserInput(strWord);
 						g_candidateWindow->SetCandidates(m_vecCandidate);
 						g_candidateWindow->Show();
 					}

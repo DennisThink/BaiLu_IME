@@ -53,10 +53,13 @@ SET(CANDIDATE_GENERATOR_SOURCE_FILE ${GENERATOR_SOURCE_FOLDER}/SimpleCandidateGe
 ${GENERATOR_SOURCE_FOLDER}/SimpleQuanPinGenerator.cpp)
 
 SET(WINDOW_SOURCE_FOLDER ../BaiLu_CandidateWindow/source)
-SET(CANDIDATE_WINDOW_SOURCE_FILE  ${WINDOW_SOURCE_FOLDER}/CandidateWindow.cpp
+SET(CANDIDATE_WINDOW_SOURCE_FILE  
+${WINDOW_SOURCE_FOLDER}/CandidateWindow.cpp
 ${WINDOW_SOURCE_FOLDER}/CandidateWindow.h
 ${WINDOW_SOURCE_FOLDER}/ListCandidateView.cpp
-${WINDOW_SOURCE_FOLDER}/ListCandidateView.h)
+${WINDOW_SOURCE_FOLDER}/ListCandidateView.h
+${WINDOW_SOURCE_FOLDER}/PreeditWindow.cpp
+${WINDOW_SOURCE_FOLDER}/WindowBase.cpp)
 
 
 SET(TEST_FILES ./test_main.cpp ./GlobalValues.cpp ./RegKeyFunction.cpp ./Log.cpp)

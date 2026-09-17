@@ -4,35 +4,45 @@
 #include <memory>
 #include <vector>
 #include <string>
-class ICandidateView;
-
-/*
-* 候选词窗口的基础类
-*/
-class CandidateWindow
+#include "ICandidateView.h"
+#include "WindowBase.hpp"
+#include "ListCandidateView.h"
+class PreeditWindow;
+class IPreeditWindow :public IPreedit, public IWindow
 {
 public:
-    explicit CandidateWindow(
-        std::unique_ptr<ICandidateView> view);
+    virtual ~IPreeditWindow()= default;
+};
+
+class ICandidateListWindow:public ICandidateList,public IWindow
+{
+
+};
+class CandidateWindow :public IPreedit, public ICandidateList, public WindowBase
+{
+public:
+    explicit CandidateWindow();
 
     ~CandidateWindow();
 
-    bool Create(HINSTANCE hInstance);
+    virtual bool Create(HWND hParent, HINSTANCE hInstance) override;
+    virtual void Destroy() override;
 
 
-    void Show();
-    void Hide();
 
     void Move(int x, int y);
 
-    void SetCandidates(
-        const std::vector<std::wstring>& candidates);
+    //Override function for ICandidateGenerator interface
+    virtual void SetUserInput(const std::wstring& strUserInput) override;
+    virtual  void SetCandidates(
+        const std::vector<std::wstring>& candidates) override;
 
-    int GetSelectedIndex() const;
+    virtual int GetSelectedIndex() const override;
 
-    void SetSelectedIndex(int index);
+    virtual void SetSelectedIndex(int index) override;
 
-    HWND GetHandle() const;
+protected:
+    void UpdateLayout();
 private:
     static LRESULT CALLBACK WndProc(
         HWND hwnd,
@@ -46,8 +56,6 @@ private:
         LPARAM lParam);
 
 private:
-    HWND m_hwnd = nullptr;
-    HINSTANCE m_hInstance = nullptr;
-	int m_selectedIndex = -1;
-    std::unique_ptr<ICandidateView> m_view;
+    std::unique_ptr<PreeditWindow> m_preeditWindow;
+    std::unique_ptr<ListCandidateView> m_CandidateListWindow;
 };
