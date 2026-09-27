@@ -26,7 +26,22 @@ struct KeyInfo
 
 
 
-class CBaiLuInputCore
+class IBaiLuInputCore
+{
+public:
+	IBaiLuInputCore() = default;
+	virtual ~IBaiLuInputCore() = default;
+public:
+	virtual HRESULT DealTestKeyDown(WPARAM wParam, LPARAM lParam, BOOL* pfEaten)=0;
+	virtual HRESULT DealTestKeyUp(WPARAM wParam, LPARAM lParam, BOOL* pfEaten)=0;
+	virtual void DealOnKeyDown(WPARAM wParam, LPARAM lParam)=0;
+	virtual void DealOnKeyUp(WPARAM wParam, LPARAM lParam)=0;
+	virtual void SetCurTfContext(ITfContext* pContext)=0;
+	virtual void SetClientID(TfClientId clientID)=0;
+	virtual bool DealActiveEx(ITfThreadMgr* pThreadMgr, TfClientId tfClientId, DWORD dwFlags)=0;
+	virtual bool DealDeactivate()=0;
+};
+class CBaiLuInputCore:public IBaiLuInputCore
 {
 public:
 	static CBaiLuInputCore* GetInstance()
@@ -36,12 +51,14 @@ public:
 	}
 
 public:
-	HRESULT DealTestKeyDown(WPARAM wParam, LPARAM lParam, BOOL* pfEaten);
-	HRESULT DealTestKeyUp(WPARAM wParam, LPARAM lParam, BOOL* pfEaten);
-	void DealOnKeyDown(WPARAM wParam, LPARAM lParam);
-	void DealOnKeyUp(WPARAM wParam, LPARAM lParam);
-	void SetCurTfContext(ITfContext* pContext);
-	void SetClientID(TfClientId clientID);
+	virtual bool DealActiveEx(ITfThreadMgr* pThreadMgr, TfClientId tfClientId, DWORD dwFlags) override;
+	virtual bool DealDeactivate() override;
+	virtual HRESULT DealTestKeyDown(WPARAM wParam, LPARAM lParam, BOOL* pfEaten) override;
+	virtual HRESULT DealTestKeyUp(WPARAM wParam, LPARAM lParam, BOOL* pfEaten) override;
+	virtual void DealOnKeyDown(WPARAM wParam, LPARAM lParam) override;
+	virtual void DealOnKeyUp(WPARAM wParam, LPARAM lParam) override;
+	virtual void SetCurTfContext(ITfContext* pContext) override;
+	virtual void SetClientID(TfClientId clientID) override;
 private:
 	void LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::string method);
 	void ShowWordBySpace(WPARAM wParam, LPARAM lParam);

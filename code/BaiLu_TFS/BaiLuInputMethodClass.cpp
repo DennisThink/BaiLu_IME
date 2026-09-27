@@ -406,6 +406,13 @@ STDMETHODIMP CBaiLuInputMethodClass::ActivateEx(ITfThreadMgr* pThreadMgr, TfClie
         Deactivate();
         return E_FAIL;
     }
+    {
+        CBaiLuInputCore* pInputCore = CBaiLuInputCore::GetInstance();
+        if (pInputCore)
+        {
+            pInputCore->DealActiveEx(pThreadMgr, tfClientId, dwFlags);
+        }
+    }
     return S_OK;
 }
 STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
@@ -418,6 +425,14 @@ STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
     UnInitDisplayAttributeGuidAtomSink();
     UnInitFunctionProviderSink();
     UnInitTextProcessorEngineSink();
+    {
+        CBaiLuInputCore* pInputCore = CBaiLuInputCore::GetInstance();
+        if (pInputCore)
+        {
+            pInputCore->DealDeactivate();
+        }
+    }
+
     return S_OK;
 }
 

@@ -165,8 +165,8 @@ CBaiLuInputCore::CBaiLuInputCore()
 	m_pCurTfContext = nullptr;
 	m_curSelectedIndex = 0;
 	//m_generator = std::make_unique<SimpleCandidateGenerator>();
-	//m_generator = std::make_unique<CSimpleQuanPinGenerator>();
-	m_generator = std::make_unique<CRimeCandiateGenerator>();
+	m_generator = std::make_unique<CSimpleQuanPinGenerator>();
+	//m_generator = std::make_unique<CRimeCandiateGenerator>();
 	m_clientID = 0;
 	LogUtil::LogInfo("CBaiLuInputCore::CBaiLuInputCore");
 	auto pListView= std::make_unique<ListCandidateView>();
@@ -373,6 +373,21 @@ KeyInfo CBaiLuInputCore::GetKeyInfo(WPARAM wParam, LPARAM lParam)
 	return { KeyType::NoneKey, 0 };
 }
 
+bool CBaiLuInputCore::DealActiveEx(ITfThreadMgr* pThreadMgr, TfClientId tfClientId, DWORD dwFlags)
+{
+	LogUtil::LogInfo("CBaiLuInputCore::DealActiveEx");
+	return true;
+}
+
+bool CBaiLuInputCore::DealDeactivate()
+{
+	LogUtil::LogInfo("CBaiLuInputCore::DealDeactivate");
+	if (nullptr != g_candidateWindow)
+	{
+		g_candidateWindow->Hide();
+	}
+	return true;
+}
 HRESULT CBaiLuInputCore::DealTestKeyDown(WPARAM wParam, LPARAM lParam, BOOL* pfEaten)
 {
 	KeyInfo info = GetKeyInfo(wParam, lParam);
