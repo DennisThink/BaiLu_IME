@@ -6,6 +6,7 @@
 #include "Log.hpp"
 #include "../BaiLu_CandidateGenerator/source/SimpleCandidateGenerator.h"
 #include "../BaiLu_CandidateGenerator/source/SimpleQuanPinGenerator.h"
+#include "../BaiLu_CandidateGenerator/source/RimeCandidateGenerator.h"
 #include "../BaiLu_CandidateWindow/source/CandidateWindow.h"
 #include "../BaiLu_CandidateWindow/source/ListCandidateView.h"
 #include "GlobalValues.hpp"
@@ -164,7 +165,8 @@ CBaiLuInputCore::CBaiLuInputCore()
 	m_pCurTfContext = nullptr;
 	m_curSelectedIndex = 0;
 	//m_generator = std::make_unique<SimpleCandidateGenerator>();
-	m_generator = std::make_unique<CSimpleQuanPinGenerator>();
+	//m_generator = std::make_unique<CSimpleQuanPinGenerator>();
+	m_generator = std::make_unique<CRimeCandiateGenerator>();
 	m_clientID = 0;
 	LogUtil::LogInfo("CBaiLuInputCore::CBaiLuInputCore");
 	auto pListView= std::make_unique<ListCandidateView>();

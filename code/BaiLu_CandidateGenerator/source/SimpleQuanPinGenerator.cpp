@@ -48,8 +48,7 @@ void CSimpleQuanPinGenerator::ReadFileToMemory()
     // 设置全局 locale 为 UTF-8，以便正确输出宽字符
     std::locale::global(std::locale(""));
 
-    //TODO: we need to relocate the dictionary folder
-    const std::string filename = "F://SampleIMESimplifiedQuanPin_SMALL.txt";
+    const std::string filename = "F:\\Github\\BaiLuIME_TestDictionary\\SampleIMESimplifiedQuanPin_SMALL.txt";
 
 
     std::ifstream ifs(filename, std::ios::binary);
