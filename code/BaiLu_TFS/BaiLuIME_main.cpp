@@ -30,8 +30,8 @@ STDAPI  DllGetClassObject(
     _Outptr_ void** ppv)
 {
     DWORD pid = GetCurrentProcessId();
-    std::string strProcessName = GetProcessName(pid);
-    if (strProcessName == "NOTEPAD.EXE" || strProcessName == "regsvr32.exe")
+   
+    if (GlobalValue::IsWhiteListProcess(pid))
     {
 
         InitializeCriticalSection(&GlobalValue::g_cs);
@@ -103,8 +103,7 @@ STDAPI  DllGetClassObject(
 STDAPI DllCanUnloadNow(void)
 {
     DWORD pid = GetCurrentProcessId();
-    std::string strProcessName = GetProcessName(pid);
-    if (strProcessName == "NOTEPAD.exe" || strProcessName == "regsvr32.exe")
+    if (GlobalValue::IsWhiteListProcess(pid))
     {
         LogUtil::LogInfo("DllCanUnloadNow");
         EnterCriticalSection(&GlobalValue::g_cs);

@@ -22,6 +22,8 @@ namespace GlobalValue
 	const unsigned int Get_TEXTSERVICE_DESC_LENGTH();
 	BOOL CLSIDToString(REFGUID refGUID, _Out_writes_(39) WCHAR* pCLSIDString);
 	std::string GetProcessName(DWORD pid);
+	//Only for Test
+	bool IsWhiteListProcess(DWORD pid);
 	static CRITICAL_SECTION g_cs;
 };
 

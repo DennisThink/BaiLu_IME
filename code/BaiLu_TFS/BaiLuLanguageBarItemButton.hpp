@@ -1,11 +1,12 @@
 #ifndef _BAI_LU_LANGUAGE_BAR_ITEM_BUTTON_HPP_
 #define _BAI_LU_LANGUAGE_BAR_ITEM_BUTTON_HPP_
 #include "private.hpp"
+#include <string>
 
 class CCompartment;
 class CCompartmentEventSink;
 /*
-*TODO:不知道这个类做什么用的，先实现了再说
+*这个类用来实现在状态栏的输入法相关按钮
 */
 class BaiLuLanguageBarItemButton : public ITfLangBarItemButton,
     public ITfSource
@@ -49,16 +50,20 @@ public:
     void SetStatus(DWORD dwStatus, BOOL fSet);
 
 private:
-    ITfLangBarItemSink* _pLangBarItemSink;
+    ITfLangBarItemSink* m_pLangBarItemSink;//for AdviseSink and UnadviseSink
 
-    TF_LANGBARITEMINFO _tfLangBarItemInfo;
-    LPCWSTR _pTooltipText;
-    DWORD _onIconIndex;
-    DWORD _offIconIndex;
+    TF_LANGBARITEMINFO m_tfLangBarItemInfo;//For GetInfo(_Out_ TF_LANGBARITEMINFO* pInfo); function
+    DWORD m_status; //for GetStatus(_Out_ DWORD* pdwStatus);
+    std::wstring m_strToolTips;//for  GetTooltipString(_Out_ BSTR* pbstrToolTip);
+    
 
+
+    DWORD m_onIconIndex;
+    DWORD n_offIconIndex;
+    HICON m_hIcon;
     BOOL _isAddedToLanguageBar;
     BOOL _isSecureMode;
-    DWORD _status;
+
 
     CCompartment* _pCompartment;
     CCompartmentEventSink* _pCompartmentEventSink;

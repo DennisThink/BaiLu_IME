@@ -1,5 +1,6 @@
 #include "GlobalValues.hpp"
 #include <Psapi.h>
+#include <vector>
 namespace GlobalValue
 {
     static HINSTANCE g_dllInstanceHandle=0;
@@ -160,6 +161,25 @@ namespace GlobalValue
             CloseHandle(hProcess);
         }
         return result;
+    }
+
+    bool IsWhiteListProcess(DWORD pid)
+    {
+        std::vector<std::string> strWhiteList;
+        strWhiteList.push_back("regsvr32.exe");
+        strWhiteList.push_back("NOTEPAD.EXE");
+        strWhiteList.push_back("WORDPAD.EXE");
+
+        std::string strProcessName = GetProcessName(pid);
+        for (auto item : strWhiteList)
+        {
+            if (item == strProcessName)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 

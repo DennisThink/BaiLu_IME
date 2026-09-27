@@ -7,8 +7,7 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID pvReserved)
     std::string processName = GlobalValue::GetProcessName(pID);
 	std::string strName(processName.begin(), processName.end());
     LogUtil::LogInfo("DllMain %ld", pID);
-    //LogUtil::LogInfo("DllMain %s", strName.c_str());
-    if (processName == "regsvr32.exe" || processName == "NOTEPAD.EXE")
+    if (GlobalValue::IsWhiteListProcess(pID))
     {
         switch (dwReason)
         {
