@@ -3,11 +3,11 @@
 #include "BaiLuEditSession.hpp"
 #include "BaiLu_DeleteBeforeEditSession.hpp"
 #include "private.hpp"
-#include "../BaiLu_CandidateGenerator/source/SimpleCandidateGenerator.h"
-#include "../BaiLu_CandidateGenerator/source/SimpleQuanPinGenerator.h"
-#include "../BaiLu_CandidateGenerator/source/RimeCandidateGenerator.h"
-#include "../BaiLu_CandidateWindow/source/CandidateWindow.h"
-#include "../BaiLu_CandidateWindow/source/ListCandidateView.h"
+#include "SimpleCandidateGenerator.h"
+#include "SimpleQuanPinGenerator.h"
+#include "RimeCandidateGenerator.h"
+#include "CandidateWindow.h"
+#include "ListCandidateView.h"
 #include "GlobalValues.hpp"
 static std::unique_ptr<CandidateWindow> g_candidateWindow;
 #include "Logger.h"
@@ -227,12 +227,12 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 			m_vecCandidate.clear();
 			if (m_generator)
 			{
-				m_vecCandidate = m_generator->Generate(strWord, 5);
+				//m_vecCandidate = m_generator->Generate(strWord, 5);
 			}
 			if(g_candidateWindow)
 			{
 				g_candidateWindow->SetUserInput(strWord);
-				g_candidateWindow->SetCandidates(m_vecCandidate);
+				//g_candidateWindow->SetCandidates(m_vecCandidate);
 				g_candidateWindow->Show();
 			}
 			else
@@ -302,12 +302,12 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 					m_vecCandidate.clear();
 					if (m_generator)
 					{
-						m_vecCandidate = m_generator->Generate(strWord, 5);
+						//m_vecCandidate = m_generator->Generate(strWord, 5);
 					}
 					if (g_candidateWindow)
 					{
 						g_candidateWindow->SetUserInput(strWord);
-						g_candidateWindow->SetCandidates(m_vecCandidate);
+						//g_candidateWindow->SetCandidates(m_vecCandidate);
 						g_candidateWindow->Show();
 					}
 					else

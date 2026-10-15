@@ -1,3 +1,9 @@
 [submodule "code/external/BaiLuIME_Common"]
 	path = code/external/BaiLuIME_Common
 	url = git@github.com:DennisThink/BaiLuIME_Common.git
+[submodule "code/external/BaiLuIME_CandidateGenerator"]
+	path = code/external/BaiLuIME_CandidateGenerator
+	url = git@github.com:DennisThink/BaiLuIME_CandidateGenerator.git
+[submodule "code/external/BaiLuIME_CandidateWindow"]
+	path = code/external/BaiLuIME_CandidateWindow
+	url = git@github.com:DennisThink/BaiLuIME_CandidateWindow.git

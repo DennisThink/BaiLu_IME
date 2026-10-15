@@ -3,6 +3,8 @@ project(BaiLu_IME)
 SET(CMAKE_CXX_STANDARD 20)
 #add_compile_definitions(UNICODE _UNICODE)
 include_directories(../external/BaiLuIME_Common/include)
+include_directories(../external/BaiLuIME_CandidateGenerator/code/include)
+include_directories(../external/BaiLuIME_CandidateWindow/code/source/)
 SET(BAILU_IME_SOURCE_FILE 
 ./DllMain.cpp 
 ./DllServerFunction.cpp 
@@ -51,14 +53,14 @@ SET(BAILU_IME_SOURCE_FILE
 ../external/BaiLuIME_Common/src/core/Logger.cpp
 )
 
-SET(GENERATOR_SOURCE_FOLDER ../BaiLu_CandidateGenerator/source)
+SET(GENERATOR_SOURCE_FOLDER ../external/BaiLuIME_CandidateGenerator/code/src/core/)
 SET(CANDIDATE_GENERATOR_SOURCE_FILE 
 ${GENERATOR_SOURCE_FOLDER}/SimpleCandidateGenerator.cpp
 ${GENERATOR_SOURCE_FOLDER}/SimpleQuanPinGenerator.cpp
 ${GENERATOR_SOURCE_FOLDER}/RimeCandidateGenerator.cpp
 ${GENERATOR_SOURCE_FOLDER}/RimeIceDictionary.cpp)
 
-SET(WINDOW_SOURCE_FOLDER ../BaiLu_CandidateWindow/source)
+SET(WINDOW_SOURCE_FOLDER ../external/BaiLuIME_CandidateWindow/code/source)
 SET(CANDIDATE_WINDOW_SOURCE_FILE  
 ${WINDOW_SOURCE_FOLDER}/CandidateWindow.cpp
 ${WINDOW_SOURCE_FOLDER}/CandidateWindow.h
