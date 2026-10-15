@@ -1,6 +1,6 @@
 #include "BaiLuTextEditSink.hpp"
-#include "Log.hpp"
-
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 HRESULT CBaiLuTextEditSink::CreateInstance(CBaiLuTextEditSink** pOut)
 {
     CBaiLuTextEditSink* pInst = new CBaiLuTextEditSink();
@@ -14,34 +14,34 @@ HRESULT CBaiLuTextEditSink::CreateInstance(CBaiLuTextEditSink** pOut)
 }
 CBaiLuTextEditSink::CBaiLuTextEditSink()
 {
-    LogUtil::LogInfo("CBaiLuKeyEventSink::CBaiLuTextEditSink");
+    //g_logger.Info("CBaiLuKeyEventSink::CBaiLuTextEditSink");
     m_refCount = 1;
 }
 
 CBaiLuTextEditSink::~CBaiLuTextEditSink()
 {
-    LogUtil::LogInfo("CBaiLuKeyEventSink::~CBaiLuTextEditSink %ld",this->m_refCount);
+    //g_logger.Info("CBaiLuKeyEventSink::~CBaiLuTextEditSink {}",this->m_refCount);
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuTextEditSink::QueryInterface(
     /* [in] */ REFIID riid,
     /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
-    LogUtil::LogInfo("CBaiLuKeyEventSink::QueryInterface");
+    //g_logger.Info("CBaiLuKeyEventSink::QueryInterface");
     return 0;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuTextEditSink::AddRef(void)
 {
     m_refCount++;
-    LogUtil::LogInfo("CBaiLuTextEditSink::AddRef %d", m_refCount);
+    //g_logger.Info("CBaiLuTextEditSink::AddRef {}", m_refCount);
     return m_refCount;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuTextEditSink::Release(void)
 {
     m_refCount--;
-    LogUtil::LogInfo("CBaiLuTextEditSink::Release %d", m_refCount);
+    //g_logger.Info("CBaiLuTextEditSink::Release {}", m_refCount);
 	ULONG nRet = m_refCount;
     if (m_refCount == 0)
     {
@@ -55,6 +55,6 @@ HRESULT STDMETHODCALLTYPE CBaiLuTextEditSink::OnEndEdit(
     /* [in] */ TfEditCookie ecReadOnly,
     /* [in] */ __RPC__in_opt ITfEditRecord* pEditRecord)
 {
-    LogUtil::LogInfo("CBaiLuKeyEventSink::OnEndEdit");
+    //g_logger.Info("CBaiLuKeyEventSink::OnEndEdit");
     return 0;
 }

@@ -1,5 +1,6 @@
 #include "BaiLuFunctionProvider.hpp"
-#include "Log.hpp"
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 
 HRESULT CBaiLuFunctionProvider::CreateInstance(CBaiLuFunctionProvider** ppOut)
 {
@@ -15,33 +16,33 @@ HRESULT CBaiLuFunctionProvider::CreateInstance(CBaiLuFunctionProvider** ppOut)
 
 CBaiLuFunctionProvider::CBaiLuFunctionProvider()
 {
-    LogUtil::LogInfo("CBaiLuFunctionProvider::CBaiLuFunctionProvider");
+    //g_logger.Info("CBaiLuFunctionProvider::CBaiLuFunctionProvider");
     m_refCount = 1;
 }
 CBaiLuFunctionProvider::~CBaiLuFunctionProvider()
 {
-    LogUtil::LogInfo("CBaiLuFunctionProvider::~CBaiLuFunctionProvider");
+    //g_logger.Info("CBaiLuFunctionProvider::~CBaiLuFunctionProvider");
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuFunctionProvider::QueryInterface(
     /* [in] */ REFIID riid,
     /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
-    LogUtil::LogInfo("CBaiLuFunctionProvider::QueryInterface");
+    //g_logger.Info("CBaiLuFunctionProvider::QueryInterface");
     return 0;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuFunctionProvider::AddRef(void)
 {
     m_refCount++;
-    LogUtil::LogInfo("CBaiLuFunctionProvider::AddRef %d", m_refCount);
+    //g_logger.Info("CBaiLuFunctionProvider::AddRef {} ", m_refCount);
     return m_refCount;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuFunctionProvider::Release(void)
 {
     m_refCount--;
-    LogUtil::LogInfo("CBaiLuFunctionProvider::Release %d", m_refCount);
+    //g_logger.Info("CBaiLuFunctionProvider::Release {} ", m_refCount);
 	ULONG nRet = m_refCount;
     if(m_refCount == 0)
     {
@@ -53,14 +54,14 @@ ULONG STDMETHODCALLTYPE CBaiLuFunctionProvider::Release(void)
 HRESULT STDMETHODCALLTYPE  CBaiLuFunctionProvider::GetType(
     /* [out] */ __RPC__out GUID* pguid)
 {
-    LogUtil::LogInfo("CBaiLuFunctionProvider::GetType");
+    //g_logger.Info("CBaiLuFunctionProvider::GetType");
     return 0;
 }
 
 HRESULT STDMETHODCALLTYPE  CBaiLuFunctionProvider::GetDescription(
     /* [out] */ __RPC__deref_out_opt BSTR* pbstrDesc)
 {
-    LogUtil::LogInfo("CBaiLuFunctionProvider::GetDescription");
+    //g_logger.Info("CBaiLuFunctionProvider::GetDescription");
     return 0;
 }
 
@@ -69,6 +70,6 @@ HRESULT STDMETHODCALLTYPE  CBaiLuFunctionProvider::GetFunction(
     /* [in] */ __RPC__in REFIID riid,
     /* [iid_is][out] */ __RPC__deref_out_opt IUnknown** ppunk)
 {
-    LogUtil::LogInfo("CBaiLuFunctionProvider::GetFunction");
+    //g_logger.Info("CBaiLuFunctionProvider::GetFunction");
     return 0;
 }

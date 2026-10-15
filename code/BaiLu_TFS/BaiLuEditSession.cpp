@@ -1,5 +1,6 @@
 #include "BaiLuEditSession.hpp"
-#include "Log.hpp"
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 // IUnknown 的三个函数
 HRESULT BaiLuEditSession::QueryInterface(
     REFIID riid,
@@ -11,14 +12,14 @@ HRESULT BaiLuEditSession::QueryInterface(
 ULONG BaiLuEditSession::AddRef()
 {
     this->_cRef++;
-	LogUtil::LogInfo("BaiLuEditSession::AddRef: _cRef=%d", this->_cRef);
+	//g_logger.Info("BaiLuEditSession::AddRef: _cRef={}", this->_cRef);
     return this->_cRef;
 }
 ULONG BaiLuEditSession::Release()
 {
 	this->_cRef--;
 	ULONG count = this->_cRef;
-    LogUtil::LogInfo("BaiLuEditSession::AddRef: _cRef=%d", this->_cRef);
+    //g_logger.Info("BaiLuEditSession::AddRef: _cRef={}", this->_cRef);
     if(count ==0)
     {
         delete this;
@@ -30,10 +31,10 @@ STDMETHODIMP BaiLuEditSession::DoEditSession(TfEditCookie ec)
 {
     if(_pContext == nullptr)
     {
-        LogUtil::LogInfo("BaiLuEditSession::DoEditSession: _pContext is null");
+        //g_logger.Info("BaiLuEditSession::DoEditSession: _pContext is null");
         return E_FAIL;
 	}
-    LogUtil::LogInfo("BaiLuEditSession::DoEditSession: %s  %d", __FILE__,__LINE__);
+    //g_logger.Info("BaiLuEditSession::DoEditSession: {} {}", __FILE__,__LINE__);
     // 核心操作：结束组合，提交文本
     // ec 是 TSF 传递的编辑 Cookie，用于在当前会话中标识编辑上下文
     TF_SELECTION selection{};
@@ -46,26 +47,26 @@ STDMETHODIMP BaiLuEditSession::DoEditSession(TfEditCookie ec)
         &selection,
         &fetched
     );
-	LogUtil::LogInfo("BaiLuEditSession::DoEditSession: GetSelection returned hr=0x%08X, fetched=%lu", hr, fetched);
-    LogUtil::LogInfo("BaiLuEditSession::DoEditSession: %s  %d", __FILE__, __LINE__);
+	//g_logger.Info("BaiLuEditSession::DoEditSession: GetSelection returned hr={}, fetched={}", hr, fetched);
+    //g_logger.Info("BaiLuEditSession::DoEditSession: {} {}", __FILE__, __LINE__);
     if (FAILED(hr))
     {
-        LogUtil::LogInfo("BaiLuEditSession::DoEditSession: GetSelection failed");
+        //g_logger.Info("BaiLuEditSession::DoEditSession: GetSelection failed");
     }
 
-    LogUtil::LogInfo("BaiLuEditSession::DoEditSession: Inserting text: %ls", m_strWord.c_str());
+    //g_logger.Info("BaiLuEditSession::DoEditSession: Inserting text: {}", m_strWord.c_str());
     HRESULT hr2 = selection.range->SetText(
         ec,
         TF_ST_CORRECTION,
         m_strWord.data(),
         static_cast<LONG>(m_strWord.length())
     );
-    LogUtil::LogInfo("BaiLuEditSession::DoEditSession: %s  %d", __FILE__, __LINE__);
+    //g_logger.Info("BaiLuEditSession::DoEditSession: {} {}", __FILE__, __LINE__);
     if (FAILED(hr2))
     {
-        LogUtil::LogInfo("BaiLuEditSession::DoEditSession: SetText failed");
+        //g_logger.Info("BaiLuEditSession::DoEditSession: SetText failed");
     }
     selection.range->Release();
-    LogUtil::LogInfo("BaiLuEditSession::DoEditSession: %s  %d", __FILE__, __LINE__);
+    //g_logger.Info("BaiLuEditSession::DoEditSession: {} {}", __FILE__, __LINE__);
     return S_OK;
 }

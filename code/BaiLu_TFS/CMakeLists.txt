@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 project(BaiLu_IME)
+SET(CMAKE_CXX_STANDARD 20)
 #add_compile_definitions(UNICODE _UNICODE)
+include_directories(../external/BaiLuIME_Common/include)
 SET(BAILU_IME_SOURCE_FILE 
 ./DllMain.cpp 
 ./DllServerFunction.cpp 
 ./GlobalValues.cpp
-./Log.cpp
 ./RegKeyFunction.cpp
 ./RegProfileFunction.cpp
 ./RegCategoryFunction.cpp
@@ -46,7 +47,9 @@ SET(BAILU_IME_SOURCE_FILE
 ./BaiLu_DeleteBeforeEditSession.hpp 
 ./BaiLu_DeleteBeforeEditSession.cpp
 ./BaiLuIME.rc
-./BaiLuIME.def)
+./BaiLuIME.def
+../external/BaiLuIME_Common/src/core/Logger.cpp
+)
 
 SET(GENERATOR_SOURCE_FOLDER ../BaiLu_CandidateGenerator/source)
 SET(CANDIDATE_GENERATOR_SOURCE_FILE 
@@ -65,6 +68,6 @@ ${WINDOW_SOURCE_FOLDER}/PreeditWindow.cpp
 ${WINDOW_SOURCE_FOLDER}/WindowBase.cpp)
 
 
-SET(TEST_FILES ./test_main.cpp ./GlobalValues.cpp ./RegKeyFunction.cpp ./Log.cpp)
+SET(TEST_FILES ./test_main.cpp ./GlobalValues.cpp ./RegKeyFunction.cpp)
 add_library(BaiLuIME SHARED ${BAILU_IME_SOURCE_FILE} ${CANDIDATE_GENERATOR_SOURCE_FILE} ${CANDIDATE_WINDOW_SOURCE_FILE})
 add_executable(testIME ${TEST_FILES})

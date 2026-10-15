@@ -1,7 +1,8 @@
 #include "BaiLuKeyEventSink.hpp"
-#include "Log.hpp"
 #include "CommonFunction.hpp"
 #include "BaiLuInputCore.hpp"
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 HRESULT CBaiLuKeyEventSink::CreateInstance(CBaiLuKeyEventSink** pOut)
 {
 	CBaiLuKeyEventSink* pInst = new CBaiLuKeyEventSink();
@@ -15,17 +16,17 @@ HRESULT CBaiLuKeyEventSink::CreateInstance(CBaiLuKeyEventSink** pOut)
 CBaiLuKeyEventSink::CBaiLuKeyEventSink()
 {
 	m_refCount = 1;
-	LogUtil::LogInfo("CBaiLuKeyEventSink::CBaiLuKeyEventSink %d", m_refCount);
+	//g_logger.Info("CBaiLuKeyEventSink::CBaiLuKeyEventSink {}", m_refCount);
 }
 
 CBaiLuKeyEventSink::~CBaiLuKeyEventSink()
 {
-	LogUtil::LogInfo("CBaiLuKeyEventSink::~CBaiLuKeyEventSink %d", m_refCount);
+	//g_logger.Info("CBaiLuKeyEventSink::~CBaiLuKeyEventSink {}", m_refCount);
 }
 HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnSetFocus(
 	/* [in] */ BOOL fForeground) 
 {
-	LogUtil::LogInfo("CBaiLuKeyEventSink::~CBaiLuKeyEventSink %d", m_refCount);
+	//g_logger.Info("CBaiLuKeyEventSink::~CBaiLuKeyEventSink {}", m_refCount);
 	return 0;
 }
 
@@ -35,7 +36,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnTestKeyDown(
 	/* [in] */ LPARAM lParam,
 	/* [out] */ BOOL* pfEaten)
 {
-	LogUtil::LogInfo("CBaiLuKeyEventSink::OnTestKeyDown %d", m_refCount);
+	//g_logger.Info("CBaiLuKeyEventSink::OnTestKeyDown {}", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnTestKeyDown");
 	CBaiLuInputCore* pInputCore = CBaiLuInputCore::GetInstance();
 	if (pInputCore != nullptr)
@@ -51,7 +52,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnTestKeyUp(
 	/* [in] */ LPARAM lParam,
 	/* [out] */ BOOL* pfEaten)
 {
-	LogUtil::LogInfo("CBaiLuKeyEventSink::OnTestKeyUp %d", m_refCount);
+	//g_logger.Info("CBaiLuKeyEventSink::OnTestKeyUp {}", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnTestKeyUp");
 	CBaiLuInputCore* pInputCore = CBaiLuInputCore::GetInstance();
 	if (pInputCore != nullptr)
@@ -67,7 +68,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnKeyDown(
 	/* [in] */ LPARAM lParam,
 	/* [out] */ BOOL* pfEaten)
 {
-	LogUtil::LogInfo("CBaiLuKeyEventSink::OnKeyDown %d", m_refCount);
+	//g_logger.Info("CBaiLuKeyEventSink::OnKeyDown {}", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnKeyDown");
 	*pfEaten = TRUE;
 
@@ -85,7 +86,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnKeyUp(
 	/* [in] */ LPARAM lParam,
 	/* [out] */ BOOL* pfEaten)
 {
-	LogUtil::LogInfo("CBaiLuKeyEventSink::OnKeyUp %d", m_refCount);
+	//g_logger.Info("CBaiLuKeyEventSink::OnKeyUp {}", m_refCount);
 	LogKeyDownAndUp(wParam, lParam, "OnKeyUp");
 	*pfEaten = TRUE;
 	CBaiLuInputCore* pInputCore = CBaiLuInputCore::GetInstance();
@@ -101,7 +102,7 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::OnPreservedKey(
 	/* [in] */ REFGUID rguid,
 	/* [out] */ BOOL* pfEaten)
 {
-	LogUtil::LogInfo("CBaiLuKeyEventSink::OnPreservedKey %d", m_refCount);
+	//g_logger.Info("CBaiLuKeyEventSink::OnPreservedKey {}", m_refCount);
 	return 0;
 }
 
@@ -109,21 +110,21 @@ HRESULT STDMETHODCALLTYPE CBaiLuKeyEventSink::QueryInterface(
 	/* [in] */ REFIID riid,
 	/* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
-	LogUtil::LogInfo("CBaiLuKeyEventSink::QueryInterface %d", m_refCount);
+	//g_logger.Info("CBaiLuKeyEventSink::QueryInterface {}", m_refCount);
 	return 0;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuKeyEventSink::AddRef(void) 
 {
 	m_refCount++;
-	LogUtil::LogInfo("CBaiLuKeyEventSink::AddRef %d", m_refCount);
+	//g_logger.Info("CBaiLuKeyEventSink::AddRef {}", m_refCount);
 	return m_refCount;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuKeyEventSink::Release(void) 
 {
 	m_refCount--;
-	LogUtil::LogInfo("CBaiLuKeyEventSink::Release %d", m_refCount);
+	//g_logger.Info("CBaiLuKeyEventSink::Release {}", m_refCount);
 	ULONG nRet = m_refCount;
 	if(nRet == 0)
 	{
@@ -134,16 +135,16 @@ ULONG STDMETHODCALLTYPE CBaiLuKeyEventSink::Release(void)
 
 void CBaiLuKeyEventSink::CheckRefCount() const
 {
-	LogUtil::LogInfo("CBaiLuKeyEventSink::CheckRefCount %d", m_refCount);
+	//g_logger.Info("CBaiLuKeyEventSink::CheckRefCount {}", m_refCount);
 }
 
 void CBaiLuKeyEventSink::LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::string method)
 {
-	LogUtil::LogInfo("CBaiLuKeyEventSink::LogKeyDownAndUp");
+	//g_logger.Info("CBaiLuKeyEventSink::LogKeyDownAndUp");
 	UINT vCode = UINT(wParam);
 	std::string strCodeName = VirtualKeyCodeToString(vCode);
 	char buff[1024] = { 0 };
 	sprintf(buff, "CBaiLuKeyEventSink Key %s  Name:%s  Code:%d  Code2: %d\n", method.c_str(), strCodeName.c_str(), vCode, (UINT)(lParam));
 	std::string strLog(buff);
-	LogUtil::LogInfo("%s", strLog.c_str());
+	//g_logger.Info("%s", strLog.c_str());
 }

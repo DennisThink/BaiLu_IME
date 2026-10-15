@@ -1,12 +1,13 @@
 #include "RegProfileFunction.hpp"
-#include "Log.hpp"
 #include "private.hpp"
 #include "GlobalValues.hpp"
 #include "BaiLuIME_resource.hpp"
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 bool CRegProfileFunction::InstallProfile()
 {
 
-    LogUtil::LogInfo("RegisterProfiles");
+    //g_logger.Info("RegisterProfiles");
     HRESULT hr = S_FALSE;
 
     ITfInputProcessorProfileMgr* pITfInputProcessorProfileMgr = nullptr;
@@ -38,12 +39,12 @@ bool CRegProfileFunction::InstallProfile()
 
     if (FAILED(hr))
     {
-        LogUtil::LogTrace(__FILE__,__LINE__);
+        //g_logger.Debug("{} {}",__FILE__, __LINE__);
         goto Exit;
     }
     else
     {
-        LogUtil::LogInfo("RegisterProfile Succeed");
+        //g_logger.Info("RegisterProfile Succeed");
     }
 
 Exit:
@@ -57,7 +58,7 @@ Exit:
 
 bool CRegProfileFunction::CRegProfileFunction::UninstallProfile()
 {
-    LogUtil::LogInfo("UnregisterProfiles");
+    //g_logger.Info("UnregisterProfiles");
     HRESULT hr = S_OK;
 
     ITfInputProcessorProfileMgr* pITfInputProcessorProfileMgr = nullptr;

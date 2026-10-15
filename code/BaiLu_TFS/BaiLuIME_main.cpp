@@ -1,9 +1,10 @@
 
 #include "private.hpp"
-#include "Log.hpp"
 #include "BaiLu_ClassFactory.hpp"
 #include "GlobalValues.hpp"
 #include <Psapi.h>
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 static std::string GetProcessName(DWORD pid)
 {
     std::string result = "UNKNOWN";
@@ -12,11 +13,11 @@ static std::string GetProcessName(DWORD pid)
         TCHAR buffer[MAX_PATH];
         GetModuleBaseName(hProcess,NULL,buffer, MAX_PATH);
         result = std::string(buffer);
-        LogUtil::LogInfo("GetModuleBaseNameA %s", buffer);
+        //g_logger.Info("GetModuleBaseNameA {}", buffer);
         GetModuleFileNameEx(hProcess, NULL, buffer, MAX_PATH);
-        LogUtil::LogInfo("GetModuleFileNameEx %s", buffer);
+        //g_logger.Info("GetModuleFileNameEx {}", buffer);
         GetProcessImageFileName(hProcess,buffer, MAX_PATH);
-        LogUtil::LogInfo("GetProcessImageFileNameA %s", buffer);
+        //g_logger.Info("GetProcessImageFileNameA {}", buffer);
        
         CloseHandle(hProcess);
     }
@@ -36,42 +37,42 @@ STDAPI  DllGetClassObject(
 
         InitializeCriticalSection(&GlobalValue::g_cs);
         GlobalValue::SetClassFactoryInitValue();
-        LogUtil::LogInfo("DllGetClassObject");
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Info("DllGetClassObject");
+        //g_logger.Debug("{} {}",__FILE__, __LINE__);
         if (g_pClassFactory[0] == nullptr)
         {
-            LogUtil::LogTrace(__FILE__, __LINE__);
+            //g_logger.Debug("{} {}",__FILE__, __LINE__);
             EnterCriticalSection(&GlobalValue::g_cs);
             // need to check ref again after grabbing mutex
             if (g_pClassFactory[0] == nullptr)
             {
-                LogUtil::LogTrace(__FILE__, __LINE__);
+                //g_logger.Debug("{} {}",__FILE__, __LINE__);
                 g_pClassFactory[0] = CBaiLuClassFactory::GetSingleInstance();
                 g_pClassFactory[0]->AddRef();
-                LogUtil::LogInfo("DllGetClassObject %s %d", __FILE__, __LINE__);
+                //g_logger.Info("DllGetClassObject {} {}", __FILE__, __LINE__);
             }
             else
             {
-                LogUtil::LogError(__FILE__, __LINE__);
+                g_logger.Error("{} {}",__FILE__, __LINE__);
             }
             LeaveCriticalSection(&GlobalValue::g_cs);
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}",__FILE__, __LINE__);
         }
 
         if (IsEqualIID(riid, IID_IClassFactory) ||
             IsEqualIID(riid, IID_IUnknown))
         {
-            LogUtil::LogTrace(__FILE__, __LINE__);
+            //g_logger.Debug("{} {}",__FILE__, __LINE__);
             //for (int i = 0; i < ARRAYSIZE(g_pClassFactory); i++)
             {
-                LogUtil::LogTrace(__FILE__, __LINE__);
+                //g_logger.Debug("{} {}", __FILE__, __LINE__);
                 if (nullptr != g_pClassFactory[0] && g_pClassFactory[0]->IsEqualGID(rclsid))
                 {
-                    LogUtil::LogTrace(__FILE__, __LINE__);
-                    LogUtil::LogInfo("DllGetClassObject %s %d", __FILE__, __LINE__);
+                    //g_logger.Debug("{} {}", __FILE__, __LINE__);
+                    //g_logger.Info("DllGetClassObject {} {}", __FILE__, __LINE__);
                     *ppv = (void*)g_pClassFactory[0];
                     g_pClassFactory[0]->AddRef();
                     //DllAddRef();    // class factory holds DLL ref count
@@ -79,23 +80,23 @@ STDAPI  DllGetClassObject(
                 }
                 else
                 {
-                    LogUtil::LogError(__FILE__, __LINE__);
+                    g_logger.Error("{} {}", __FILE__, __LINE__);
                 }
             }
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         *ppv = nullptr;
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         return CLASS_E_CLASSNOTAVAILABLE;
     }
     else
     {
         *ppv = nullptr;
-        LogUtil::LogError(__FILE__, __LINE__);
+        g_logger.Error("{} {}", __FILE__, __LINE__);
         return CLASS_E_CLASSNOTAVAILABLE;
     }
 }
@@ -105,7 +106,7 @@ STDAPI DllCanUnloadNow(void)
     DWORD pid = GetCurrentProcessId();
     if (GlobalValue::IsWhiteListProcess(pid))
     {
-        LogUtil::LogInfo("DllCanUnloadNow");
+        //g_logger.Info("DllCanUnloadNow");
         EnterCriticalSection(&GlobalValue::g_cs);
         g_pClassFactory[0]->Release();
         CBaiLuClassFactory::DestroySingleInstance();

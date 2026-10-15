@@ -3,7 +3,6 @@
 #include "BaiLuEditSession.hpp"
 #include "BaiLu_DeleteBeforeEditSession.hpp"
 #include "private.hpp"
-#include "Log.hpp"
 #include "../BaiLu_CandidateGenerator/source/SimpleCandidateGenerator.h"
 #include "../BaiLu_CandidateGenerator/source/SimpleQuanPinGenerator.h"
 #include "../BaiLu_CandidateGenerator/source/RimeCandidateGenerator.h"
@@ -11,14 +10,16 @@
 #include "../BaiLu_CandidateWindow/source/ListCandidateView.h"
 #include "GlobalValues.hpp"
 static std::unique_ptr<CandidateWindow> g_candidateWindow;
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 void CBaiLuInputCore::DealOnKeyDown(WPARAM wParam, LPARAM lParam)
 {
-	LogUtil::LogInfo("CBaiLuInputCore::DealOnKeyDown wParam=%d lParam=%ld", wParam, lParam);
+	//g_logger.Info("CBaiLuInputCore::DealOnKeyDown wParam={} lParam={}", wParam, lParam);
 	LogKeyDownAndUp(wParam, lParam, "DealOnKeyDown");
 }
 void CBaiLuInputCore::DealOnKeyUp(WPARAM wParam, LPARAM lParam)
 {
-	LogUtil::LogInfo("CBaiLuInputCore::DealOnKeyUp wParam=%d lParam=%ld", wParam, lParam);
+	//g_logger.Info("CBaiLuInputCore::DealOnKeyUp wParam={} lParam={}", wParam, lParam);
 	LogKeyDownAndUp(wParam, lParam, "DealOnKeyUp");
 	{
 		KeyInfo keyInfo = GetKeyInfo(wParam, lParam);
@@ -29,30 +30,30 @@ void CBaiLuInputCore::SetCurTfContext(ITfContext* pContext)
 {
 	if(m_pCurTfContext != nullptr)
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::SetCurTfContext: m_pCurTfContext is not null");
+		//g_logger.Info("CBaiLuInputCore::SetCurTfContext: m_pCurTfContext is not null");
 		m_pCurTfContext->Release();
 	}
 	else
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::SetCurTfContext: m_pCurTfContext is null");
+		//g_logger.Info("CBaiLuInputCore::SetCurTfContext: m_pCurTfContext is null");
 	}
 	if(pContext == nullptr)
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::SetCurTfContext: pContext is null");
+		//g_logger.Info("CBaiLuInputCore::SetCurTfContext: pContext is null");
 	}
 	else
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::SetCurTfContext: pContext is not null");
+		//g_logger.Info("CBaiLuInputCore::SetCurTfContext: pContext is not null");
 		m_pCurTfContext = pContext;
 		m_pCurTfContext->AddRef();
 	}
 
-	LogUtil::LogInfo("CBaiLuInputCore::SetCurTfContext");
+	//g_logger.Info("CBaiLuInputCore::SetCurTfContext");
 }
 void CBaiLuInputCore::SetClientID(TfClientId clientID)
 {
 	m_clientID = clientID;
-	LogUtil::LogInfo("CBaiLuInputCore::SetClientID");
+	//g_logger.Info("CBaiLuInputCore::SetClientID");
 }
 void CBaiLuInputCore::ShowWordBySpace(WPARAM wParam, LPARAM lParam)
 {
@@ -97,26 +98,26 @@ void CBaiLuInputCore::DeleteWordByBackSpace()
 
 void CBaiLuInputCore::InsertWordToWindow(const std::wstring& strWord)
 {
-	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %ls", strWord.c_str());
-	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s %d", __FILE__, __LINE__);
+	//g_logger.Info("CBaiLuInputCore::InsertWordToWindow: {}", strWord.c_str());
+	//g_logger.Info("CBaiLuInputCore::InsertWordToWindow: {} {}", __FILE__, __LINE__);
 	if (!this->m_pCurTfContext)
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: m_pCurTfContext is null");
+		//g_logger.Info("CBaiLuInputCore::InsertWordToWindow: m_pCurTfContext is null");
 		return;
 	}
-	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s %d", __FILE__, __LINE__);
+	//g_logger.Info("CBaiLuInputCore::InsertWordToWindow:{} {}", __FILE__, __LINE__);
 	BaiLuEditSession* session =
 		new BaiLuEditSession(
 			m_pCurTfContext,
 			strWord
 		);
-	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s %d", __FILE__, __LINE__);
+	//g_logger.Info("CBaiLuInputCore::InsertWordToWindow: {} {}", __FILE__, __LINE__);
 	if(nullptr == session)
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: BaiLuEditSession is null");
+		//g_logger.Info("CBaiLuInputCore::InsertWordToWindow: BaiLuEditSession is null");
 		return;
 	}
-	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s %d", __FILE__, __LINE__);
+	//g_logger.Info("CBaiLuInputCore::InsertWordToWindow: {} {}", __FILE__, __LINE__);
 	HRESULT sessionResult = E_FAIL;
 
 	// 注意：这里必须使用同步编辑会话,具体原因不清楚
@@ -128,16 +129,16 @@ void CBaiLuInputCore::InsertWordToWindow(const std::wstring& strWord)
 		TF_ES_READWRITE|TF_ES_SYNC,
 		&sessionResult
 	);
-	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s %d", __FILE__, __LINE__);
+	//g_logger.Info("CBaiLuInputCore::InsertWordToWindow: {} {}", __FILE__, __LINE__);
 
 	if(FAILED(hr))
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: RequestEditSession failed with HRESULT: 0x%08X", hr);
+		//g_logger.Info("CBaiLuInputCore::InsertWordToWindow: RequestEditSession failed with HRESULT: {}", hr);
 		return;
 	}
 	if(FAILED(sessionResult))
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: EditSession failed with HRESULT: 0x%08X", sessionResult);
+		//g_logger.Info("CBaiLuInputCore::InsertWordToWindow: EditSession failed with HRESULT: {}", sessionResult);
 		return;
 	}
 	if(session)
@@ -145,18 +146,18 @@ void CBaiLuInputCore::InsertWordToWindow(const std::wstring& strWord)
 		session->Release();
 		session = nullptr;
 	}
-	LogUtil::LogInfo("CBaiLuInputCore::InsertWordToWindow: %s %d", __FILE__, __LINE__);
+	//g_logger.Info("CBaiLuInputCore::InsertWordToWindow: {} {}", __FILE__, __LINE__);
 }
 
 void CBaiLuInputCore::LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::string method)
 {
-	LogUtil::LogInfo("CBaiLuInputCore::LogKeyDownAndUp");
+	//g_logger.Info("CBaiLuInputCore::LogKeyDownAndUp");
 	UINT vCode = UINT(wParam);
 	std::string strCodeName = VirtualKeyCodeToString(vCode);
 	char buff[1024] = { 0 };
-	sprintf(buff, "CBaiLuInputCore Key %s  Name:%s  Code:%d  Code2: %d\n", method.c_str(), strCodeName.c_str(), vCode, (UINT)(lParam));
+	//sprintf(buff, "CBaiLuInputCore Key {} Name:{}  Code:{}  Code2: {}\n", method.c_str(), strCodeName.c_str(), vCode, (UINT)(lParam));
 	std::string strLog(buff);
-	LogUtil::LogInfo("%s", strLog.c_str());
+	//g_logger.Info("{}", strLog.c_str());
 }
 
 CBaiLuInputCore::CBaiLuInputCore()
@@ -168,7 +169,7 @@ CBaiLuInputCore::CBaiLuInputCore()
 	m_generator = std::make_unique<CSimpleQuanPinGenerator>();
 	//m_generator = std::make_unique<CRimeCandiateGenerator>();
 	m_clientID = 0;
-	LogUtil::LogInfo("CBaiLuInputCore::CBaiLuInputCore");
+	//g_logger.Info("CBaiLuInputCore::CBaiLuInputCore");
 	auto pListView= std::make_unique<ListCandidateView>();
 	if(nullptr != pListView)
 	{
@@ -181,19 +182,19 @@ CBaiLuInputCore::CBaiLuInputCore()
 		}
 		else
 		{
-			LogUtil::LogInfo("CBaiLuInputCore::CBaiLuInputCore g_candidateWindow is null");
+			//g_logger.Info("CBaiLuInputCore::CBaiLuInputCore g_candidateWindow is null");
 		}
 	}
 	else
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::CBaiLuInputCore pListView is null");
+		//g_logger.Info("CBaiLuInputCore::CBaiLuInputCore pListView is null");
 	}
 	
 
 }
 CBaiLuInputCore::~CBaiLuInputCore()
 {
-	LogUtil::LogInfo("CBaiLuInputCore::~CBaiLuInputCore");
+	//g_logger.Info("CBaiLuInputCore::~CBaiLuInputCore");
 }
 
 bool CBaiLuInputCore::IsChandidateWindowShow()const
@@ -210,11 +211,11 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 	{
 	case KeyType::NoneKey:
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo NoneKey");
+		//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo NoneKey");
 	}break;
 	case KeyType::CharacterKey:
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo CharacterKey: %c", keyInfo._keyValue);
+		//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo CharacterKey: {}", keyInfo._keyValue);
 		wchar_t inputChar = static_cast<wchar_t>(keyInfo._keyValue);
 		
 		// Handle character key input for normal text input
@@ -236,13 +237,13 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 			}
 			else
 			{
-				LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo g_candidateWindow is null");
+				//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo g_candidateWindow is null");
 			}
 		}
 	}break;
 	case KeyType::NumberKey:
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo NumberKey: %d", keyInfo._keyValue);
+		//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo NumberKey: {}", keyInfo._keyValue);
 		if (IsChandidateWindowShow())
 		{
 			// Handle number key selection for candidate window
@@ -256,7 +257,7 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 				}
 				else
 				{
-					LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo NumberKey: Invalid candidate index");
+					//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo NumberKey: Invalid candidate index");
 				}
 			}
 		}
@@ -269,7 +270,7 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 	}break;
 	case KeyType::ControlKey:
 	{
-		LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo ControlKey: %d", keyInfo._keyValue);
+		//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo ControlKey: {}", keyInfo._keyValue);
 		if(keyInfo._keyValue == VK_SPACE)
 		{
 			if (g_candidateWindow)
@@ -285,7 +286,7 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 				}
 				else
 				{
-					LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo Space: Invalid candidate index");
+					//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo Space: Invalid candidate index");
 				}
 			}
 		}
@@ -311,7 +312,7 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 					}
 					else
 					{
-						LogUtil::LogInfo("CBaiLuInputCore::ProcessKeyInfo g_candidateWindow is null");
+						//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo g_candidateWindow is null");
 					}
 					m_vecWord.clear();
 					for (auto item = strWord.begin(); item != strWord.end(); item++)
@@ -375,13 +376,13 @@ KeyInfo CBaiLuInputCore::GetKeyInfo(WPARAM wParam, LPARAM lParam)
 
 bool CBaiLuInputCore::DealActiveEx(ITfThreadMgr* pThreadMgr, TfClientId tfClientId, DWORD dwFlags)
 {
-	LogUtil::LogInfo("CBaiLuInputCore::DealActiveEx");
+	//g_logger.Info("CBaiLuInputCore::DealActiveEx");
 	return true;
 }
 
 bool CBaiLuInputCore::DealDeactivate()
 {
-	LogUtil::LogInfo("CBaiLuInputCore::DealDeactivate");
+	//g_logger.Info("CBaiLuInputCore::DealDeactivate");
 	if (nullptr != g_candidateWindow)
 	{
 		g_candidateWindow->Hide();

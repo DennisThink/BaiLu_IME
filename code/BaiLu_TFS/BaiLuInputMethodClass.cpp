@@ -1,12 +1,13 @@
 #include "BaiLuInputMethodClass.hpp"
 #include "GlobalValues.hpp"
 #include "BaiLuInputProcessorProfileAgent.hpp"
-#include "Log.hpp"
 #include "CommonFunction.hpp"
 #include "BaiLuInputCore.hpp"
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 CBaiLuInputMethodClass::CBaiLuInputMethodClass()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::CBaiLuInputMethodClass");
+    //g_logger.Info("CBaiLuInputMethodClass::CBaiLuInputMethodClass");
     m_refCount = 0;
     m_pKeyEventSink=nullptr;
     m_pThreadMgrEventSink=nullptr;
@@ -30,7 +31,7 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     {
@@ -44,7 +45,7 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     {
@@ -58,7 +59,7 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     {
@@ -72,7 +73,7 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
 
@@ -87,7 +88,7 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     {
@@ -101,7 +102,7 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
 
@@ -116,7 +117,7 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     {
@@ -130,7 +131,7 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
 
     }
@@ -145,7 +146,7 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     AddRef();
@@ -153,16 +154,16 @@ CBaiLuInputMethodClass::CBaiLuInputMethodClass()
 
 CBaiLuInputMethodClass::~CBaiLuInputMethodClass()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::~CBaiLuInputMethodClass");
+    //g_logger.Info("CBaiLuInputMethodClass::~CBaiLuInputMethodClass");
 }
 
 // IUnknown
 STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void** ppvObj)
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::QueryInterface Begin");
+    //g_logger.Info("CBaiLuInputMethodClass::QueryInterface Begin");
     if (ppvObj == NULL)
     {
-        LogUtil::LogError(__FILE__, __LINE__);
+        g_logger.Error("{} {}", __FILE__, __LINE__);
         return E_INVALIDARG;
     }
 
@@ -171,19 +172,19 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     if (IsEqualIID(riid, IID_IUnknown) ||
         IsEqualIID(riid, IID_ITfTextInputProcessor))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         AddRef();
         *ppvObj = (ITfTextInputProcessor*)this;
     }
     else if (IsEqualIID(riid, IID_ITfTextInputProcessorEx))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         AddRef();
         *ppvObj = (ITfTextInputProcessorEx*)this;
     }
     else if (IsEqualIID(riid, IID_ITfKeyEventSink))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         if (nullptr != this->m_pKeyEventSink)
         {
             m_pKeyEventSink->AddRef();
@@ -192,7 +193,7 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
     }
     else if (IsEqualIID(riid, IID_ITfThreadMgrEventSink))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         if (nullptr != this->m_pThreadMgrEventSink)
         {
             this->m_pThreadMgrEventSink->AddRef();
@@ -200,12 +201,12 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     else if (IsEqualIID(riid, IID_ITfTextEditSink))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         if (nullptr != this->m_pTextEditSink)
         {
             this->m_pTextEditSink->AddRef();
@@ -213,13 +214,13 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
 
     else if (IsEqualIID(riid, IID_ITfActiveLanguageProfileNotifySink))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         if (nullptr != m_pNotifySink)
         {
             m_pNotifySink->AddRef();
@@ -227,12 +228,12 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     else if (IsEqualIID(riid, IID_ITfCompositionSink))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         if (nullptr != this->m_pCompositionSink)
         {
             m_pCompositionSink->AddRef();
@@ -240,12 +241,12 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     else if (IsEqualIID(riid, IID_ITfDisplayAttributeProvider))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         if (nullptr != this->m_pDispalyAttributeProvider)
         {
             *ppvObj = m_pDispalyAttributeProvider;
@@ -253,12 +254,12 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     else if (IsEqualIID(riid, IID_ITfThreadFocusSink))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         if (nullptr != m_pThreadFocusSink)
         {
             *ppvObj = m_pThreadFocusSink;
@@ -266,12 +267,12 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     else if (IsEqualIID(riid, IID_ITfFunctionProvider))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         if (nullptr != m_pFunctionProvider)
         {
             *ppvObj = m_pFunctionProvider;
@@ -279,12 +280,12 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     else if (IsEqualIID(riid, IID_ITfFunction))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         if (nullptr != m_pBoarderLayout)
         {
             *ppvObj = m_pBoarderLayout;
@@ -292,12 +293,12 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     else if (IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         if (nullptr != m_pBoarderLayout)
         {
             *ppvObj = m_pBoarderLayout;
@@ -305,23 +306,23 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
         }
         else
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
         }
     }
     else
     {
         GUID gid = riid;
-        LogUtil::LogInfo("UnKnown IID %x %x %x",gid.Data1,gid.Data2,gid.Data3);
+        //g_logger.Info("UnKnown IID %x %x %x",gid.Data1,gid.Data2,gid.Data3);
     }
 
     if (*ppvObj != NULL)
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}", __FILE__, __LINE__);
         return S_OK;
     }
 
-    LogUtil::LogInfo("CBaiLuInputMethodClass::QueryInterface End");
-    LogUtil::LogError(__FILE__, __LINE__);
+    //g_logger.Info("CBaiLuInputMethodClass::QueryInterface End");
+    g_logger.Error("{} {}", __FILE__, __LINE__);
     *ppvObj = nullptr;
     return E_NOINTERFACE;
 }
@@ -329,14 +330,14 @@ STDMETHODIMP CBaiLuInputMethodClass::QueryInterface(REFIID riid, _Outptr_ void**
 STDMETHODIMP_(ULONG) CBaiLuInputMethodClass::AddRef(void)
 {
     m_refCount++;
-    LogUtil::LogInfo("CBaiLuInputMethodClass::AddRef %d",m_refCount);
+    //g_logger.Info("CBaiLuInputMethodClass::AddRef {}",m_refCount);
     return 0;
 }
 
 STDMETHODIMP_(ULONG) CBaiLuInputMethodClass::Release(void)
 {
     m_refCount--;
-    LogUtil::LogInfo("CBaiLuInputMethodClass::Release %d",m_refCount);
+    //g_logger.Info("CBaiLuInputMethodClass::Release {}",m_refCount);
 	ULONG nRet = m_refCount;
     if (m_refCount == 0)
     {
@@ -352,7 +353,7 @@ STDMETHODIMP CBaiLuInputMethodClass::Activate(ITfThreadMgr* pThreadMgr, TfClient
 // ITfTextInputProcessorEx
 STDMETHODIMP CBaiLuInputMethodClass::ActivateEx(ITfThreadMgr* pThreadMgr, TfClientId tfClientId, DWORD dwFlags)
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::ActivateEx");
+    //g_logger.Info("CBaiLuInputMethodClass::ActivateEx");
     this->m_pThreadMgr = pThreadMgr;
     m_pThreadMgr->AddRef();
     this->m_tfClientId = tfClientId;
@@ -361,37 +362,37 @@ STDMETHODIMP CBaiLuInputMethodClass::ActivateEx(ITfThreadMgr* pThreadMgr, TfClie
     {
         if (!InitThreadMgrEventSink())
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
             goto ExitError;
         }
         if (!InitKeyEventSink())
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
             goto ExitError;
         }
         /*if (!InitActiveLanguageProfileNotifySink())
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error((__FILE__, __LINE__);
             goto ExitError;
         }*/
         if (!InitThreadFocusSink())
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
             goto ExitError;
         }
         if (!InitDisplayAttributeGuidAtomSink())
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
             goto ExitError;
         }
         if (!InitFunctionProviderSink())
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
             goto ExitError;
         }
         if (!InitTextProcessorEngineSink())
         {
-            LogUtil::LogError(__FILE__, __LINE__);
+            g_logger.Error("{} {}", __FILE__, __LINE__);
             goto ExitError;
         }
         
@@ -402,7 +403,7 @@ STDMETHODIMP CBaiLuInputMethodClass::ActivateEx(ITfThreadMgr* pThreadMgr, TfClie
         return S_OK;
 
     ExitError:
-        LogUtil::LogError(__FILE__, __LINE__);
+        g_logger.Error("{} {}", __FILE__, __LINE__);
         Deactivate();
         return E_FAIL;
     }
@@ -417,7 +418,7 @@ STDMETHODIMP CBaiLuInputMethodClass::ActivateEx(ITfThreadMgr* pThreadMgr, TfClie
 }
 STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::Deactivate");
+    //g_logger.Info("CBaiLuInputMethodClass::Deactivate");
     UnInitThreadMgrEventSink();
     UnInitKeyEventSink();
     UnInitThreadFocusSink();
@@ -442,7 +443,7 @@ STDMETHODIMP CBaiLuInputMethodClass::Deactivate()
 CBaiLuInputMethodClass* CBaiLuInputMethodClass::m_pInstance = nullptr;
 CBaiLuInputMethodClass* CBaiLuInputMethodClass::GetSingleInstance()
 {
-    LogUtil::LogInfo("GetSingleInstance");
+    //g_logger.Info("GetSingleInstance");
     if (nullptr == m_pInstance)
     {
         m_pInstance = new CBaiLuInputMethodClass();
@@ -456,13 +457,13 @@ CBaiLuInputMethodClass* CBaiLuInputMethodClass::GetSingleInstance()
 
 bool CBaiLuInputMethodClass::InitThreadMgrEventSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadMgrEventSink");
+    //g_logger.Info("CBaiLuInputMethodClass::InitThreadMgrEventSink");
     ITfSource* pSource = nullptr;
     bool bRet = false;
     HRESULT qResult = m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)(&pSource));
     if (FAILED(qResult))
     {
-        LogUtil::LogError(__FILE__, __LINE__);
+        g_logger.Error("{} {}", __FILE__, __LINE__);
         return bRet;
     }
 
@@ -472,7 +473,7 @@ bool CBaiLuInputMethodClass::InitThreadMgrEventSink()
     }
     else
     {
-        LogUtil::LogError(__FILE__, __LINE__);
+        g_logger.Error("{} {}", __FILE__, __LINE__);
         return bRet;
     }
 
@@ -490,8 +491,8 @@ bool CBaiLuInputMethodClass::InitThreadMgrEventSink()
     }
     if (FAILED(qResult))
     {
-        LogUtil::LogError(__FILE__, __LINE__);
-        LogUtil::LogInfo("HRESULT %ul Cookie %x", (unsigned long)(qResult),cookie);
+        g_logger.Error("{} {}", __FILE__, __LINE__);
+        //g_logger.Info("HRESULT {} Cookie {}", (unsigned long)(qResult),cookie);
         cookie = TF_INVALID_COOKIE;
     }
     else
@@ -504,7 +505,7 @@ bool CBaiLuInputMethodClass::InitThreadMgrEventSink()
 }
 bool CBaiLuInputMethodClass::InitKeyEventSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::InitKeyEventSink");
+    //g_logger.Info("CBaiLuInputMethodClass::InitKeyEventSink");
     ITfKeystrokeMgr* pKeyStrokeMgr = nullptr;
     bool bRet = false;
     auto qResult = m_pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void**)(&pKeyStrokeMgr));
@@ -534,7 +535,7 @@ bool CBaiLuInputMethodClass::InitKeyEventSink()
 
 bool CBaiLuInputMethodClass::InitTextEditSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::InitTextEditSink");
+    //g_logger.Info("CBaiLuInputMethodClass::InitTextEditSink");
     ITfDocumentMgr* pDocMgrFocus = nullptr;
     auto result = m_pThreadMgr->GetFocus(&pDocMgrFocus);
     if (SUCCEEDED(result) && (pDocMgrFocus != nullptr))
@@ -598,7 +599,7 @@ bool CBaiLuInputMethodClass::InitTextEditSink()
 
 bool CBaiLuInputMethodClass::InitActiveLanguageProfileNotifySink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::_InitActiveLanguageProfileNotifySink");
+    //g_logger.Info("CBaiLuInputMethodClass::_InitActiveLanguageProfileNotifySink");
     ITfSource* pSource = nullptr;
     BOOL ret = FALSE;
 
@@ -624,25 +625,25 @@ Exit:
 
 bool CBaiLuInputMethodClass::InitThreadFocusSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadFocusSink");
+    //g_logger.Info("CBaiLuInputMethodClass::InitThreadFocusSink");
     ITfSource* pSource = nullptr;
-    LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadFocusSink %s %d",__FILE__,__LINE__);
+    //g_logger.Info("CBaiLuInputMethodClass::InitThreadFocusSink {} {}",__FILE__,__LINE__);
     if (FAILED(m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)&pSource)))
     {
-        LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadFocusSink %s %d", __FILE__, __LINE__);
+        //g_logger.Info("CBaiLuInputMethodClass::InitThreadFocusSink {} {}", __FILE__, __LINE__);
         return FALSE;
     }
-    LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadFocusSink %s %d", __FILE__, __LINE__);
+    //g_logger.Info("CBaiLuInputMethodClass::InitThreadFocusSink {} {}", __FILE__, __LINE__);
 
     if (FAILED(pSource->AdviseSink(IID_ITfThreadFocusSink,
         this, 
         &m_dwThreadFocusSinkCookie)))
     {
-        LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadFocusSink %s %d", __FILE__, __LINE__);
+        //g_logger.Info("CBaiLuInputMethodClass::InitThreadFocusSink {} {}", __FILE__, __LINE__);
         pSource->Release();
         return FALSE;
     }
-    LogUtil::LogInfo("CBaiLuInputMethodClass::InitThreadFocusSink %s %d", __FILE__, __LINE__);
+    //g_logger.Info("CBaiLuInputMethodClass::InitThreadFocusSink {} {}", __FILE__, __LINE__);
     pSource->Release();
 
     return TRUE;
@@ -650,7 +651,7 @@ bool CBaiLuInputMethodClass::InitThreadFocusSink()
 
 bool CBaiLuInputMethodClass::InitDisplayAttributeGuidAtomSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::InitDisplayAttributeGuidAtomSink");
+    //g_logger.Info("CBaiLuInputMethodClass::InitDisplayAttributeGuidAtomSink");
     ITfCategoryMgr* pCategoryMgr = nullptr;
     HRESULT hr = CoCreateInstance(CLSID_TF_CategoryMgr,
         nullptr, 
@@ -684,7 +685,7 @@ Exit:
 
 bool CBaiLuInputMethodClass::InitFunctionProviderSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::InitFunctionProviderSink");
+    //g_logger.Info("CBaiLuInputMethodClass::InitFunctionProviderSink");
     ITfSourceSingle* pSourceSingle = nullptr;
     BOOL ret = FALSE;
     if (SUCCEEDED(m_pThreadMgr->QueryInterface(IID_ITfSourceSingle, (void**)&pSourceSingle)))
@@ -710,7 +711,7 @@ bool CBaiLuInputMethodClass::InitFunctionProviderSink()
 
 bool CBaiLuInputMethodClass::InitTextProcessorEngineSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::InitTextProcessorEngineSink");
+    //g_logger.Info("CBaiLuInputMethodClass::InitTextProcessorEngineSink");
     LANGID langid = 0;
     CLSID clsid = GUID_NULL;
     GUID guidProfile = GUID_NULL;
@@ -769,14 +770,14 @@ bool CBaiLuInputMethodClass::InitTextProcessorEngineSink()
 
 void CBaiLuInputMethodClass::UnInitThreadMgrEventSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitThreadMgrEventSink");
+    //g_logger.Info("CBaiLuInputMethodClass::UnInitThreadMgrEventSink");
 
     return;
 }
 
 void CBaiLuInputMethodClass::UnInitKeyEventSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitKeyEventSink");
+    //g_logger.Info("CBaiLuInputMethodClass::UnInitKeyEventSink");
     ITfKeystrokeMgr* pKeyStrokeMgr = nullptr;
     bool bRet = false;
     auto qResult = m_pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void**)(&pKeyStrokeMgr));
@@ -791,7 +792,7 @@ void CBaiLuInputMethodClass::UnInitKeyEventSink()
 }
 void CBaiLuInputMethodClass::UnInitActiveLanguageProfileNotifySink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitActiveLanguageProfileNotifySink");
+    //g_logger.Info("CBaiLuInputMethodClass::UnInitActiveLanguageProfileNotifySink");
     ITfSource* pSource = nullptr;
 
     if (m_activeLanguageProfileNotifySinkCookie == TF_INVALID_COOKIE)
@@ -810,7 +811,7 @@ void CBaiLuInputMethodClass::UnInitActiveLanguageProfileNotifySink()
 }
 void CBaiLuInputMethodClass::UnInitThreadFocusSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitThreadFocusSink");
+    //g_logger.Info("CBaiLuInputMethodClass::UnInitThreadFocusSink");
     ITfSource* pSource = nullptr;
 
     if (FAILED(m_pThreadMgr->QueryInterface(IID_ITfSource, (void**)&pSource)))
@@ -833,12 +834,12 @@ void CBaiLuInputMethodClass::UnInitThreadFocusSink()
 }
 void CBaiLuInputMethodClass::UnInitDisplayAttributeGuidAtomSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitDisplayAttributeGuidAtomSink");
+    //g_logger.Info("CBaiLuInputMethodClass::UnInitDisplayAttributeGuidAtomSink");
     return;
 }
 void CBaiLuInputMethodClass::UnInitFunctionProviderSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitFunctionProviderSink");
+    //g_logger.Info("CBaiLuInputMethodClass::UnInitFunctionProviderSink");
     ITfSourceSingle* pSourceSingle = nullptr;
     if (SUCCEEDED(m_pThreadMgr->QueryInterface(IID_ITfSourceSingle, (void**)&pSourceSingle)))
     {
@@ -849,7 +850,7 @@ void CBaiLuInputMethodClass::UnInitFunctionProviderSink()
 }
 void CBaiLuInputMethodClass::UnInitTextProcessorEngineSink()
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::UnInitTextProcessorEngineSink");
+    //g_logger.Info("CBaiLuInputMethodClass::UnInitTextProcessorEngineSink");
     return;
 }
 
@@ -861,5 +862,5 @@ void CBaiLuInputMethodClass::UnInitTextProcessorEngineSink()
     char buff[1024] = { 0 };
     sprintf(buff, "CBaiLuInputMethodClass Key %s  Name:%s  Code:%d  Code2: %d\n",method.c_str(), strCodeName.c_str(), vCode, (UINT)(lParam));
     std::string strLog(buff);
-    LogUtil::LogInfo("%s",strLog.c_str());
+    //g_logger.Info("%s",strLog.c_str());
 }*/

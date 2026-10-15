@@ -1,6 +1,7 @@
 #include "BaiLuThreadMgrEventSink.hpp"
-#include "Log.hpp"
+#include "Logger.h"
 #include "BaiLuInputCore.hpp"
+static auto& g_logger = BaiLu::Logger::Instance();
 HRESULT CBaiLuThreadMgrEventSink::CreateInstance(CBaiLuThreadMgrEventSink** pInst)
 {
     CBaiLuThreadMgrEventSink* pOut = new CBaiLuThreadMgrEventSink();
@@ -13,7 +14,7 @@ HRESULT CBaiLuThreadMgrEventSink::CreateInstance(CBaiLuThreadMgrEventSink** pIns
 }
 CBaiLuThreadMgrEventSink::CBaiLuThreadMgrEventSink()
 {
-    LogUtil::LogInfo("CBaiLuThreadMgrEventSink::CBaiLuThreadMgrEventSink");
+    //g_logger.Info("CBaiLuThreadMgrEventSink::CBaiLuThreadMgrEventSink");
     m_refCount = 1;
     m_pPrevTfDocumentMgr = nullptr;
     m_pCurTfDocumentMgr = nullptr;
@@ -22,7 +23,7 @@ CBaiLuThreadMgrEventSink::CBaiLuThreadMgrEventSink()
 
 CBaiLuThreadMgrEventSink::~CBaiLuThreadMgrEventSink()
 {
-    LogUtil::LogInfo("CBaiLuThreadMgrEventSink::~CBaiLuThreadMgrEventSink");
+    //g_logger.Info("CBaiLuThreadMgrEventSink::~CBaiLuThreadMgrEventSink");
 }
 
 //IUnKnown
@@ -30,10 +31,10 @@ HRESULT STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::QueryInterface(
     /* [in] */ REFIID riid,
     /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
-    LogUtil::LogInfo("CBaiLuThreadMgrEventSink::QueryInterface");
+    //g_logger.Info("CBaiLuThreadMgrEventSink::QueryInterface");
     if (IsEqualIID(riid, IID_ITfThreadMgrEventSink))
     {
-        LogUtil::LogTrace(__FILE__, __LINE__);
+        //g_logger.Debug("{} {}",__FILE__, __LINE__);
         this->AddRef();
         *ppvObject = this;
         return S_OK;
@@ -48,14 +49,14 @@ HRESULT STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::QueryInterface(
 ULONG STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::AddRef(void)
 {
     m_refCount++;
-    LogUtil::LogInfo("CBaiLuThreadMgrEventSink::AddRef %d", m_refCount);
+    //g_logger.Info("CBaiLuThreadMgrEventSink::AddRef {}", m_refCount);
     return m_refCount;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::Release(void)
 {
     m_refCount--;
-    LogUtil::LogInfo("CBaiLuThreadMgrEventSink::Release %d", m_refCount);
+    //g_logger.Info("CBaiLuThreadMgrEventSink::Release {}", m_refCount);
 	ULONG nRet = m_refCount;
     if(nRet == 0)
     {
@@ -65,7 +66,7 @@ ULONG STDMETHODCALLTYPE CBaiLuThreadMgrEventSink::Release(void)
 }
 void CBaiLuThreadMgrEventSink::CheckRefCount() const
 {
-    LogUtil::LogInfo("CBaiLuThreadMgrEventSink::CheckRefCount %d", m_refCount);
+    //g_logger.Info("CBaiLuThreadMgrEventSink::CheckRefCount {}", m_refCount);
 }
 // ITfThreadMgrEventSink
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnInitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr)
@@ -73,14 +74,14 @@ STDMETHODIMP CBaiLuThreadMgrEventSink::OnInitDocumentMgr(_In_ ITfDocumentMgr* pD
     return E_NOTIMPL;
     if (nullptr != pDocMgr)
     {
-        LogUtil::LogInfo("CBaiLuInputMethodClass::OnInitDocumentMgr Succeed");
+        //g_logger.Info("CBaiLuInputMethodClass::OnInitDocumentMgr Succeed");
         //this->m_pCurTfDocumentMgr = pDocMgr;
         //this->m_pCurTfDocumentMgr->AddRef();
         return S_OK;
     }
     else
     {
-        LogUtil::LogInfo("CBaiLuInputMethodClass::OnInitDocumentMgr Param Error");
+        //g_logger.Info("CBaiLuInputMethodClass::OnInitDocumentMgr Param Error");
         return -1;
     }
 }
@@ -88,7 +89,7 @@ STDMETHODIMP CBaiLuThreadMgrEventSink::OnInitDocumentMgr(_In_ ITfDocumentMgr* pD
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnUninitDocumentMgr(_In_ ITfDocumentMgr* pDocMgr)
 {
     return E_NOTIMPL;
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnUninitDocumentMgr");
+    //g_logger.Info("CBaiLuInputMethodClass::OnUninitDocumentMgr");
     /*if (nullptr != this->m_pCurTfDocumentMgr)
     {
         this->m_pCurTfDocumentMgr->Release();
@@ -98,7 +99,7 @@ STDMETHODIMP CBaiLuThreadMgrEventSink::OnUninitDocumentMgr(_In_ ITfDocumentMgr* 
 
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnSetFocus(_In_ ITfDocumentMgr* pDocMgrFocus, _In_ ITfDocumentMgr* pDocMgrPrevFocus)
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetFocus");
+    //g_logger.Info("CBaiLuInputMethodClass::OnSetFocus");
     //this->m_pPrevTfDocumentMgr = pDocMgrPrevFocus;
     //this->m_pCurTfDocumentMgr = pDocMgrFocus;
     if (pDocMgrFocus)
@@ -116,18 +117,18 @@ STDMETHODIMP CBaiLuThreadMgrEventSink::OnSetFocus(_In_ ITfDocumentMgr* pDocMgrFo
             }
             else
             {
-                LogUtil::LogInfo("CBaiLuInputCore::GetInstance GetInstance failed");
+                //g_logger.Info("CBaiLuInputCore::GetInstance GetInstance failed");
             }
             context->Release();
         }
         else
         {
-			LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetFocus GetTop failed");
+			//g_logger.Info("CBaiLuInputMethodClass::OnSetFocus GetTop failed");
         }
     }
     else
     {
-		LogUtil::LogInfo("CBaiLuInputMethodClass::OnSetFocus pDocMgrFocus is null");
+		//g_logger.Info("CBaiLuInputMethodClass::OnSetFocus pDocMgrFocus is null");
     }
 
     return S_OK;
@@ -135,14 +136,14 @@ STDMETHODIMP CBaiLuThreadMgrEventSink::OnSetFocus(_In_ ITfDocumentMgr* pDocMgrFo
 
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnPushContext(_In_ ITfContext* pContext)
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnPushContext");
+    //g_logger.Info("CBaiLuInputMethodClass::OnPushContext");
     //m_pCurTfContext = pContext;
     return E_NOTIMPL;
 }
 
 STDMETHODIMP CBaiLuThreadMgrEventSink::OnPopContext(_In_ ITfContext* pContext)
 {
-    LogUtil::LogInfo("CBaiLuInputMethodClass::OnPopContext");
+    //g_logger.Info("CBaiLuInputMethodClass::OnPopContext");
     //m_pCurTfContext = pContext;
     return E_NOTIMPL;
 }

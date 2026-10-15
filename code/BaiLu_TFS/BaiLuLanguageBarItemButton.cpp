@@ -1,6 +1,7 @@
 #include "BaiLuLanguageBarItemButton.hpp"
-#include "Log.hpp"
 #include <string>
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 BaiLuLanguageBarItemButton::BaiLuLanguageBarItemButton(REFGUID guidLangBar, LPCWSTR description, LPCWSTR tooltip, DWORD onIconIndex, DWORD offIconIndex, BOOL isSecureMode)
 {
 	this->_refCount = 1;
@@ -93,7 +94,7 @@ STDMETHODIMP BaiLuLanguageBarItemButton::GetText(_Out_ BSTR* pbstrText)
 // ITfSource
 STDMETHODIMP BaiLuLanguageBarItemButton::AdviseSink(__RPC__in REFIID riid, __RPC__in_opt IUnknown* punk, __RPC__out DWORD* pdwCookie)
 {
-	LogUtil::LogInfo(TEXT("CLangBarItemButton::AdviseSink"));
+	//g_logger.Info(TEXT("CLangBarItemButton::AdviseSink"));
 	// We allow only ITfLangBarItemSink interface.
 	if (!IsEqualIID(IID_ITfLangBarItemSink, riid))
 	{
@@ -124,7 +125,7 @@ STDMETHODIMP BaiLuLanguageBarItemButton::AdviseSink(__RPC__in REFIID riid, __RPC
 
 STDMETHODIMP BaiLuLanguageBarItemButton::UnadviseSink(DWORD dwCookie)
 {
-	LogUtil::LogInfo(TEXT("BaiLuLanguageBarItemButton::UnadviseSink"));
+	//g_logger.Info(TEXT("BaiLuLanguageBarItemButton::UnadviseSink"));
 	// Check the given cookie.
 	if (dwCookie != _cookie)
 	{
@@ -147,7 +148,7 @@ STDMETHODIMP BaiLuLanguageBarItemButton::UnadviseSink(DWORD dwCookie)
 // Add/Remove languagebar item
 HRESULT BaiLuLanguageBarItemButton::_AddItem(_In_ ITfThreadMgr* pThreadMgr)
 {
-	LogUtil::LogInfo(TEXT("BaiLuLanguageBarItemButton::_AddItem"));
+	//g_logger.Info(TEXT("BaiLuLanguageBarItemButton::_AddItem"));
 	HRESULT hr = S_OK;
 	ITfLangBarItemMgr* pLangBarItemMgr = nullptr;
 
@@ -172,7 +173,7 @@ HRESULT BaiLuLanguageBarItemButton::_AddItem(_In_ ITfThreadMgr* pThreadMgr)
 
 HRESULT BaiLuLanguageBarItemButton::_RemoveItem(_In_ ITfThreadMgr* pThreadMgr)
 {
-	LogUtil::LogInfo(TEXT("CLangBarItemButton::_RemoveItem"));
+	//g_logger.Info(TEXT("CLangBarItemButton::_RemoveItem"));
 	HRESULT hr = S_OK;
 	ITfLangBarItemMgr* pLangBarItemMgr = nullptr;
 

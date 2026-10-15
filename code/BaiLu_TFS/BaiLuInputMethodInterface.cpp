@@ -1,14 +1,15 @@
 #include "BaiLuInputMethodInterface.hpp"
 #include "BaiLuInputMethodClass.hpp"
-#include "Log.hpp"
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 HRESULT ClassCreateInstance(_In_opt_ IUnknown* pUnkOuter, _In_ REFIID riid, _COM_Outptr_ void** ppvObj)
 {
-    LogUtil::LogInfo("CSampleIME::CreateInstance Enter");
+    //g_logger.Info("CSampleIME::CreateInstance Enter");
    
 
     if (ppvObj == nullptr)
     {
-        LogUtil::LogError(__FILE__, __LINE__);
+        g_logger.Error("{} {}", __FILE__, __LINE__);
         return E_INVALIDARG;
     }
 
@@ -16,7 +17,7 @@ HRESULT ClassCreateInstance(_In_opt_ IUnknown* pUnkOuter, _In_ REFIID riid, _COM
 
     if (nullptr != pUnkOuter)
     {
-        LogUtil::LogError(__FILE__, __LINE__);
+        g_logger.Error("{} {}", __FILE__, __LINE__);
         return CLASS_E_NOAGGREGATION;
     }
 
@@ -24,7 +25,7 @@ HRESULT ClassCreateInstance(_In_opt_ IUnknown* pUnkOuter, _In_ REFIID riid, _COM
     HRESULT hr = S_OK;
     if (pClass == nullptr)
     {
-        LogUtil::LogError(__FILE__, __LINE__);
+        g_logger.Error("{} {}", __FILE__, __LINE__);
         return E_OUTOFMEMORY;
     }
 
@@ -32,6 +33,6 @@ HRESULT ClassCreateInstance(_In_opt_ IUnknown* pUnkOuter, _In_ REFIID riid, _COM
 
     pClass->Release();
 
-    LogUtil::LogInfo("CSampleIME::CreateInstance Leave");
+    //g_logger.Info("CSampleIME::CreateInstance Leave");
     return hr;
 }

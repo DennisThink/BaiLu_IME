@@ -1,6 +1,6 @@
 #include "BaiLu_DeleteBeforeEditSession.hpp"
-#include "Log.hpp"
-
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 static void LogRangeText(ITfRange* pRange, TfEditCookie ec)
 {
 	{
@@ -16,13 +16,13 @@ static void LogRangeText(ITfRange* pRange, TfEditCookie ec)
 				256,
 				&actualLength
 			);
-			LogUtil::LogInfo("BaiLuEditSession::DoEditSession: %ls %ld", buffer, actualLength);
+			//g_logger.Info("BaiLuEditSession::DoEditSession:{}  {}", buffer, actualLength);
 		}
 	}
 }
 STDMETHODIMP CBaiLuDeleteEditSession::DoEditSession(TfEditCookie ec) 
 {
-	LogUtil::LogInfo("BaiLuEditSession::DoEditSession: %s  %d", __FILE__, __LINE__);
+	//g_logger.Info("BaiLuEditSession::DoEditSession: {} {}", __FILE__, __LINE__);
 	if (_pContext)
 	{
 		TF_SELECTION selection{};
@@ -34,14 +34,14 @@ STDMETHODIMP CBaiLuDeleteEditSession::DoEditSession(TfEditCookie ec)
 			&selection,
 			&fetched
 		);
-		LogUtil::LogInfo("BaiLuEditSession::DoEditSession: %s  %d", __FILE__, __LINE__);
+		//g_logger.Info("BaiLuEditSession::DoEditSession: {} {}", __FILE__, __LINE__);
 		if (FAILED(hr) || fetched != 1)
 		{
 			return S_OK;
 		}
 		ITfRange* pRange = selection.range;
 		
-		LogUtil::LogInfo("BaiLuEditSession::DoEditSession: %s  %d", __FILE__, __LINE__);
+		//g_logger.Info("BaiLuEditSession::DoEditSession: {} {}", __FILE__, __LINE__);
 	
 
 		if (pRange)
@@ -53,17 +53,17 @@ STDMETHODIMP CBaiLuDeleteEditSession::DoEditSession(TfEditCookie ec)
 				needShift,
 				&actualShift,
 				NULL);
-			LogUtil::LogInfo("BaiLuEditSession::DoEditSession: NeedShift  %ld RealShift %ld", needShift, actualShift);
+			//g_logger.Info("BaiLuEditSession::DoEditSession: NeedShift  %ld RealShift %ld", needShift, actualShift);
 			LogRangeText(pRange, ec);
 			HRESULT hShift2 = pRange->ShiftEnd(ec,
 				2,
 				&actualShift,
 				NULL);
-			LogUtil::LogInfo("BaiLuEditSession::DoEditSession: NeedShift  %ld RealShift %ld", needShift, actualShift);
+			//g_logger.Info("BaiLuEditSession::DoEditSession: NeedShift  %ld RealShift %ld", needShift, actualShift);
 			LogRangeText(pRange, ec);
 			if (FAILED(hShift) || actualShift != needShift)
 			{
-				LogUtil::LogInfo("BaiLuEditSession::DoEditSession: %s  %d", __FILE__, __LINE__);
+				//g_logger.Info("BaiLuEditSession::DoEditSession: {} {}", __FILE__, __LINE__);
 			}
 			else
 			{
@@ -73,15 +73,15 @@ STDMETHODIMP CBaiLuDeleteEditSession::DoEditSession(TfEditCookie ec)
 					0);
 				if (FAILED(hSetText))
 				{
-					LogUtil::LogInfo("BaiLuEditSession::DoEditSession: %s  %d", __FILE__, __LINE__);
+					//g_logger.Info("BaiLuEditSession::DoEditSession: {} {}", __FILE__, __LINE__);
 				}
 			}
 
 		}
-		LogUtil::LogInfo("BaiLuEditSession::DoEditSession: %s  %d", __FILE__, __LINE__);
+		//g_logger.Info("BaiLuEditSession::DoEditSession: {} {}", __FILE__, __LINE__);
 		pRange->Release();
 	}
-	LogUtil::LogInfo("BaiLuEditSession::DoEditSession: %s  %d", __FILE__, __LINE__);
+	//g_logger.Info("BaiLuEditSession::DoEditSession: {} {}", __FILE__, __LINE__);
 	return S_OK;
 }
 // IUnknown 的三个函数

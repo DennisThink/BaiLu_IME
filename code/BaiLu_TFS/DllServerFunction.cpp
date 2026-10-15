@@ -1,13 +1,14 @@
 #include "DllServerFunction.hpp"
-#include "Log.hpp"
 #include "RegKeyFunction.hpp"
 #include "RegProfileFunction.hpp"
 #include "RegCategoryFunction.hpp"
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 extern "C"
 {
     DLL_EXPORT HRESULT DllRegisterServer(void)
     {
-        LogUtil::LogInfo("DllRegisterServer");
+        //g_logger.Info("DllRegisterServer");
         CRegKeyFunction::InstallRegKeyValues();
         CRegProfileFunction::InstallProfile();
         CRegCategoryFunction::InstallRegCategory();
@@ -17,7 +18,7 @@ extern "C"
 
     DLL_EXPORT HRESULT DllUnregisterServer(void)
     {
-        LogUtil::LogInfo("DllUnregisterServer");
+        //g_logger.Info("DllUnregisterServer");
         CRegKeyFunction::UnInstallRegKeyValues();
         CRegProfileFunction::UninstallProfile();
         CRegCategoryFunction::UninstallRegCategory();

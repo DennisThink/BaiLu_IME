@@ -1,5 +1,6 @@
 #include "BaiLuDisplayAttributeProvider.hpp"
-#include "Log.hpp"
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 
 HRESULT CBaiLuDisplayAttributeProvider::CreateInstance(CBaiLuDisplayAttributeProvider** ppOut)
 {
@@ -14,32 +15,32 @@ HRESULT CBaiLuDisplayAttributeProvider::CreateInstance(CBaiLuDisplayAttributePro
 
 CBaiLuDisplayAttributeProvider::CBaiLuDisplayAttributeProvider()
 {
-    LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::CBaiLuDisplayAttributeProvider");
+    //g_logger.Info("CBaiLuDisplayAttributeProvider::CBaiLuDisplayAttributeProvider");
     m_refCount = 1;
 }
 CBaiLuDisplayAttributeProvider::~CBaiLuDisplayAttributeProvider()
 {
-    LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::~CBaiLuDisplayAttributeProvider");
+    //g_logger.Info("CBaiLuDisplayAttributeProvider::~CBaiLuDisplayAttributeProvider");
 }
 HRESULT STDMETHODCALLTYPE CBaiLuDisplayAttributeProvider::QueryInterface(
     /* [in] */ REFIID riid,
     /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
-    LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::QueryInterface");
+    //g_logger.Info("CBaiLuDisplayAttributeProvider::QueryInterface");
     return 0;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuDisplayAttributeProvider::AddRef(void)
 {
     m_refCount++;
-    LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::AddRef %d", m_refCount);
+    //g_logger.Info("CBaiLuDisplayAttributeProvider::AddRef {}", m_refCount);
     return m_refCount;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuDisplayAttributeProvider::Release(void)
 {
     m_refCount--;
-    LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::Release %d", m_refCount);
+    //g_logger.Info("CBaiLuDisplayAttributeProvider::Release {}", m_refCount);
 	ULONG ulRet = m_refCount;
     if (m_refCount == 0)
     {
@@ -50,7 +51,7 @@ ULONG STDMETHODCALLTYPE CBaiLuDisplayAttributeProvider::Release(void)
 HRESULT STDMETHODCALLTYPE CBaiLuDisplayAttributeProvider::EnumDisplayAttributeInfo(
     /* [out] */ __RPC__deref_out_opt IEnumTfDisplayAttributeInfo** ppEnum)
 {
-    LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::EnumDisplayAttributeInfo");
+    //g_logger.Info("CBaiLuDisplayAttributeProvider::EnumDisplayAttributeInfo");
     return 0;
 }
 
@@ -58,6 +59,6 @@ HRESULT STDMETHODCALLTYPE CBaiLuDisplayAttributeProvider::GetDisplayAttributeInf
     /* [in] */ __RPC__in REFGUID guid,
     /* [out] */ __RPC__deref_out_opt ITfDisplayAttributeInfo** ppInfo)
 {
-    LogUtil::LogInfo("CBaiLuDisplayAttributeProvider::GetDisplayAttributeInfo");
+    //g_logger.Info("CBaiLuDisplayAttributeProvider::GetDisplayAttributeInfo");
     return 0;
 }

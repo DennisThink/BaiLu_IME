@@ -1,6 +1,6 @@
 #include "BaiLuCompositionSink.hpp"
-#include "Log.hpp"
-
+#include "Logger.h"
+static auto& g_logger = BaiLu::Logger::Instance();
 HRESULT CBaiLuCompositionSink::CreateInstance(CBaiLuCompositionSink** pOut)
 {
     CBaiLuCompositionSink* pInst = new CBaiLuCompositionSink();
@@ -15,31 +15,31 @@ HRESULT CBaiLuCompositionSink::CreateInstance(CBaiLuCompositionSink** pOut)
 CBaiLuCompositionSink::CBaiLuCompositionSink()
 {
     m_refCount = 1;
-    LogUtil::LogInfo("CBaiLuCompositionSink::CBaiLuCompositionSink %d", m_refCount);
+   //g_logger.Info("CBaiLuCompositionSink::CBaiLuCompositionSink {}", m_refCount);
 }
 CBaiLuCompositionSink::~CBaiLuCompositionSink()
 {
-    LogUtil::LogInfo("CBaiLuCompositionSink::~CBaiLuCompositionSink %d", m_refCount);
+   //g_logger.Info("CBaiLuCompositionSink::~CBaiLuCompositionSink {}", m_refCount);
 }
 HRESULT STDMETHODCALLTYPE CBaiLuCompositionSink::QueryInterface(
 /* [in] */ REFIID riid,
 /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
-    LogUtil::LogInfo("CBaiLuCompositionSink::QueryInterface %d", m_refCount);
+   //g_logger.Info("CBaiLuCompositionSink::QueryInterface {}", m_refCount);
     return 0;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuCompositionSink::AddRef(void)
 {
     m_refCount++;
-    LogUtil::LogInfo("CBaiLuCompositionSink::AddRef %d", m_refCount);
+   //g_logger.Info("CBaiLuCompositionSink::AddRef {}", m_refCount);
     return m_refCount;
 }
 
 ULONG STDMETHODCALLTYPE CBaiLuCompositionSink::Release(void)
 {
     m_refCount--;
-    LogUtil::LogInfo("CBaiLuCompositionSink::Release %d", m_refCount);
+   //g_logger.Info("CBaiLuCompositionSink::Release {}", m_refCount);
 	ULONG nRet = m_refCount;
     if(m_refCount == 0)
     {
@@ -52,6 +52,6 @@ HRESULT STDMETHODCALLTYPE CBaiLuCompositionSink::OnCompositionTerminated(
     /* [in] */ TfEditCookie ecWrite,
     /* [in] */ __RPC__in_opt ITfComposition* pComposition)
 {
-    LogUtil::LogInfo("CBaiLuCompositionSink::OnCompositionTerminated %d", m_refCount);
+   //g_logger.Info("CBaiLuCompositionSink::OnCompositionTerminated {}", m_refCount);
     return 0;
 }

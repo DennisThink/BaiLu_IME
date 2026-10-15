@@ -2,7 +2,6 @@
 #define	_BAI_LU_EDIT_SESSION_HPP_
 #include "private.hpp"
 #include <string>
-#include "Log.hpp"
 /*
 * 我们需要这个类来实现最后的文本写入到输入框
 */
