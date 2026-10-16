@@ -6,6 +6,7 @@
 #include "SimpleCandidateGenerator.h"
 #include "SimpleQuanPinGenerator.h"
 #include "RimeCandidateGenerator.h"
+#include "LocalTcpGenerator.h"
 #include "CandidateWindow.h"
 #include "ListCandidateView.h"
 #include "GlobalValues.hpp"
@@ -96,7 +97,7 @@ void CBaiLuInputCore::DeleteWordByBackSpace()
 
 }
 
-void CBaiLuInputCore::InsertWordToWindow(const std::wstring& strWord)
+void CBaiLuInputCore::InsertWordToWindow(const std::string& strWord)
 {
 	//g_logger.Info("CBaiLuInputCore::InsertWordToWindow: {}", strWord.c_str());
 	//g_logger.Info("CBaiLuInputCore::InsertWordToWindow: {} {}", __FILE__, __LINE__);
@@ -166,7 +167,7 @@ CBaiLuInputCore::CBaiLuInputCore()
 	m_pCurTfContext = nullptr;
 	m_curSelectedIndex = 0;
 	//m_generator = std::make_unique<SimpleCandidateGenerator>();
-	m_generator = std::make_unique<CSimpleQuanPinGenerator>();
+	m_generator = std::make_unique<CLocalTcpGenerator>();
 	//m_generator = std::make_unique<CRimeCandiateGenerator>();
 	m_clientID = 0;
 	//g_logger.Info("CBaiLuInputCore::CBaiLuInputCore");
@@ -216,23 +217,23 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 	case KeyType::CharacterKey:
 	{
 		//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo CharacterKey: {}", keyInfo._keyValue);
-		wchar_t inputChar = static_cast<wchar_t>(keyInfo._keyValue);
+		char inputChar = static_cast<char>(keyInfo._keyValue);
 		
 		// Handle character key input for normal text input
 
 		m_vecWord.push_back(inputChar);
 		if (!m_vecWord.empty())
 		{
-			std::wstring strWord(m_vecWord.begin(), m_vecWord.end());
+			std::string strWord(m_vecWord.begin(), m_vecWord.end());
 			m_vecCandidate.clear();
 			if (m_generator)
 			{
-				//m_vecCandidate = m_generator->Generate(strWord, 5);
+				m_vecCandidate = m_generator->Generate(strWord, 5);
 			}
 			if(g_candidateWindow)
 			{
 				g_candidateWindow->SetUserInput(strWord);
-				//g_candidateWindow->SetCandidates(m_vecCandidate);
+				g_candidateWindow->SetCandidates(m_vecCandidate);
 				g_candidateWindow->Show();
 			}
 			else
@@ -264,7 +265,7 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 		else
 		{
 			// Handle number key input for normal text input
-			std::wstring selectedWord = std::to_wstring(keyInfo._keyValue);
+			std::string selectedWord = std::to_string(keyInfo._keyValue);
 			InsertWordToWindow(selectedWord);
 		}
 	}break;
@@ -277,7 +278,7 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 			{
 				if (m_curSelectedIndex >= 0 && m_curSelectedIndex < m_vecCandidate.size())
 				{
-					std::wstring selectedWord = m_vecCandidate[m_curSelectedIndex];
+					std::string selectedWord = m_vecCandidate[m_curSelectedIndex];
 					InsertWordToWindow(selectedWord);
 					m_vecWord.clear();
 					m_vecCandidate.clear();
@@ -298,16 +299,16 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 				{
 					auto endIter = m_vecWord.end();
 					endIter--;
-					std::wstring strWord(m_vecWord.begin(), endIter);
+					std::string strWord(m_vecWord.begin(), endIter);
 					m_vecCandidate.clear();
 					if (m_generator)
 					{
-						//m_vecCandidate = m_generator->Generate(strWord, 5);
+						m_vecCandidate = m_generator->Generate(strWord, 5);
 					}
 					if (g_candidateWindow)
 					{
 						g_candidateWindow->SetUserInput(strWord);
-						//g_candidateWindow->SetCandidates(m_vecCandidate);
+						g_candidateWindow->SetCandidates(m_vecCandidate);
 						g_candidateWindow->Show();
 					}
 					else

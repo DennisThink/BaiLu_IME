@@ -9,6 +9,14 @@ HRESULT BaiLuEditSession::QueryInterface(
     return S_OK;
 }
 
+static std::wstring Utf8ToWide(const std::string& utf8) {
+    if (utf8.empty()) return L"";
+
+    int len = MultiByteToWideChar(CP_UTF8, 0, utf8.data(), (int)utf8.size(), nullptr, 0);
+    std::wstring wstr(len, L'\0');
+    MultiByteToWideChar(CP_UTF8, 0, utf8.data(), (int)utf8.size(), wstr.data(), len);
+    return wstr;
+}
 ULONG BaiLuEditSession::AddRef()
 {
     this->_cRef++;
@@ -55,11 +63,12 @@ STDMETHODIMP BaiLuEditSession::DoEditSession(TfEditCookie ec)
     }
 
     //g_logger.Info("BaiLuEditSession::DoEditSession: Inserting text: {}", m_strWord.c_str());
+	std::wstring wideWord = Utf8ToWide(m_strWord);
     HRESULT hr2 = selection.range->SetText(
         ec,
         TF_ST_CORRECTION,
-        m_strWord.data(),
-        static_cast<LONG>(m_strWord.length())
+        wideWord.data(),
+        static_cast<LONG>(wideWord.length())
     );
     //g_logger.Info("BaiLuEditSession::DoEditSession: {} {}", __FILE__, __LINE__);
     if (FAILED(hr2))

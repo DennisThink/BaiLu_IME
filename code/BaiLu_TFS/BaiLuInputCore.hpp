@@ -62,7 +62,7 @@ public:
 private:
 	void LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::string method);
 	void ShowWordBySpace(WPARAM wParam, LPARAM lParam);
-	void InsertWordToWindow(const std::wstring& strWord);
+	void InsertWordToWindow(const std::string& strWord);
 	void DeleteWordByBackSpace();
 	void _UpdateComposition(ITfContext* pContext, const std::string& strText);
 	ITfContext* _GetFocusContext();
@@ -70,9 +70,9 @@ private:
 	void ProcessKeyInfo(const KeyInfo& keyInfo);
 	bool IsChandidateWindowShow()const;
 private:
-	std::vector<wchar_t> m_vecWord;
+	std::vector<char> m_vecWord;
 	int m_curSelectedIndex;
-	std::vector<std::wstring> m_vecCandidate;
+	std::vector<std::string> m_vecCandidate;
 	CBaiLuInputCore();
 	~CBaiLuInputCore();
 	std::unique_ptr<CandidateGenerator> m_generator;

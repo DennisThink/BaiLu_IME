@@ -8,7 +8,7 @@
 class BaiLuEditSession :public ITfEditSession
 {
 public:
-    BaiLuEditSession(ITfContext* pContext,const std::wstring& strWord)
+    BaiLuEditSession(ITfContext* pContext,const std::string& strWord)
         : _cRef(1), _pContext(pContext), m_strWord(strWord) {
         if (_pContext) {
 			_pContext->AddRef();
@@ -33,6 +33,6 @@ private:
     LONG _cRef;
     ITfContext* _pContext;
     ITfComposition* _pComposition;
-    std::wstring m_strWord;
+    std::string m_strWord;
 };
 #endif
