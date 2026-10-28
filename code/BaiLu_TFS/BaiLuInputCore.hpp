@@ -6,6 +6,7 @@
 #include <memory>
 #include "private.hpp"
 #include "CandidateGenerator.h"
+#include "BaiLuConnectThread.h"
 /*
 * 这个类是整个输入法的核心类，负责处理键盘输入，管理候选词窗口，以及与文本框进行交互。
 * 总的来说就是把所有其他的接口串起来，形成一个完整的输入法。
@@ -59,6 +60,8 @@ public:
 	virtual void DealOnKeyUp(WPARAM wParam, LPARAM lParam) override;
 	virtual void SetCurTfContext(ITfContext* pContext) override;
 	virtual void SetClientID(TfClientId clientID) override;
+
+	void OnThreadTimer();
 private:
 	void LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::string method);
 	void ShowWordBySpace(WPARAM wParam, LPARAM lParam);
@@ -69,14 +72,22 @@ private:
 	KeyInfo GetKeyInfo(WPARAM wParam, LPARAM lParam);
 	void ProcessKeyInfo(const KeyInfo& keyInfo);
 	bool IsChandidateWindowShow()const;
+	void OnCandidatePrevPage();
+	void OnCandidateNextPage();
+	void UpdateCandidateByPageIndex();
 private:
 	std::vector<char> m_vecWord;
 	int m_curSelectedIndex;
 	std::vector<std::string> m_vecCandidate;
+	int m_nPageCount;
+	int m_nPageIndex;
 	CBaiLuInputCore();
 	~CBaiLuInputCore();
 	std::unique_ptr<CandidateGenerator> m_generator;
 	ITfContext* m_pCurTfContext;
 	TfClientId m_clientID;
+	Timer m_timer;
+	std::string m_strOldUserInput;
+	std::string m_strNewUserInput;
 };
 #endif

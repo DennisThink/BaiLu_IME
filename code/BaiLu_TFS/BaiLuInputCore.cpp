@@ -161,6 +161,31 @@ void CBaiLuInputCore::LogKeyDownAndUp(WPARAM wParam, LPARAM lParam, const std::s
 	//g_logger.Info("{}", strLog.c_str());
 }
 
+void CBaiLuInputCore::OnThreadTimer()
+{
+	g_logger.Info("OnThreadTimer");
+	m_strOldUserInput = m_strNewUserInput;
+	m_strNewUserInput.clear();
+	for (const auto& item : m_vecWord)
+	{
+		m_strNewUserInput += item;
+	}
+	if (m_strOldUserInput != m_strNewUserInput)
+	{
+		m_vecCandidate.clear();
+		if (m_generator)
+		{
+			
+			auto result = m_generator->Generate(m_strNewUserInput, 5);
+			for (const auto& item : result.m_candidates)
+			{
+				m_vecCandidate.push_back(item.m_strChinese);
+			}
+		}
+		UpdateCandidateByPageIndex();
+	}
+}
+
 CBaiLuInputCore::CBaiLuInputCore()
 {
 	g_candidateWindow = nullptr;
@@ -170,6 +195,8 @@ CBaiLuInputCore::CBaiLuInputCore()
 	m_generator = std::make_unique<CLocalTcpGenerator>();
 	//m_generator = std::make_unique<CRimeCandiateGenerator>();
 	m_clientID = 0;
+	m_nPageCount = 5;
+	m_nPageIndex = 0;
 	//g_logger.Info("CBaiLuInputCore::CBaiLuInputCore");
 	auto pListView= std::make_unique<ListCandidateView>();
 	if(nullptr != pListView)
@@ -191,13 +218,59 @@ CBaiLuInputCore::CBaiLuInputCore()
 		//g_logger.Info("CBaiLuInputCore::CBaiLuInputCore pListView is null");
 	}
 	
+	m_timer.start(std::chrono::milliseconds(500), [this]()->void {
+		this->OnThreadTimer();
+	});
 
 }
 CBaiLuInputCore::~CBaiLuInputCore()
 {
 	//g_logger.Info("CBaiLuInputCore::~CBaiLuInputCore");
+	m_timer.stop();
+}
+void CBaiLuInputCore::OnCandidatePrevPage()
+{
+	while (m_nPageIndex > 0)
+	{
+		m_nPageIndex--;
+	}
+	UpdateCandidateByPageIndex();
 }
 
+void CBaiLuInputCore::OnCandidateNextPage()
+{
+	while ((m_nPageIndex + 1) * m_nPageCount < m_vecCandidate.size())
+	{
+		m_nPageIndex++;
+	}
+	UpdateCandidateByPageIndex();
+}
+
+void CBaiLuInputCore::UpdateCandidateByPageIndex()
+{
+	if (g_candidateWindow)
+	{
+		std::vector<std::string> result;
+		std::size_t nStart = m_nPageIndex * m_nPageCount;
+		std::size_t nCount = m_vecCandidate.size();
+		for (int i = 0; i < m_nPageCount; i++)
+		{
+			if ((nStart + i) < nCount)
+			{
+				result.push_back(m_vecCandidate[nStart + i]);
+				g_logger.Info("Candidates: {}", m_vecCandidate[nStart + i]);
+			}
+			else
+			{
+				break;
+			}
+		}
+		std::string strUserInput(m_vecWord.begin(), m_vecWord.end());
+		g_candidateWindow->SetUserInput(strUserInput);
+		g_candidateWindow->SetCandidates(result);
+		g_candidateWindow->Show();
+	}
+}
 bool CBaiLuInputCore::IsChandidateWindowShow()const
 {
 	if (g_candidateWindow)
@@ -220,27 +293,7 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 		char inputChar = static_cast<char>(keyInfo._keyValue);
 		
 		// Handle character key input for normal text input
-
 		m_vecWord.push_back(inputChar);
-		if (!m_vecWord.empty())
-		{
-			std::string strWord(m_vecWord.begin(), m_vecWord.end());
-			m_vecCandidate.clear();
-			if (m_generator)
-			{
-				m_vecCandidate = m_generator->Generate(strWord, 5);
-			}
-			if(g_candidateWindow)
-			{
-				g_candidateWindow->SetUserInput(strWord);
-				g_candidateWindow->SetCandidates(m_vecCandidate);
-				g_candidateWindow->Show();
-			}
-			else
-			{
-				//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo g_candidateWindow is null");
-			}
-		}
 	}break;
 	case KeyType::NumberKey:
 	{
@@ -297,28 +350,19 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 			{
 				if (!m_vecWord.empty())
 				{
-					auto endIter = m_vecWord.end();
-					endIter--;
-					std::string strWord(m_vecWord.begin(), endIter);
-					m_vecCandidate.clear();
-					if (m_generator)
+					std::size_t nCount = m_vecWord.size();
+					std::vector<char> newVector;
+					for (std::size_t i = 0; i < nCount - 1; i++)
 					{
-						m_vecCandidate = m_generator->Generate(strWord, 5);
+						newVector.push_back(m_vecWord[i]);
 					}
+					m_vecWord = newVector;
+				}
+				else
+				{
 					if (g_candidateWindow)
 					{
-						g_candidateWindow->SetUserInput(strWord);
-						g_candidateWindow->SetCandidates(m_vecCandidate);
-						g_candidateWindow->Show();
-					}
-					else
-					{
-						//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo g_candidateWindow is null");
-					}
-					m_vecWord.clear();
-					for (auto item = strWord.begin(); item != strWord.end(); item++)
-					{
-						m_vecWord.push_back(*item);
+						g_candidateWindow->Hide();
 					}
 				}
 			}
@@ -327,6 +371,15 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 				DeleteWordByBackSpace();
 			}
 		}
+		else if(keyInfo._keyValue == VK_PRIOR)
+		{
+			OnCandidatePrevPage();
+		}
+		else if (keyInfo._keyValue == VK_NEXT)
+		{
+			OnCandidateNextPage();
+		}
+			
 	}break;
 	default:
 		break;
