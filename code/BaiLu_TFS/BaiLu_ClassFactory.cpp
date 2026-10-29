@@ -34,15 +34,14 @@ STDMETHODIMP CBaiLuClassFactory::QueryInterface(REFIID riid, _Outptr_ void** ppv
 STDMETHODIMP_(ULONG) CBaiLuClassFactory::AddRef(void)
 {
     m_refCount++;
-    //g_logger.Info("CBaiLuClassFactory AddRef {}", m_refCount);
+    g_logger.Info("CBaiLuClassFactory AddRef {}", m_refCount);
     return m_refCount;
 }
 
 STDMETHODIMP_(ULONG) CBaiLuClassFactory::Release(void)
 {
-    //g_logger.Info("Release");
     m_refCount--;
-    //g_logger.Info("CBaiLuClassFactory Release {}", m_refCount);
+    g_logger.Info("CBaiLuClassFactory Release {}", m_refCount);
 	ULONG nRet = m_refCount;
 	if (nRet == 0)
     {
@@ -58,19 +57,26 @@ STDMETHODIMP CBaiLuClassFactory::CreateInstance(_In_opt_ IUnknown* pUnkOuter, _I
     ClassCreateInstance(pUnkOuter, riid, ppvObj);
     return 0;
 }
+
+//TODO: we need to implement this function
 STDMETHODIMP CBaiLuClassFactory::LockServer(BOOL fLock)
 {
-    //g_logger.Info("LockServer");
+    g_logger.Info("LockServer");
     return 0;
 }
 
 CBaiLuClassFactory::CBaiLuClassFactory(REFCLSID lValue):m_rclsid(lValue)
 {
-    //g_logger.Info("CBaiLuClassFactory::CBaiLuClassFactory");
+    g_logger.Info("CBaiLuClassFactory::CBaiLuClassFactory");
     this->m_refCount = 0;
 }
 
-bool CBaiLuClassFactory::IsEqualGID(REFCLSID lValue)
+CBaiLuClassFactory::~CBaiLuClassFactory()
+{
+    g_logger.Info("CBaiLuClassFactory::~CBaiLuClassFactory");
+}
+
+bool CBaiLuClassFactory::IsEqualGID(REFCLSID lValue) const
 {
     //g_logger.Info("CBaiLuClassFactory::IsEqualGID");
     bool bResult = IsEqualIID(this->m_rclsid, lValue);
