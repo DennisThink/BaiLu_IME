@@ -6,6 +6,7 @@ CBaiLuThreadFocusSink* CBaiLuThreadFocusSink::m_pStaticInst = nullptr;
 
 HRESULT CBaiLuThreadFocusSink::CreateInstance(CBaiLuThreadFocusSink** ppOut)
 {
+    g_logger.Info("CBaiLuThreadFocusSink::CreateInstance");
     if (nullptr == m_pStaticInst)
     {
         m_pStaticInst = new CBaiLuThreadFocusSink();
@@ -20,22 +21,21 @@ HRESULT CBaiLuThreadFocusSink::CreateInstance(CBaiLuThreadFocusSink** ppOut)
 }
 CBaiLuThreadFocusSink::CBaiLuThreadFocusSink()
 {
-    //g_logger.Info("CBaiLuThreadFocusSink::CBaiLuThreadFocusSink");
+  
     m_refCount = 1;
-    //g_logger.Info("CBaiLuThreadFocusSink::CBaiLuThreadFocusSink {}", m_refCount);
+    g_logger.Info("CBaiLuThreadFocusSink::CBaiLuThreadFocusSink {}", m_refCount);
 }
 
 CBaiLuThreadFocusSink::~CBaiLuThreadFocusSink()
 {
-    //g_logger.Info("CBaiLuThreadFocusSink::~CBaiLuThreadFocusSink {}", m_refCount);
-    //g_logger.Info("CBaiLuThreadFocusSink::~CBaiLuThreadFocusSink");
+    g_logger.Info("CBaiLuThreadFocusSink::~CBaiLuThreadFocusSink {}", m_refCount);
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuThreadFocusSink::QueryInterface(
     /* [in] */ REFIID riid,
     /* [iid_is][out] */ _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject)
 {
-    //g_logger.Info("CBaiLuThreadFocusSink::QueryInterface");
+    g_logger.Info("CBaiLuThreadFocusSink::QueryInterface");
     return E_NOINTERFACE;
 }
 
@@ -43,7 +43,7 @@ ULONG STDMETHODCALLTYPE CBaiLuThreadFocusSink::AddRef(void)
 {
     
     m_refCount++;
-    //g_logger.Info("CBaiLuThreadFocusSink::AddRef {}", m_refCount);
+    g_logger.Info("CBaiLuThreadFocusSink::AddRef {}", m_refCount);
     return m_refCount;
 
 }
@@ -52,7 +52,7 @@ ULONG STDMETHODCALLTYPE CBaiLuThreadFocusSink::Release(void)
 {
     
     m_refCount--;
-    //g_logger.Info("CBaiLuThreadFocusSink::Release {}", m_refCount);
+    g_logger.Info("CBaiLuThreadFocusSink::Release {}", m_refCount);
 	ULONG nRet = m_refCount;
     if (m_refCount == 0)
     {
@@ -64,12 +64,12 @@ ULONG STDMETHODCALLTYPE CBaiLuThreadFocusSink::Release(void)
 
 HRESULT STDMETHODCALLTYPE CBaiLuThreadFocusSink::OnSetThreadFocus(void)
 {
-    //g_logger.Info("CBaiLuThreadFocusSink::OnSetThreadFocus");
+    g_logger.Info("CBaiLuThreadFocusSink::OnSetThreadFocus");
     return 0;
 }
 
 HRESULT STDMETHODCALLTYPE CBaiLuThreadFocusSink::OnKillThreadFocus(void)
 {
-    //g_logger.Info("CBaiLuThreadFocusSink::OnKillThreadFocus");
+    g_logger.Info("CBaiLuThreadFocusSink::OnKillThreadFocus");
     return 0;
 }

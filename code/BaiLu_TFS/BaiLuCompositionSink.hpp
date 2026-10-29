@@ -2,7 +2,7 @@
 #define _BAI_LU_COMPOSITION_SINK_H_
 #include "private.hpp"
 /*
-* 作用暂时不清楚，先实现接口
+*  当该输入法的输入被其他进程或者方式终止的时候，输入法收到通知
 */
 class CBaiLuCompositionSink :public ITfCompositionSink
 {

@@ -1,5 +1,9 @@
 #pragma once
-
+/*
+* 在输入法中开启一个新的线程，进行比较耗时的操作
+* 
+* 
+*/
 #include <atomic>
 #include <chrono>
 #include <condition_variable>

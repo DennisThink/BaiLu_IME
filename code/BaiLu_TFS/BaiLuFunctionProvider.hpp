@@ -2,7 +2,7 @@
 #define _BAI_LU_FUNCTION_PROVIDER_H_
 #include "private.hpp"
 /*
-*TODO:我不知道这个类是干什么的，先实现了接口
+*让输入法或应用程序向 TSF 提供额外的功能对象，供其他组件按需查询和使用。
 */
 class CBaiLuFunctionProvider :public ITfFunctionProvider
 {

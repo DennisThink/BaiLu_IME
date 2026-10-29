@@ -2,7 +2,7 @@
 #define _BAI_LU_ACTIVE_LANGUAGE_PROFILE_NOTIFY_SINK_H_
 #include "private.hpp"
 /*
-* 示例代码有，就添加了，具体作用还不清楚
+* 在输入法切换的时候知道，我需要测试一下
 */
 class CBaiLuActiveLanguageProfileNotifySink :public ITfActiveLanguageProfileNotifySink
 {
