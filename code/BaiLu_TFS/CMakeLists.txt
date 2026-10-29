@@ -51,6 +51,7 @@ SET(BAILU_IME_SOURCE_FILE
 ./BaiLu_DeleteBeforeEditSession.cpp
 ./BaiLuConnectThread.h
 ./BaiLuConnectThread.cpp
+./BaiLuKeyState.cpp
 ./BaiLuIME.rc
 ./BaiLuIME.def
 ../external/BaiLuIME_Common/src/core/Logger.cpp

@@ -10,6 +10,7 @@
 #include "CandidateWindow.h"
 #include "ListCandidateView.h"
 #include "GlobalValues.hpp"
+#include "BaiLuKeyState.h"
 static std::unique_ptr<CandidateWindow> g_candidateWindow;
 #include "Logger.h"
 static auto& g_logger = BaiLu::Logger::Instance();
@@ -191,13 +192,10 @@ CBaiLuInputCore::CBaiLuInputCore()
 	g_candidateWindow = nullptr;
 	m_pCurTfContext = nullptr;
 	m_curSelectedIndex = 0;
-	//m_generator = std::make_unique<SimpleCandidateGenerator>();
 	m_generator = std::make_unique<CLocalTcpGenerator>();
-	//m_generator = std::make_unique<CRimeCandiateGenerator>();
 	m_clientID = 0;
 	m_nPageCount = 5;
 	m_nPageIndex = 0;
-	//g_logger.Info("CBaiLuInputCore::CBaiLuInputCore");
 	auto pListView= std::make_unique<ListCandidateView>();
 	if(nullptr != pListView)
 	{
@@ -218,7 +216,7 @@ CBaiLuInputCore::CBaiLuInputCore()
 		//g_logger.Info("CBaiLuInputCore::CBaiLuInputCore pListView is null");
 	}
 	
-	m_timer.start(std::chrono::milliseconds(500), [this]()->void {
+	m_timer.start(std::chrono::milliseconds(50), [this]()->void {
 		this->OnThreadTimer();
 	});
 
@@ -285,11 +283,10 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 	{
 	case KeyType::NoneKey:
 	{
-		//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo NoneKey");
+		g_logger.Warn("CBaiLuInputCore::ProcessKeyInfo NoneKey");
 	}break;
 	case KeyType::CharacterKey:
 	{
-		//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo CharacterKey: {}", keyInfo._keyValue);
 		char inputChar = static_cast<char>(keyInfo._keyValue);
 		
 		// Handle character key input for normal text input
@@ -297,7 +294,6 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 	}break;
 	case KeyType::NumberKey:
 	{
-		//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo NumberKey: {}", keyInfo._keyValue);
 		if (IsChandidateWindowShow())
 		{
 			// Handle number key selection for candidate window
@@ -324,7 +320,6 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 	}break;
 	case KeyType::ControlKey:
 	{
-		//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo ControlKey: {}", keyInfo._keyValue);
 		if(keyInfo._keyValue == VK_SPACE)
 		{
 			if (g_candidateWindow)
@@ -340,7 +335,6 @@ void CBaiLuInputCore::ProcessKeyInfo(const KeyInfo& keyInfo)
 				}
 				else
 				{
-					//g_logger.Info("CBaiLuInputCore::ProcessKeyInfo Space: Invalid candidate index");
 				}
 			}
 		}
@@ -430,13 +424,11 @@ KeyInfo CBaiLuInputCore::GetKeyInfo(WPARAM wParam, LPARAM lParam)
 
 bool CBaiLuInputCore::DealActiveEx(ITfThreadMgr* pThreadMgr, TfClientId tfClientId, DWORD dwFlags)
 {
-	//g_logger.Info("CBaiLuInputCore::DealActiveEx");
 	return true;
 }
 
 bool CBaiLuInputCore::DealDeactivate()
 {
-	//g_logger.Info("CBaiLuInputCore::DealDeactivate");
 	if (nullptr != g_candidateWindow)
 	{
 		g_candidateWindow->Hide();
@@ -446,6 +438,13 @@ bool CBaiLuInputCore::DealDeactivate()
 HRESULT CBaiLuInputCore::DealTestKeyDown(WPARAM wParam, LPARAM lParam, BOOL* pfEaten)
 {
 	KeyInfo info = GetKeyInfo(wParam, lParam);
+	Combine_Key_State keyState = CBaiLuKeyState::GetInstance()->GetState();
+	//Control+S
+	if (keyState == Combine_Key_State::Control && (info._keyValue == 's'||info._keyValue=='S'))
+	{
+		pfEaten = FALSE;
+		return S_OK;
+	}
 	switch (info._type)
 	{
 		case KeyType::ControlKey:
